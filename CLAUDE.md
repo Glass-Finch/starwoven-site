@@ -126,6 +126,47 @@ All domains mirror to same Vercel deployment.
 - Generous whitespace
 - Clear visual hierarchy
 
+## Code Review Standards
+
+Before merging any code, verify:
+
+### TypeScript
+- [ ] No `any` types - use proper interfaces
+- [ ] All functions have return types
+- [ ] No unused variables or imports
+- [ ] Consistent naming (camelCase for vars, PascalCase for components)
+
+### React/Next.js
+- [ ] Components are in separate files
+- [ ] Props have TypeScript interfaces
+- [ ] No inline styles (use Tailwind)
+- [ ] Keys on list items
+- [ ] No console.log in production code
+
+### Security
+- [ ] No secrets in code (use env vars)
+- [ ] API keys only accessed server-side
+- [ ] User input validated before use
+- [ ] No SQL injection risks (use parameterized queries)
+
+### Performance
+- [ ] Images optimized (use next/image)
+- [ ] No unnecessary re-renders
+- [ ] Large dependencies imported dynamically
+- [ ] Animations use transform/opacity (GPU accelerated)
+
+### Accessibility
+- [ ] Semantic HTML elements
+- [ ] Alt text on images
+- [ ] Keyboard navigable
+- [ ] Color contrast meets WCAG AA
+
+### Style
+- [ ] No emojis anywhere
+- [ ] Consistent formatting (Prettier)
+- [ ] Meaningful commit messages
+- [ ] Comments explain "why" not "what"
+
 ## Commands
 
 ```bash

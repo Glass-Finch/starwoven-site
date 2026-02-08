@@ -23,6 +23,10 @@ interface VercelProject {
   accountId: string
 }
 
+interface ProjectListResponse {
+  projects?: VercelProject[]
+}
+
 async function getOrCreateProject(): Promise<VercelProject> {
   // First, try to get existing project
   const listResponse = await fetch(`${VERCEL_API_URL}/v9/projects?search=starwoven`, {
@@ -33,8 +37,8 @@ async function getOrCreateProject(): Promise<VercelProject> {
   })
 
   if (listResponse.ok) {
-    const data = await listResponse.json()
-    const existing = data.projects?.find((p: any) => p.name === 'starwoven-site')
+    const data: ProjectListResponse = await listResponse.json()
+    const existing = data.projects?.find((p) => p.name === 'starwoven-site')
     if (existing) {
       console.log(`Using existing project: ${existing.name}`)
       return existing

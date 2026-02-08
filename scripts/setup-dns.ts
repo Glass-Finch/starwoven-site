@@ -14,7 +14,12 @@ const FIXIE_URL = process.env.FIXIE_URL
 const VERCEL_A_RECORD = '76.76.21.21'
 const VERCEL_CNAME = 'cname.vercel-dns.com'
 
-const DOMAINS = [
+interface Domain {
+  sld: string
+  tld: string
+}
+
+const DOMAINS: Domain[] = [
   { sld: 'starwoven', tld: 'app' },
   { sld: 'starwoven', tld: 'academy' },
   { sld: 'starwoven', tld: 'institute' },
@@ -23,15 +28,7 @@ const DOMAINS = [
   { sld: 'getstarwoven', tld: 'com' },
 ]
 
-interface NamecheapResponse {
-  ApiResponse: {
-    Status: string
-    Errors?: { Error: { _text: string }[] }
-    CommandResponse?: any
-  }
-}
-
-async function callNamecheapApi(command: string, params: Record<string, string>): Promise<any> {
+async function callNamecheapApi(command: string, params: Record<string, string>): Promise<string> {
   const baseParams = {
     ApiUser: NAMECHEAP_API_USER,
     ApiKey: NAMECHEAP_API_KEY,
@@ -47,11 +44,10 @@ async function callNamecheapApi(command: string, params: Record<string, string>)
 
   const url = `https://api.namecheap.com/xml.response?${queryString}`
 
-  // Use proxy if available (for IP whitelisting)
+  // Note: FIXIE_URL proxy not implemented - IP must be whitelisted in Namecheap
   const fetchOptions: RequestInit = {}
   if (FIXIE_URL) {
-    // Note: In production, you'd use a proper HTTP proxy here
-    console.log('  (Using Fixie proxy for IP whitelisting)')
+    console.log('  (Fixie URL configured but proxy not implemented)')
   }
 
   const response = await fetch(url, fetchOptions)
