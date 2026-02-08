@@ -18,6 +18,8 @@ export interface MessageTypeConfig {
   description: string
   voice: string
   icon: string
+  intentionPrompt: string
+  intentionPlaceholder: string
 }
 
 // Question types

@@ -11,6 +11,8 @@ export const messageTypes: MessageTypeConfig[] = [
     description: 'Hear from the higher self of someone you love',
     voice: 'Higher self of the beloved',
     icon: 'heart',
+    intentionPrompt: 'What do you want to know about them?',
+    intentionPlaceholder: 'What lives unspoken between you...',
   },
   {
     id: 'deceased_loved_one',
@@ -18,6 +20,8 @@ export const messageTypes: MessageTypeConfig[] = [
     description: 'Receive a message from beyond the veil',
     voice: 'Crossed-over spirit',
     icon: 'star',
+    intentionPrompt: 'What would you hear from them?',
+    intentionPlaceholder: 'What you wish they knew, or need to hear...',
   },
   {
     id: 'future_self',
@@ -25,6 +29,8 @@ export const messageTypes: MessageTypeConfig[] = [
     description: 'Your wiser self sends wisdom backward through time',
     voice: "User's wiser future self",
     icon: 'clock',
+    intentionPrompt: 'What guidance do you seek?',
+    intentionPlaceholder: 'What your future self might say...',
   },
   {
     id: 'universe_general',
@@ -32,6 +38,8 @@ export const messageTypes: MessageTypeConfig[] = [
     description: 'Open a channel to cosmic consciousness',
     voice: 'Cosmic consciousness',
     icon: 'sparkles',
+    intentionPrompt: 'What question lives in you?',
+    intentionPlaceholder: 'The question that won\'t rest...',
   },
   {
     id: 'life_decision',
@@ -39,6 +47,8 @@ export const messageTypes: MessageTypeConfig[] = [
     description: 'Seek guidance from an impartial oracle',
     voice: 'Impartial oracle',
     icon: 'compass',
+    intentionPrompt: 'What choice weighs on you?',
+    intentionPlaceholder: 'The crossroads you stand at...',
   },
   {
     id: 'purpose_world',
@@ -46,6 +56,8 @@ export const messageTypes: MessageTypeConfig[] = [
     description: 'Discover your role in the greater weave',
     voice: 'Collective consciousness',
     icon: 'globe',
+    intentionPrompt: 'What calls to be understood?',
+    intentionPlaceholder: 'Your place in the larger pattern...',
   },
 ]
 
