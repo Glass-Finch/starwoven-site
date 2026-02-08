@@ -98,13 +98,23 @@ All domains mirror to same Vercel deployment.
 
 ## Key Design Decisions (Updated)
 
-1. **Flat file structure** - Components in `/components`, libs in `/lib`, single Zustand store
-2. **Single API route** - `/api/channel` handles both channeling and synthesis
-3. **Static question pool** - Questions defined in code, not database
-4. **Anonymous sessions** - UUID in localStorage, linked to Supabase readings
-5. **JSONB storage** - Single `readings` table with flexible JSONB columns
-6. **AI Response QA** - Sonnet validates responses before Opus synthesis (GH#7)
-7. **OAuth-ready** - Schema designed for future user accounts (GH#8)
+1. **Mobile-first design** - Base styles target mobile, scale up with min-width breakpoints
+2. **Flat file structure** - Components in `/components`, libs in `/lib`, single Zustand store
+3. **Single API route** - `/api/channel` handles both channeling and synthesis
+4. **Static question pool** - Questions defined in code, not database
+5. **Anonymous sessions** - UUID in localStorage, linked to Supabase readings
+6. **JSONB storage** - Single `readings` table with flexible JSONB columns
+7. **AI Response QA** - Sonnet validates responses before Opus synthesis (GH#7)
+8. **OAuth-ready** - Schema designed for future user accounts (GH#8)
+
+## Mobile-First Guidelines
+
+- Base styles = mobile, use `sm:`, `md:`, `lg:` for larger screens
+- Min tap target: 44x44px
+- Min font size: 16px (prevents iOS zoom)
+- Use `clamp()` for fluid typography
+- Stack layouts vertically on mobile
+- Reduce Starfield stars on mobile for performance
 
 ## Commands
 
