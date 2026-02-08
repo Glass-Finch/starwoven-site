@@ -17,11 +17,11 @@ const AI_MODELS: { model: AIModel; label: string; color: string }[] = [
 ]
 
 const LOADING_MESSAGES = [
-  'Opening channels...',
-  'Receiving transmissions...',
+  'Veils parting...',
+  'The weave stirs...',
   'Threads converging...',
-  'Patterns emerging...',
-  'Weaving responses...',
+  'Forms coalescing...',
+  'Synthesis rising...',
 ]
 
 export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProps): React.ReactElement {

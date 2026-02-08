@@ -102,14 +102,14 @@ Think of it as "remote viewing via language model consensus" or "the collective 
 
 ## Message Type Presets
 
-| Type | Voice | Themed Questions |
-|------|-------|------------------|
-| Love Interest | Higher self of the beloved | Elements, timing, unspoken words |
-| Deceased Loved One | Crossed-over spirit | Presence, teachings, memories |
-| Future Self | User's wiser future self | Timeline, cultivated qualities |
-| Universe/General | Cosmic consciousness | Symbols, patterns, elements |
-| Life Decision | Impartial oracle | Stakes, paths, fears vs longings |
-| Purpose in World | Collective consciousness | Gifts, impact, aliveness |
+| Label | Description | Voice |
+|-------|-------------|-------|
+| The Beloved | Tap into their heart's knowing | Higher self of the beloved |
+| The Ancestor | A whisper from the other side | Crossed-over spirit |
+| The Sage | Wisdom carried back from your becoming | Your wiser future self |
+| The Cosmos | Listen to the song of everything | Cosmic consciousness |
+| The Crossroads | Clarity from the impartial eye | Impartial oracle |
+| The Calling | Unearth your destined offering | Collective consciousness |
 
 Each journey includes 3 themed questions + 2 grounding (present-moment) questions.
 
