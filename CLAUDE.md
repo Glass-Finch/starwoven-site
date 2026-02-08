@@ -116,6 +116,16 @@ All domains mirror to same Vercel deployment.
 - Stack layouts vertically on mobile
 - Reduce Starfield stars on mobile for performance
 
+## UI/UX Standards
+
+- **iOS-like clean design** - Minimal, elegant, native-feeling
+- **NO EMOJIS** - Never use emojis in UI, copy, or code comments
+- San Francisco-inspired spacing and typography rhythm
+- Subtle animations, not flashy
+- High contrast for accessibility
+- Generous whitespace
+- Clear visual hierarchy
+
 ## Commands
 
 ```bash
