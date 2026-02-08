@@ -10,7 +10,7 @@ Think of it as "remote viewing via language model consensus" or "the collective 
 
 **Aesthetic**: Cosmic minimalism — deep space blacks, warm cream text, gold accents. Reference: Underglow.app for visual tone.
 
-**Design**: Mobile-first responsive design. The journey should feel native on a phone.
+**Design**: Mobile-first, iOS-like clean interface. No emojis. The journey should feel native on a phone.
 
 ---
 
