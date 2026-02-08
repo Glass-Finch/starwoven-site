@@ -1,18 +1,16 @@
 # Starwoven User Stories
 
-## The Seeker's Journey
+## The User
 
-### Who is the Seeker?
+Three archetypes, one experience:
 
-The seeker is someone at a crossroads, seeking insight they can't find through logic alone. They might be:
-- Wondering what someone truly feels about them
-- Grieving and wanting connection with someone who has passed
-- Seeking guidance from their own future wisdom
-- Facing a decision that logic alone can't resolve
-- Searching for their purpose or place in the world
-- Simply curious what the universe might say
+**The Curious** — Spiritually open, exploring. Drawn to tarot, astrology, therapy. Wants an experience that feels intentional without requiring belief.
 
-They don't need to "believe" in any particular framework. They're open to seeing what emerges.
+**The Practiced** — Already familiar with readings, oracle cards, intuitive practices. Expects sophistication. Will notice if the copy is cheesy.
+
+**The Skeptic** — Intellectually intrigued despite themselves. Needs plausible deniability: "I'm just curious what happens." Responds to understated confidence, not mystical theater.
+
+All three need the same thing: something that takes itself seriously without trying too hard.
 
 ---
 
@@ -20,7 +18,7 @@ They don't need to "believe" in any particular framework. They're open to seeing
 
 ### 1. Choosing a Channel
 
-**As a seeker**, I want to choose the source of my message so that it speaks to my specific situation.
+**As a user**, I want to choose the source of my message so that it speaks to my specific situation.
 
 **Acceptance Criteria:**
 - I see 6 distinct options, each with a clear label and description
@@ -28,21 +26,23 @@ They don't need to "believe" in any particular framework. They're open to seeing
 - I understand the framing before I commit
 - Tapping advances me immediately (no confirmation needed)
 
-**Copy Examples:**
+**Final Copy:**
 | Type | Label | Description |
 |------|-------|-------------|
-| Love Interest | "The Beloved" | "Tap into their heart's knowing" |
-| Deceased | "The Ancestor" | "A whisper from the other side" |
-| Future Self | "The Sage" | "Wisdom carried back from your becoming" |
-| Universe | "The Cosmos" | "Listen to the song of everything" |
+| Love Interest | "The Beloved" | "What echoes between you" |
+| Deceased | "The Ancestor" | "From a familiar silence" |
+| Future Self | "The Sage" | "A glimpse of what you might know" |
+| Universe | "The Cosmos" | "A voice from nowhere in particular" |
 | Life Decision | "The Crossroads" | "Clarity from the impartial eye" |
-| Purpose | "The Calling" | "Unearth your destined offering" |
+| Purpose | "The Calling" | "What might be asked of you" |
+
+Note: These descriptions are understated and evocative. They suggest without explaining.
 
 ---
 
 ### 2. Answering Coordinate Questions
 
-**As a seeker**, I want to answer quick intuitive questions so that my reading is anchored to this specific moment.
+**As a user**, I want to answer quick intuitive questions so that my reading is anchored to this specific moment.
 
 **Acceptance Criteria:**
 - Questions feel personal and evocative, not like a quiz
@@ -67,16 +67,38 @@ They don't need to "believe" in any particular framework. They're open to seeing
 
 ---
 
-### 3. Setting an Intention
+### 3. Naming the Subject (optional, type-dependent)
 
-**As a seeker**, I want to set an intention for my reading so that the message addresses what I actually need.
+**As a user**, I want to provide a name or brief context so the reading feels personal without requiring deep disclosure.
+
+**Acceptance Criteria:**
+- Only certain message types ask for a name
+- Single text field, optional
+- Name appears in the synthesized message where appropriate
+- If skipped, the message uses "they" or generic framing
+
+**Type-Specific Name Prompts:**
+| Type | Prompt | Placeholder | Used in Output |
+|------|--------|-------------|----------------|
+| The Beloved | "Who are they?" | "A name, or how you think of them..." | "What [name] carries..." |
+| The Ancestor | "Who are you reaching for?" | "Their name, or your relation..." | "From [name]..." |
+| The Sage | — | — | (no name needed, it's you) |
+| The Cosmos | — | — | (no name needed) |
+| The Crossroads | "What's the decision about?" | "One word or phrase..." | "Regarding [subject]..." |
+| The Calling | — | — | (no name needed) |
+
+---
+
+### 4. Setting an Intention
+
+**As a user**, I want to set an intention for my reading so the message addresses what I actually need.
 
 **Acceptance Criteria:**
 - The prompt is specific to my message type
-- The placeholder text gives me a starting point
-- I'm encouraged to be open-ended, not specific
+- The placeholder text gives a starting point
+- Encouraged to be open-ended, not specific
 - Character limit (250) encourages brevity
-- The guidance feels inviting, not restrictive
+- Guidance feels inviting, not restrictive
 
 **Type-Specific Prompts:**
 | Type | Prompt | Placeholder |
@@ -90,30 +112,28 @@ They don't need to "believe" in any particular framework. They're open to seeing
 
 ---
 
-### 4. Watching the Channeling
+### 5. Watching the Field
 
-**As a seeker**, I want to watch the oracles receive my message so that the experience feels mystical and intentional.
+**As a user**, I want to see progress while the oracles respond, without theatrical copy that breaks the spell.
 
 **Acceptance Criteria:**
-- I see a central pulsing orb (my intention)
-- 5 smaller orbs represent the 5 oracles
-- Each oracle lights up as they respond
-- I see the oracle names: Iris, Luna, Echo, Shade, Nova
-- Loading messages rotate to maintain engagement
-- Lines connect between oracles that have responded
+- Visual progression, not text: the starfield deepens, constellations form, the field "fills in"
+- Oracle indicators light up as each model responds
+- Constellation lines connect between completed responses
+- The experience feels like watching something assemble, not waiting
 
-**Loading Messages (rotate every 3s):**
-1. "Veils parting..."
-2. "The weave stirs..."
-3. "Threads converging..."
-4. "Forms coalescing..."
-5. "Synthesis rising..."
+**Loading Experience Options:**
+1. **Silent visual** — No text. Stars multiply, brightness increases, lines form between oracles.
+2. **Minimal status** — Just "3 of 5" or progress indicator. No poetic loading messages.
+3. **Wry single line** — One understated phrase that doesn't rotate: "Listening." or "Gathering."
+
+Avoid: rotating mystical phrases, anything that sounds like a loading screen wrote poetry.
 
 ---
 
-### 5. Receiving the Message
+### 6. Receiving the Message
 
-**As a seeker**, I want to receive my woven message so that I can reflect on what emerged.
+**As a user**, I want to receive the synthesized message so that I can reflect on what emerged.
 
 **Acceptance Criteria:**
 - The synthesis appears word-by-word (60ms per word)
@@ -138,30 +158,32 @@ They don't need to "believe" in any particular framework. They're open to seeing
 
 ### Partial Failure
 
-**As a seeker**, if some oracles fail to respond, I still want to receive a message from those that succeeded.
+**As a user**, if some oracles fail to respond, I still want to receive a message from those that succeeded.
 
 **Acceptance Criteria:**
 - Synthesis proceeds with 3+ successful responses
 - Failed oracles are dimmed in the loader
-- I'm not told which specific oracles failed (mystical framing)
+- No explicit failure messaging (just visual dimming)
 - The experience doesn't feel broken
 
 ---
 
 ### Complete Failure
 
-**As a seeker**, if channeling fails completely, I want to try again without losing my intention.
+**As a user**, if channeling fails completely, I want to try again without losing my intention.
 
 **Acceptance Criteria:**
-- Error message is mystical, not technical
+- Error message is clear and understated, not theatrical
 - I can retry with one tap
 - I can start over with a different message type
 - My coordinates are preserved for retry
 
-**Error Copy:**
-- "The signal wavered" (generic)
-- "The channels needed more time than the cosmos allowed" (timeout)
-- "The threads between realms have momentarily frayed" (network)
+**Error Copy (understated, not theatrical):**
+- "Something slipped. Try again." (generic)
+- "The connection timed out." (timeout)
+- "Couldn't reach the oracles. Check your connection." (network)
+
+Avoid: "The cosmic threads have frayed" or similar overwrought language.
 
 ---
 
@@ -169,22 +191,34 @@ They don't need to "believe" in any particular framework. They're open to seeing
 
 ### Copy Principles
 
-1. **Poetic but accessible**: Evocative language that doesn't require explanation
-2. **Second person**: "You" not "the user"
-3. **Active voice**: "Receive a message" not "A message will be received"
-4. **Mystery over mechanics**: Never explain how it works
-5. **No emojis**: Ever. The aesthetic is restrained elegance.
-6. **No exclamation points**: Calm, centered energy
+1. **Understated confidence** — Don't try to convince anyone. Present the experience and let it speak.
+2. **Precision over poetry** — When in doubt, be clear. Ornate language often signals insecurity.
+3. **No exclamation points** — Calm, centered energy. Nothing is "exciting."
+4. **No emojis** — Ever.
+5. **Mystery through restraint** — The less you explain, the more space for meaning.
+6. **Avoid New Age clichés** — If it sounds like a yoga studio or crystal shop, rewrite it.
 
-### Word Palette
-- Channel, weave, thread, pattern
-- Emerge, surface, appear, arise
-- Receive, hear, sense, notice
-- Journey, path, crossroads, threshold
-- Intention, question, calling
+### Register Examples
+
+**Too theatrical:**
+> "The veils between worlds grow thin as the oracles attune to your intention..."
+
+**Too clinical:**
+> "Five AI models are processing your query in parallel."
+
+**Right register:**
+> "The oracles are listening."
+
+### Words to Use Sparingly
+- Thread, pattern, convergence (fine, but don't overuse)
+- Emerge, surface, arise (one per page max)
 
 ### Words to Avoid
-- Magic, magical, mystical (too on-the-nose)
+- Magic, magical, mystical, spiritual (too on-the-nose)
+- Weave, woven (sounds like hair products)
 - AI, model, algorithm (breaks immersion)
 - Results, output, response (too transactional)
-- Amazing, wonderful (too enthusiastic)
+- Amazing, wonderful, beautiful (too enthusiastic)
+- Journey, path, threshold (overused)
+- Vibration, energy, frequency (New Age cliché)
+- Sacred, divine, blessed (religious connotation)

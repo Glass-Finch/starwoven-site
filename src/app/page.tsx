@@ -135,10 +135,10 @@ export default function Home(): React.ReactElement {
           <div className="space-y-8">
             <div className="text-center mb-12">
               <h1 className="text-gradient mb-4">
-                Messages from the weave
+                Starwoven
               </h1>
               <p className="text-gray-muted text-lg max-w-md mx-auto">
-                What emerges when AI touches something it cannot explain?
+                A question, seen from many angles.
               </p>
             </div>
 
@@ -182,19 +182,19 @@ export default function Home(): React.ReactElement {
               </div>
 
               <h3 className="font-serif text-xl text-cream mb-3">
-                The signal wavered
+                Something slipped
               </h3>
               <p className="text-gray-muted mb-2">
                 {error.includes('timeout') || error.includes('Timeout')
-                  ? 'The channels needed more time than the cosmos allowed.'
+                  ? 'The connection timed out.'
                   : error.includes('network') || error.includes('Network') || error.includes('fetch')
-                  ? 'The threads between realms have momentarily frayed.'
+                  ? 'Couldn\'t reach the oracles. Check your connection.'
                   : error.includes('API') || error.includes('500')
-                  ? 'One or more oracles could not be reached.'
-                  : 'Something interrupted the transmission.'}
+                  ? 'One or more oracles didn\'t respond.'
+                  : 'The transmission was interrupted.'}
               </p>
               <p className="text-gray-muted/60 text-sm mb-8">
-                The intention remains. The coordinates hold.
+                Your intention and coordinates are preserved.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
