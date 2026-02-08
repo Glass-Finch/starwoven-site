@@ -14,29 +14,184 @@ All three need the same thing: something that takes itself seriously without try
 
 ---
 
-## Core User Stories
+## Message Type User Stories
+
+Each message type serves a different user need. The intention prompt and placeholder should be clear and inviting.
+
+---
+
+### The Beloved (Love Interest)
+
+**Who uses this:** Someone wondering about a romantic interest, crush, partner, or ex. They want insight into how that person feels, what's happening in the relationship, or what's between them.
+
+**Note:** We're not asking the person directly — we're asking ABOUT them and the relationship.
+
+**What they're really asking:**
+- Does this person like me?
+- What do they really feel about me?
+- Why did they act that way?
+- Is there a future here?
+- What's really going on between us?
+
+**User Inputs:**
+| Field | Label | Placeholder | Required |
+|-------|-------|-------------|----------|
+| `yourName` | Your name | Your first name... | Yes |
+| `theirName` | Their name | Their name or what you call them... | Yes |
+| `intention` | What do you want to know? | Does this person like me? What do they really feel? Is there a future here? | Yes |
+
+**Example intentions:**
+- "Does he like me?"
+- "Why has she been distant?"
+- "Is there a future here?"
+- "What do they really feel about me?"
+
+---
+
+### The Ancestor (Deceased Loved One)
+
+**Who uses this:** Someone grieving, seeking closure, or wanting connection with someone who has passed. They might want to ask something OR express something.
+
+**What they're really asking:**
+- Are they okay?
+- Do they forgive me?
+- What would they say to me now?
+- Is there something they want me to know?
+- There's something I need to tell them
+
+**User Inputs:**
+| Field | Label | Placeholder | Required |
+|-------|-------|-------------|----------|
+| `yourName` | Your name | Your first name... | Yes |
+| `theirName` | Their name | Their name... | Yes |
+| `relationship` | Your relationship | e.g., grandmother, father, friend... | Yes |
+| `intention` | What do you want to ask or tell them? | Are they okay? Do they forgive me? What would they say to me now? | Yes |
+
+**Example intentions:**
+- "Are you okay?"
+- "Do you forgive me?"
+- "What would you say about my life now?"
+- "I need you to know I'm okay"
+
+---
+
+### The Sage (Future Self)
+
+**Who uses this:** Someone wanting to ask their future self for advice. The version of them that has already lived through whatever they're facing now.
+
+**What they're really asking:**
+- What would I tell myself if I could look back?
+- What do I already know, deep down?
+- What would my wiser self say about this?
+
+**User Inputs:**
+| Field | Label | Placeholder | Required |
+|-------|-------|-------------|----------|
+| `yourName` | Your name | Your first name... | Yes |
+| `birthday` | Your birthday | (date picker) | Yes |
+| `intention` | What do you need advice on? | Should I take this job? Am I on the right path? What should I focus on? | Yes |
+
+**Example intentions:**
+- "Should I take this job?"
+- "Am I on the right path?"
+- "What should I focus on right now?"
+- "Is this relationship right for me?"
+
+---
+
+### The Cosmos (Universe/General)
+
+**Who uses this:** Someone with something on their mind, not tied to a specific person or decision. Seeking insight or reflection.
+
+**What they're really asking:**
+- What do I need to hear right now?
+- What's going on with me?
+- What am I not seeing?
+
+**User Inputs:**
+| Field | Label | Placeholder | Required |
+|-------|-------|-------------|----------|
+| `intention` | What's on your mind? | What do I need to hear right now? What am I not seeing? | Yes |
+
+No additional personalization fields — just the intention.
+
+**Example intentions:**
+- "What do I need to hear right now?"
+- "What am I not seeing?"
+- "What am I avoiding?"
+
+---
+
+### The Crossroads (Life Decision)
+
+**Who uses this:** Someone facing a yes/no decision. Like a sophisticated magic 8-ball — they have a specific question they need an answer to.
+
+**What they're really asking:**
+- Should I do this or not?
+- Is it time?
+- Yes or no?
+
+**User Inputs:**
+| Field | Label | Placeholder | Required |
+|-------|-------|-------------|----------|
+| `intention` | What decision do you need help with? | Should I take the job? Should I move? Is it time to end this? | Yes |
+
+No additional personalization fields — the question itself is the focus.
+
+**Example intentions:**
+- "Should I take the job?"
+- "Should I move?"
+- "Is it time to end this relationship?"
+- "Should I reach out to them?"
+
+---
+
+### The Calling (Purpose)
+
+**Who uses this:** Someone asking about their purpose. What they're meant to do. What they're here for.
+
+**What they're really asking:**
+- What is my purpose?
+- What am I meant to do?
+- What is my calling?
+- What should I be focusing my life on?
+
+**User Inputs:**
+| Field | Label | Placeholder | Required |
+|-------|-------|-------------|----------|
+| `yourName` | Your name | Your first name... | Yes |
+| `birthday` | Your birthday | (date picker) | Yes |
+| `intention` | What do you want to know about your purpose? | What is my purpose? What am I meant to do? What is my calling? | Yes |
+
+**Example intentions:**
+- "What is my purpose?"
+- "What am I meant to do?"
+- "What is my calling?"
+- "What should I be doing with my life?"
+
+---
+
+## Core Flow User Stories
 
 ### 1. Choosing a Channel
 
-**As a user**, I want to choose the source of my message so that it speaks to my specific situation.
+**As a user**, I want to choose the type of message I need so that it speaks to my specific situation.
 
 **Acceptance Criteria:**
 - I see 6 distinct options, each with a clear label and description
-- The descriptions tell me WHO is speaking (not what I'll get)
+- The descriptions are evocative but not cheesy
 - I understand the framing before I commit
-- Tapping advances me immediately (no confirmation needed)
+- Tapping advances me immediately
 
 **Final Copy:**
-| Type | Label | Description |
-|------|-------|-------------|
-| Love Interest | "The Beloved" | "What echoes between you" |
-| Deceased | "The Ancestor" | "From a familiar silence" |
-| Future Self | "The Sage" | "A glimpse of what you might know" |
-| Universe | "The Cosmos" | "A voice from nowhere in particular" |
-| Life Decision | "The Crossroads" | "Clarity from the impartial eye" |
-| Purpose | "The Calling" | "What might be asked of you" |
-
-Note: These descriptions are understated and evocative. They suggest without explaining.
+| Label | Description |
+|-------|-------------|
+| The Beloved | "What echoes between you" |
+| The Ancestor | "From a familiar silence" |
+| The Sage | "A glimpse of what you might know" |
+| The Cosmos | "A voice from nowhere in particular" |
+| The Crossroads | "Clarity from the impartial eye" |
+| The Calling | "What might be asked of you" |
 
 ---
 

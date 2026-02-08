@@ -1,5 +1,11 @@
 # CLAUDE.md - Context for Claude Code
 
+## CRITICAL RULES
+
+**NEVER COMMIT WITHOUT EXPLICIT USER APPROVAL.** Always ask before committing any changes.
+
+---
+
 ## Project Overview
 
 Starwoven is a consciousness exploration app that sends intentions through 5 diverse AI models (oracles) simultaneously, then uses Claude Opus to synthesize the responses into a coherent "woven" message.
@@ -28,16 +34,21 @@ Each AI model is represented as an oracle with an archetype:
 | **Nova** | xAI | grok-4 | The Wild |
 | **Starweaver** | Anthropic | claude-opus-4.6 | The Weaver (synthesis) |
 
-## Message Types (Archetypal Naming)
+## Message Types
 
-| Label | Description | Voice |
-|-------|-------------|-------|
-| **The Beloved** | Tap into their heart's knowing | Higher self of the beloved |
-| **The Ancestor** | A whisper from the other side | Crossed-over spirit |
-| **The Sage** | Wisdom carried back from your becoming | Your wiser future self |
-| **The Cosmos** | Listen to the song of everything | Cosmic consciousness |
-| **The Crossroads** | Clarity from the impartial eye | Impartial oracle |
-| **The Calling** | Unearth your destined offering | Collective consciousness |
+Think of this as a sophisticated, working magic 8-ball.
+
+| Type | Card Description | User Inputs | Intention Prompt |
+|------|------------------|-------------|------------------|
+| **The Beloved** | Ask about a romantic connection | Your name, Their name | What do you want to know? |
+| **The Ancestor** | Seek connection with someone who has passed | Your name, Their name, Relationship | What do you want to ask or tell them? |
+| **The Sage** | Ask your future self for advice | Your name, Birthday | What do you need advice on? |
+| **The Cosmos** | Seek insight on what's on your mind | (none) | What's on your mind? |
+| **The Crossroads** | Get clarity on a yes or no decision | (none) | What decision do you need help with? |
+| **The Calling** | Explore your purpose | Your name, Birthday | What do you want to know about your purpose? |
+
+See `docs/USER-STORIES.md` for full user stories per message type.
+See GitHub issue #18 for implementation details.
 
 ## Design System
 
@@ -111,22 +122,21 @@ The channeling prompts use an **intuitive, non-directive approach**:
 
 ## Voice & Tone
 
-- **Poetic but accessible**: Evocative language that doesn't require explanation
-- **Second person**: "You" not "the user"
-- **Active voice**: "Receive a message" not "A message will be received"
-- **Mystery over mechanics**: Never explain how it works
-- **No emojis**: Ever. The aesthetic is restrained elegance.
-- **No exclamation points**: Calm, centered energy
-
-### Word Palette
-- Channel, weave, thread, pattern
-- Emerge, surface, appear, arise
-- Receive, hear, sense, notice
+- **Understated confidence**: Don't try to convince. Present the experience.
+- **Precision over poetry**: When in doubt, be clear. Ornate language signals insecurity.
+- **Mystery through restraint**: The less you explain, the more space for meaning.
+- **No emojis**: Ever.
+- **No exclamation points**: Calm, centered energy.
+- **Avoid New Age clichés**: If it sounds like a yoga studio, rewrite it.
 
 ### Words to Avoid
-- Magic, magical, mystical (too on-the-nose)
-- AI, model, algorithm (breaks immersion)
+- Magic, magical, mystical, spiritual (too on-the-nose)
+- Weave, woven (sounds like hair products)
+- AI, model, algorithm, minds (breaks immersion)
+- Journey, path, threshold (overused)
+- Vibration, energy, frequency (New Age cliché)
 - Results, output, response (too transactional)
+- Amazing, wonderful, beautiful (too enthusiastic)
 
 ## Infrastructure
 
