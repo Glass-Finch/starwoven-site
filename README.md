@@ -104,18 +104,18 @@ Starwoven doesn't explain what it does. It presents an experience and lets you d
 
 ## Message Types
 
-Six channels, each with a distinct voice:
+Six channels, each with a distinct purpose:
 
-| Label | Description |
-|-------|-------------|
-| The Beloved | What echoes between you |
-| The Ancestor | From a familiar silence |
-| The Sage | A glimpse of what you might know |
-| The Cosmos | A voice from nowhere in particular |
-| The Crossroads | Clarity from the impartial eye |
-| The Calling | What might be asked of you |
+| Label | Description | User Inputs |
+|-------|-------------|-------------|
+| The Beloved | Ask about a romantic connection | Your name, their name |
+| The Ancestor | Seek connection with someone who has passed | Your name, their name, relationship |
+| The Sage | Ask your future self for advice | Your name, birthday |
+| The Cosmos | Seek insight on what's on your mind | (intention only) |
+| The Crossroads | Get clarity on a yes or no decision | (intention only) |
+| The Calling | Explore your purpose | Your name, birthday |
 
-Some channels ask for a name or subject (Beloved, Ancestor, Crossroads). All include 3 themed questions + 2 grounding questions.
+All journeys include 5 coordinate questions (3 themed + 2 grounding).
 
 ---
 
