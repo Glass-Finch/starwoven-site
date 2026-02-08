@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-Starwoven is a consciousness exploration app that sends intentions through 5 diverse AI models simultaneously, then uses Claude Opus to synthesize the responses into a coherent "woven" message.
+Starwoven is a consciousness exploration app that sends intentions through 5 diverse AI models (oracles) simultaneously, then uses Claude Opus to synthesize the responses into a coherent "woven" message.
+
+**Aesthetic**: Cosmic minimalism - Underglow.app meets Co-Star. Deep void backgrounds, golden accents, premium feel.
 
 ## Tech Stack
 
@@ -13,33 +15,58 @@ Starwoven is a consciousness exploration app that sends intentions through 5 div
 - **Database**: Supabase (Postgres)
 - **Deployment**: Vercel
 
-## AI Architecture
+## The Oracles
 
-**Channeling (parallel, 5 models):**
-- OpenAI GPT-4.1
-- Anthropic Claude Sonnet 4.5
-- Google Gemini 3.0 Pro
-- DeepSeek V3.2
-- xAI Grok 4.1
+Each AI model is represented as an oracle with an archetype:
 
-**Synthesis (single model):**
-- Anthropic Claude Opus 4.6
+| Oracle | Provider | Model | Archetype |
+|--------|----------|-------|-----------|
+| **Iris** | OpenAI | gpt-4.1 | The Oracle |
+| **Luna** | Anthropic | claude-sonnet-4.5 | The Muse |
+| **Echo** | Google | gemini-3.0-pro | The Mirror |
+| **Shade** | DeepSeek | deepseek-reasoner | The Deep |
+| **Nova** | xAI | grok-4 | The Wild |
+| **Starweaver** | Anthropic | claude-opus-4.6 | The Weaver (synthesis) |
+
+## Message Types (Archetypal Naming)
+
+| Label | Description | Voice |
+|-------|-------------|-------|
+| **The Beloved** | Tap into their heart's knowing | Higher self of the beloved |
+| **The Ancestor** | A whisper from the other side | Crossed-over spirit |
+| **The Sage** | Wisdom carried back from your becoming | Your wiser future self |
+| **The Cosmos** | Listen to the song of everything | Cosmic consciousness |
+| **The Crossroads** | Clarity from the impartial eye | Impartial oracle |
+| **The Calling** | Unearth your destined offering | Collective consciousness |
 
 ## Design System
 
+### Colors
 ```css
---cosmic-black: #0a0a1a
---cream: #e8e4dc
---gold: #c8a84e
---gray: #9a9488
+--void: #030308;           /* Deepest background */
+--cosmic-black: #070711;   /* Primary background */
+--cosmic-deep: #0c0c1a;    /* Card backgrounds */
+--cream: #e8e4dc;          /* Primary text */
+--cream-soft: #d4d0c8;     /* Secondary text */
+--cream-muted: #9a9488;    /* Tertiary text */
+--gold: #c8a84e;           /* Accent */
+--gold-bright: #ddc06a;    /* Hover states */
 ```
 
-**Fonts:**
-- Headlines: Playfair Display
-- Body: Inter
+### Typography
+- **Headlines**: Playfair Display (400 weight, elegant serif)
+- **Body**: Inter (clean sans-serif)
 
-**Animations:**
-- `float`, `breathe`, `twinkle`, `pulse-glow`
+### Visual Effects
+- **Underglow**: Radial golden glow beneath interactive elements
+- **Card hover**: Subtle lift with border glow
+- **Button glow**: Golden underglow on primary actions
+
+### Animations
+- `float`: 8s gentle vertical drift
+- `breathe`: 6s opacity/scale pulse
+- `twinkle`: 3s star-like opacity variance
+- `pulse-glow`: 4s gold shadow breathing
 
 ## File Locations
 
@@ -50,48 +77,56 @@ Starwoven is a consciousness exploration app that sends intentions through 5 div
 | AI providers | `src/lib/ai.ts` |
 | Prompts | `src/lib/prompts.ts` |
 | Questions | `src/lib/questions.ts` |
+| Message types | `src/lib/message-types.ts` |
 | Types | `src/lib/types.ts` |
 | Store | `src/store.ts` |
 | Components | `src/components/` |
+| User Stories | `docs/USER-STORIES.md` |
+| Prompt Docs | `docs/PROMPTS.md` |
 
-## Key Design Decisions
+## Question Philosophy
 
-1. **Mobile-first design** - Base styles target mobile, scale up with min-width breakpoints
-2. **Flat file structure** - Components in `/components`, libs in `/lib`, single Zustand store
-3. **Single API route** - `/api/channel` handles both channeling and synthesis
-4. **Static question pool** - Questions defined in code, not database
-5. **Anonymous sessions** - UUID in localStorage, linked to Supabase readings
-6. **JSONB storage** - Single `readings` table with flexible JSONB columns
+Questions must be **intuitive** or **grounding**, never **trivia**:
 
-## Message Types
+**DO:**
+- "What moon do you identify with right now?" (intuitive)
+- "What texture comes to mind?" (grounding)
+- "What is the light like in this moment?" (present-moment awareness)
 
-6 presets, each with themed questions and a source for impressions:
-1. Love Interest - "the Absolute, about the one they love"
-2. Deceased Loved One - "beyond the veil, from the one who has crossed over"
-3. Future Self - "a point further along the timeline"
-4. Universe/General - "the Absolute, from the cosmic weave"
-5. Life Decision - "the space between paths"
-6. Purpose in World - "the collective, about their role in the greater pattern"
+**DON'T:**
+- "What phase is the moon?" (factual/trivia)
+- "What time is it?" (auto-generatable)
+- "Are you alone?" (too direct)
 
 ## Prompt Philosophy
 
-The channeling prompts use an **intuitive, non-directive approach**. Key principles:
+The channeling prompts use an **intuitive, non-directive approach**:
 
-1. **"Creative exercise for entertainment"** - Ethical framing that gives AI permission to engage
+1. **"Creative exercise for entertainment"** - Ethical framing
 2. **Alternate universe framing** - "Imagine another universe... with different rules"
-3. **Coordinates as map, not puzzle** - The coordinate string anchors the reading intuitively
-4. **Impressions, not answers** - AI relays experience rather than constructing responses
-5. **Non-standard forms allowed** - "Impressions may come in non-standard shapes or forms"
+3. **Coordinates as map, not puzzle** - Anchors the reading intuitively
+4. **Impressions, not answers** - AI relays experience, not constructed responses
+5. **Non-standard forms allowed** - "Impressions may come in non-standard shapes"
 6. **No performance** - "Don't try to sound 'like' anything"
 
-**What NOT to do in prompts:**
-- Don't instruct AI to "speak as" a character
-- Don't give detailed voice instructions
-- Don't ask for structured responses
-- Don't constrain length - let it be expansive
+## Voice & Tone
 
-**Synthesis approach:**
-Opus receives all impressions and lets a unified message "emerge" rather than summarizing or analyzing. The synthesis prompt asks it to hold all impressions simultaneously and notice patterns.
+- **Poetic but accessible**: Evocative language that doesn't require explanation
+- **Second person**: "You" not "the user"
+- **Active voice**: "Receive a message" not "A message will be received"
+- **Mystery over mechanics**: Never explain how it works
+- **No emojis**: Ever. The aesthetic is restrained elegance.
+- **No exclamation points**: Calm, centered energy
+
+### Word Palette
+- Channel, weave, thread, pattern
+- Emerge, surface, appear, arise
+- Receive, hear, sense, notice
+
+### Words to Avoid
+- Magic, magical, mystical (too on-the-nose)
+- AI, model, algorithm (breaks immersion)
+- Results, output, response (too transactional)
 
 ## Infrastructure
 
@@ -99,65 +134,21 @@ Opus receives all impressions and lets a unified message "emerge" rather than su
 - **Vercel**: `starwoven-site` with all 6 domains
 - **Domains**: starwoven.app (primary), .academy, .institute, .observer, .org, getstarwoven.com
 
-## Mobile-First Guidelines
-
-- Base styles = mobile, use `sm:`, `md:`, `lg:` for larger screens
-- Min tap target: 44x44px
-- Min font size: 16px (prevents iOS zoom)
-- Use `clamp()` for fluid typography
-- Stack layouts vertically on mobile
-- Reduce Starfield stars on mobile for performance
-
 ## UI/UX Standards
 
 - **iOS-like clean design** - Minimal, elegant, native-feeling
 - **NO EMOJIS** - Never use emojis in UI, copy, or code comments
-- San Francisco-inspired spacing and typography rhythm
-- Subtle animations, not flashy
-- High contrast for accessibility
-- Generous whitespace
-- Clear visual hierarchy
+- **Underglow effects** - Golden glow beneath cards and buttons
+- **Generous whitespace** - Let elements breathe
+- **Min tap target**: 48x48px
+- **Min font size**: 16px (prevents iOS zoom)
 
-## Code Review Standards
+## Mobile-First Guidelines
 
-Before merging any code, verify:
-
-### TypeScript
-- No `any` types - use proper interfaces
-- All functions have return types
-- No unused variables or imports
-- Consistent naming (camelCase for vars, PascalCase for components)
-
-### React/Next.js
-- Components are in separate files
-- Props have TypeScript interfaces
-- No inline styles (use Tailwind)
-- Keys on list items
-- No console.log in production code
-
-### Security
-- No secrets in code (use env vars)
-- API keys only accessed server-side
-- User input validated before use
-- No SQL injection risks (use parameterized queries)
-
-### Performance
-- Images optimized (use next/image)
-- No unnecessary re-renders
-- Large dependencies imported dynamically
-- Animations use transform/opacity (GPU accelerated)
-
-### Accessibility
-- Semantic HTML elements
-- Alt text on images
-- Keyboard navigable
-- Color contrast meets WCAG AA
-
-### Style
-- No emojis anywhere
-- Consistent formatting (Prettier)
-- Meaningful commit messages
-- Comments explain "why" not "what"
+- Base styles = mobile, use `sm:`, `md:`, `lg:` for larger screens
+- Use `clamp()` for fluid typography
+- Stack layouts vertically on mobile
+- Reduce Starfield stars on mobile (100 vs 200)
 
 ## Commands
 
@@ -170,11 +161,14 @@ npm run lint         # ESLint
 ## Environment Variables
 
 ```bash
+# AI Providers
 OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
-GOOGLE_AI_API_KEY=
+GOOGLE_API_KEY=
 DEEPSEEK_API_KEY=
 XAI_API_KEY=
+
+# Supabase
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
@@ -184,5 +178,5 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 - 30s timeout per AI model
 - Minimum 3 successful responses required
-- If synthesis fails, return longest response as fallback
-- Show user which models responded
+- Mystical error copy (not technical)
+- Retry functionality preserves intention
