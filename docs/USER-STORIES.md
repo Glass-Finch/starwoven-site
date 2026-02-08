@@ -31,12 +31,12 @@ They don't need to "believe" in any particular framework. They're open to seeing
 **Copy Examples:**
 | Type | Label | Description |
 |------|-------|-------------|
-| Love Interest | "Love Interest" | "Hear from the higher self of someone you love" |
-| Deceased | "Crossed Over" | "Receive a message from beyond the veil" |
-| Future Self | "Future Self" | "Your wiser self sends wisdom backward through time" |
-| Universe | "The Universe" | "Open a channel to cosmic consciousness" |
-| Life Decision | "Life Decision" | "Seek guidance from an impartial oracle" |
-| Purpose | "Purpose" | "Discover your role in the greater weave" |
+| Love Interest | "The Beloved" | "Tap into their heart's knowing" |
+| Deceased | "The Ancestor" | "A whisper from the other side" |
+| Future Self | "The Sage" | "Wisdom carried back from your becoming" |
+| Universe | "The Cosmos" | "Listen to the song of everything" |
+| Life Decision | "The Crossroads" | "Clarity from the impartial eye" |
+| Purpose | "The Calling" | "Unearth your destined offering" |
 
 ---
 
@@ -81,12 +81,12 @@ They don't need to "believe" in any particular framework. They're open to seeing
 **Type-Specific Prompts:**
 | Type | Prompt | Placeholder |
 |------|--------|-------------|
-| Love Interest | "What do you want to know about them?" | "What lives unspoken between you..." |
-| Deceased | "What would you hear from them?" | "What you wish they knew, or need to hear..." |
-| Future Self | "What guidance do you seek?" | "What your future self might say..." |
-| Universe | "What question lives in you?" | "The question that won't rest..." |
-| Life Decision | "What choice weighs on you?" | "The crossroads you stand at..." |
-| Purpose | "What calls to be understood?" | "Your place in the larger pattern..." |
+| The Beloved | "What remains unspoken?" | "The words that live between you..." |
+| The Ancestor | "What echoes still?" | "What you long to hear, or say..." |
+| The Sage | "What would your future self say?" | "The counsel you need now..." |
+| The Cosmos | "What stirs within you?" | "The question beneath the question..." |
+| The Crossroads | "Which path calls to you?" | "The choice that weighs on you..." |
+| The Calling | "What wants to emerge through you?" | "Your gift to the world..." |
 
 ---
 
@@ -103,11 +103,11 @@ They don't need to "believe" in any particular framework. They're open to seeing
 - Lines connect between oracles that have responded
 
 **Loading Messages (rotate every 3s):**
-1. "Opening channels..."
-2. "Receiving transmissions..."
+1. "Veils parting..."
+2. "The weave stirs..."
 3. "Threads converging..."
-4. "Patterns emerging..."
-5. "Weaving responses..."
+4. "Forms coalescing..."
+5. "Synthesis rising..."
 
 ---
 
