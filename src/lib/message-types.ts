@@ -8,7 +8,7 @@ export const messageTypes: MessageTypeConfig[] = [
   {
     id: 'love_interest',
     label: 'The Beloved',
-    description: 'Tap into their heart\'s knowing',
+    description: 'What echoes between you',
     voice: 'Higher self of the beloved',
     icon: 'heart',
     intentionPrompt: 'What remains unspoken?',
@@ -17,7 +17,7 @@ export const messageTypes: MessageTypeConfig[] = [
   {
     id: 'deceased_loved_one',
     label: 'The Ancestor',
-    description: 'A whisper from the other side',
+    description: 'From a familiar silence',
     voice: 'Crossed-over spirit',
     icon: 'star',
     intentionPrompt: 'What echoes still?',
@@ -26,7 +26,7 @@ export const messageTypes: MessageTypeConfig[] = [
   {
     id: 'future_self',
     label: 'The Sage',
-    description: 'Wisdom carried back from your becoming',
+    description: 'A glimpse of what you might know',
     voice: 'Your wiser future self',
     icon: 'clock',
     intentionPrompt: 'What would your future self say?',
@@ -35,7 +35,7 @@ export const messageTypes: MessageTypeConfig[] = [
   {
     id: 'universe_general',
     label: 'The Cosmos',
-    description: 'Listen to the song of everything',
+    description: 'A voice from nowhere in particular',
     voice: 'Cosmic consciousness',
     icon: 'sparkles',
     intentionPrompt: 'What stirs within you?',
@@ -53,7 +53,7 @@ export const messageTypes: MessageTypeConfig[] = [
   {
     id: 'purpose_world',
     label: 'The Calling',
-    description: 'Unearth your destined offering',
+    description: 'What might be asked of you',
     voice: 'Collective consciousness',
     icon: 'globe',
     intentionPrompt: 'What wants to emerge through you?',

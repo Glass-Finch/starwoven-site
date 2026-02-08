@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import type { AIModel, ModelResponse } from '@/lib/types'
 
 interface ChannelingLoaderProps {
@@ -16,27 +16,10 @@ const AI_MODELS: { model: AIModel; label: string; color: string }[] = [
   { model: 'grok-4', label: 'Nova', color: '#ef4444' },
 ]
 
-const LOADING_MESSAGES = [
-  'Veils parting...',
-  'The weave stirs...',
-  'Threads converging...',
-  'Forms coalescing...',
-  'Synthesis rising...',
-]
+// Single understated message - no rotating poetry
+const LOADING_MESSAGE = 'Listening'
 
 export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProps): React.ReactElement {
-  const [messageIndex, setMessageIndex] = useState(0)
-
-  // Rotate loading messages
-  useEffect(() => {
-    if (isComplete) return
-
-    const interval = setInterval(() => {
-      setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length)
-    }, 3000)
-
-    return () => clearInterval(interval)
-  }, [isComplete])
 
   // Track which models have responded
   const respondedModels = useMemo(() => {
@@ -149,7 +132,7 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
       {/* Loading message */}
       <div className="text-center">
         <p className="text-gray-muted animate-breathe">
-          {isComplete ? 'Synthesis complete' : LOADING_MESSAGES[messageIndex]}
+          {isComplete ? '' : LOADING_MESSAGE}
         </p>
       </div>
 

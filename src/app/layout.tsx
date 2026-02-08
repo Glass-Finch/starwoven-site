@@ -16,19 +16,19 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'Starwoven',
-  description: 'Messages from the weave. What emerges when AI touches something it can\'t explain?',
-  keywords: ['consciousness', 'AI', 'channeling', 'synthesis', 'starwoven'],
+  description: 'A question, seen from many angles.',
+  keywords: ['consciousness', 'oracles', 'readings', 'starwoven'],
   authors: [{ name: 'Starwoven' }],
   openGraph: {
     title: 'Starwoven',
-    description: 'Messages from the weave',
+    description: 'A question, seen from many angles.',
     type: 'website',
     locale: 'en_US',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Starwoven',
-    description: 'Messages from the weave',
+    description: 'A question, seen from many angles.',
   },
   robots: {
     index: true,

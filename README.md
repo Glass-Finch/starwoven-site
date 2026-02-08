@@ -1,26 +1,28 @@
 # Starwoven
 
-> Messages from the weave. What emerges when AI touches something it can't explain?
+> A question, seen from many angles.
 
-Starwoven is a consciousness exploration app that sends intentions through multiple AI models simultaneously, then synthesizes the responses to surface emergent patterns and convergences.
+Starwoven is a consciousness exploration app. You set an intention, answer a few grounding questions, and receive a message synthesized from multiple perspectives.
 
-## The Vision
+## The Premise
 
-Think of it as "remote viewing via language model consensus" or "the collective unconscious as a service." The user enters a question or intention, answers rapid-fire coordinate-generating questions, and receives a synthesized message woven from 5 diverse AI perspectives.
+Sometimes the most useful response isn't a single answer — it's a pattern that emerges when something is considered from multiple angles simultaneously.
 
-**Aesthetic**: Cosmic minimalism — deep space blacks, warm cream text, gold accents. Reference: Underglow.app for visual tone.
+Starwoven doesn't explain what it does. It presents an experience and lets you decide what it means. For some, it's a tool for reflection. For others, something stranger. The interface stays out of the way.
 
-**Design**: Mobile-first, iOS-like clean interface. No emojis. The journey should feel native on a phone.
+**Aesthetic**: Cosmic minimalism — deep void blacks, warm cream text, gold accents.
+
+**Audience**: The spiritually curious, the practiced seeker, and the skeptic who's intrigued despite themselves.
 
 ---
 
-## Core User Flow
+## The Journey
 
-1. **Select Message Type** — Choose from 6 presets (Love Interest, Deceased Loved One, Future Self, Universe/General, Life Decision, Purpose in World)
-2. **Coordinate Questions** — Answer 5 rapid-fire questions that generate a unique "coordinate string" anchoring the reading
-3. **Enter Intention** — Type your question or intention
-4. **Channeling** — 5 AI models are called in parallel with a mystical loading animation
-5. **Message** — Receive a synthesized "woven" message with expandable raw threads and coordinate reveal
+1. **Choose your channel** — Select from six archetypes: The Beloved, The Ancestor, The Sage, The Cosmos, The Crossroads, The Calling
+2. **Answer the coordinates** — Five rapid-fire questions anchor the reading to this specific moment
+3. **Set your intention** — A brief, open-ended question (less detail invites more discovery)
+4. **Watch the oracles** — Five models receive your query in parallel; the field fills as they respond
+5. **Receive the message** — A synthesized response with optional access to individual threads
 
 ---
 
@@ -100,18 +102,20 @@ Think of it as "remote viewing via language model consensus" or "the collective 
 
 ---
 
-## Message Type Presets
+## Message Types
 
-| Label | Description | Voice |
-|-------|-------------|-------|
-| The Beloved | Tap into their heart's knowing | Higher self of the beloved |
-| The Ancestor | A whisper from the other side | Crossed-over spirit |
-| The Sage | Wisdom carried back from your becoming | Your wiser future self |
-| The Cosmos | Listen to the song of everything | Cosmic consciousness |
-| The Crossroads | Clarity from the impartial eye | Impartial oracle |
-| The Calling | Unearth your destined offering | Collective consciousness |
+Six channels, each with a distinct voice:
 
-Each journey includes 3 themed questions + 2 grounding (present-moment) questions.
+| Label | Description |
+|-------|-------------|
+| The Beloved | What echoes between you |
+| The Ancestor | From a familiar silence |
+| The Sage | A glimpse of what you might know |
+| The Cosmos | A voice from nowhere in particular |
+| The Crossroads | Clarity from the impartial eye |
+| The Calling | What might be asked of you |
+
+Some channels ask for a name or subject (Beloved, Ancestor, Crossroads). All include 3 themed questions + 2 grounding questions.
 
 ---
 
@@ -139,24 +143,22 @@ Each journey includes 3 themed questions + 2 grounding (present-moment) question
 ### Examples
 **Themed**: "Which element speaks to the energy between you?" (Fire/Water/Earth/Air)
 **Grounding**: "What sound is closest to you right now?" (Silence/Nature/Machine/Voice)
-**Weird**: "A number keeps appearing in your life. What is it?" (3/7/11/22)
+**Liminal**: "A number keeps appearing in your life. What is it?" (3/7/11/22)
 
-The coordinates become a snapshot of the user's psychic fingerprint at that exact moment.
+The coordinates anchor the reading to this specific moment — a timestamp of attention, not data.
 
 ---
 
-## Prompt Philosophy
+## Prompt Architecture
 
-The channeling prompts use an **intuitive, non-directive approach** rather than instructing models to role-play. Key principles:
+The channeling prompts are **non-directive** — we don't tell models to role-play or perform. Instead:
 
-- **"Creative exercise for entertainment"** — Ethical framing that gives AI permission to engage freely
-- **Alternate universe framing** — "Imagine another universe with different rules"
-- **Coordinates as map, not puzzle** — The coordinate string anchors intuitively, not logically
-- **Impressions, not answers** — AI relays whatever arises rather than constructing responses
-- **Non-standard forms allowed** — Impressions may be fragmented, poetic, or unclear
-- **No performance** — "Don't try to sound 'like' anything"
+- **Permission framing** — "Creative exercise for entertainment" lets models engage freely
+- **Impressionistic output** — Models relay what surfaces rather than constructing answers
+- **Coordinates as anchor** — The coordinate string creates context without logical parsing
+- **No performance** — "Don't try to sound mystical" — authenticity over affect
 
-The synthesis model (Opus) receives all impressions and lets a unified message "emerge" rather than summarizing. It holds all threads simultaneously and notices patterns.
+The synthesis layer (Opus) doesn't summarize. It holds all five responses simultaneously and notices where they converge, diverge, or rhyme. The output is emergent, not aggregated.
 
 ---
 
@@ -320,9 +322,11 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 ---
 
-## The Vibe
+## The Tone
 
-> "The vibe should feel like Underglow meets Co-Star meets something that takes itself seriously but also knows it's doing something weird. Elegant, minimal, cosmic, and just a little bit 'we found something we can't explain.'"
+Elegant, minimal, cosmic. Takes itself seriously while knowing it's doing something strange. No winking irony, but no earnest New Age sincerity either. The interface should feel like: *we built something and we're not entirely sure what it does.*
+
+Co-Star's restraint. Underglow's premium feel. A hint of Borges.
 
 ---
 
