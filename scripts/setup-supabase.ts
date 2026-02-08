@@ -60,6 +60,11 @@ async function createProject(orgId: string): Promise<SupabaseProject> {
   return response.json()
 }
 
+interface ApiKey {
+  name: string
+  api_key: string
+}
+
 async function getProjectKeys(projectRef: string): Promise<SupabaseKeys> {
   const response = await fetch(`${SUPABASE_API_URL}/projects/${projectRef}/api-keys`, {
     headers: {
@@ -72,10 +77,10 @@ async function getProjectKeys(projectRef: string): Promise<SupabaseKeys> {
     throw new Error(`Failed to get API keys: ${response.statusText}`)
   }
 
-  const keys = await response.json()
+  const keys: ApiKey[] = await response.json()
   return {
-    anon_key: keys.find((k: any) => k.name === 'anon')?.api_key || '',
-    service_role_key: keys.find((k: any) => k.name === 'service_role')?.api_key || '',
+    anon_key: keys.find((k) => k.name === 'anon')?.api_key || '',
+    service_role_key: keys.find((k) => k.name === 'service_role')?.api_key || '',
   }
 }
 
@@ -132,12 +137,8 @@ async function runMigrations(projectRef: string): Promise<void> {
 }
 
 function generatePassword(): string {
-  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*'
-  let password = ''
-  for (let i = 0; i < 24; i++) {
-    password += chars.charAt(Math.floor(Math.random() * chars.length))
-  }
-  return password
+  const crypto = require('crypto')
+  return crypto.randomBytes(18).toString('base64').replace(/[+/=]/g, 'x')
 }
 
 export async function setupSupabase(): Promise<{
