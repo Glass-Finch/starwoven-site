@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useCallback } from 'react'
 import { Starfield } from '@/components/Starfield'
 import { MessageTypeSelector } from '@/components/MessageTypeSelector'
 import { QuestionFlow } from '@/components/QuestionFlow'
@@ -10,7 +10,7 @@ import { WovenMessage } from '@/components/WovenMessage'
 import { useJourneyStore } from '@/store'
 import { selectQuestions, generateCoordinateString } from '@/lib/questions'
 import { getMessageTypeConfig } from '@/lib/message-types'
-import type { MessageType, Answer, CoordinateSet } from '@/lib/types'
+import type { MessageType, Answer, CoordinateSet, ChannelResponse } from '@/lib/types'
 
 export default function Home(): React.ReactElement {
   const {
@@ -18,8 +18,10 @@ export default function Home(): React.ReactElement {
     messageType,
     questions,
     coordinates,
+    intention,
     modelResponses,
     synthesis,
+    error,
     initSession,
     setMessageType,
     setQuestions,
@@ -28,6 +30,7 @@ export default function Home(): React.ReactElement {
     startChanneling,
     setSynthesis,
     addModelResponse,
+    setError,
     reset,
   } = useJourneyStore()
 
@@ -54,59 +57,54 @@ export default function Home(): React.ReactElement {
     setCoordinates(coordinateSet)
   }
 
-  // Handle intention submission
-  const handleIntentionSubmit = async (intention: string) => {
-    setIntention(intention)
-    startChanneling()
+  // Perform channeling with real API
+  const performChanneling = useCallback(async () => {
+    if (!messageType || !coordinates) return
 
-    // For now, simulate the channeling process with mock data
-    // This will be replaced with actual API calls in Phase 3
-    await simulateChanneling()
-  }
-
-  // Simulate channeling (to be replaced with real API in Phase 3)
-  const simulateChanneling = async () => {
-    const models = [
-      'gpt-4.1',
-      'claude-sonnet-4.5',
-      'gemini-3.0-pro',
-      'deepseek-v3.2',
-      'grok-4.1',
-    ] as const
-
-    const mockResponses = [
-      "The threads of your question weave through dimensions of possibility. What you seek is already moving toward you, though it wears a different face than you expect. Trust the spaces between your certainties.",
-      "In the silence between heartbeats, your answer waits. The universe conspires not for or against you, but with you, as you are part of its unfolding. Your intention has been heard.",
-      "Patterns emerge from chaos, and your question has set ripples in motion. The path forward is not a straight line but a spiral, returning you to the same lessons with deeper understanding each time.",
-      "Your seeking itself is the answer beginning to form. What feels like uncertainty is actually the fertile void from which new possibilities grow. Patience is not passive waiting but active trust.",
-      "The cosmic dance does not distinguish between question and answer. You are both the seeker and the sought. What you search for searches for you with equal intensity.",
-    ]
-
-    // Simulate responses arriving with random delays
-    for (let i = 0; i < models.length; i++) {
-      await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 1200))
-      addModelResponse({
-        model: models[i],
-        content: mockResponses[i],
-        status: 'success',
-        latencyMs: Math.floor(800 + Math.random() * 2000),
+    try {
+      const response = await fetch('/api/channel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messageType,
+          coordinates,
+          intention,
+        }),
       })
+
+      if (!response.ok) {
+        throw new Error(`API error: ${response.status}`)
+      }
+
+      const data: ChannelResponse = await response.json()
+
+      // Add all responses to the store
+      for (const thread of data.threads) {
+        addModelResponse(thread)
+      }
+
+      // Set synthesis
+      setSynthesis(data.synthesis)
+    } catch (err) {
+      console.error('Channeling error:', err)
+      setError(err instanceof Error ? err.message : 'An error occurred')
     }
+  }, [messageType, coordinates, intention, addModelResponse, setSynthesis, setError])
 
-    // Simulate synthesis delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
-
-    // Mock synthesis
-    const mockSynthesis = `The weave speaks clearly: your question carries within it the seeds of its own answer. Multiple channels align in their perception that transformation is already underway in your life, though it manifests in ways you may not yet recognize.
-
-There is a convergence happening where your conscious intention meets the deeper currents of possibility. The universe does not answer in words alone but in synchronicities, in the subtle rearrangement of circumstances that create openings where before there were walls.
-
-What emerges most strongly is this: trust the timing that unfolds before you. What feels like delay is preparation. What feels like confusion is actually the necessary dissolution of old patterns to make space for new ones. Your role is not to force outcomes but to remain present and responsive to the invitations that arise.
-
-The threads suggest that clarity will come not through analysis but through surrender to the process itself. You are being asked to hold your question lightly while remaining committed to its essence.`
-
-    setSynthesis(mockSynthesis)
+  // Handle intention submission
+  const handleIntentionSubmit = async (intentionText: string) => {
+    setIntention(intentionText)
+    startChanneling()
   }
+
+  // Trigger channeling when we enter the channeling step
+  useEffect(() => {
+    if (currentStep === 'channeling' && modelResponses.length === 0 && !synthesis) {
+      performChanneling()
+    }
+  }, [currentStep, modelResponses.length, synthesis, performChanneling])
 
   // Handle starting a new journey
   const handleStartNew = () => {
@@ -158,6 +156,19 @@ The threads suggest that clarity will come not through analysis but through surr
             responses={modelResponses}
             isComplete={!!synthesis}
           />
+        )}
+
+        {/* Error state */}
+        {error && (
+          <div className="w-full max-w-xl mx-auto px-4 text-center">
+            <div className="card p-6 mb-4">
+              <p className="text-cream mb-4">The channels encountered turbulence.</p>
+              <p className="text-gray-muted text-sm mb-6">{error}</p>
+              <button onClick={handleStartNew} className="btn-secondary">
+                Begin again
+              </button>
+            </div>
+          </div>
         )}
 
         {/* Message step */}

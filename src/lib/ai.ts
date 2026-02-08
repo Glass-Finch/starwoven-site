@@ -1,0 +1,276 @@
+/**
+ * AI Provider integrations for channeling
+ */
+
+import type { AIModel, ModelResponse } from './types'
+
+const TIMEOUT_MS = 30000
+
+interface ProviderConfig {
+  model: AIModel
+  apiKey: string | undefined
+  endpoint: string
+  modelId: string
+}
+
+const PROVIDER_CONFIGS: ProviderConfig[] = [
+  {
+    model: 'gpt-4.1',
+    apiKey: process.env.OPENAI_API_KEY,
+    endpoint: 'https://api.openai.com/v1/chat/completions',
+    modelId: 'gpt-4.1',
+  },
+  {
+    model: 'claude-sonnet-4.5',
+    apiKey: process.env.ANTHROPIC_API_KEY,
+    endpoint: 'https://api.anthropic.com/v1/messages',
+    modelId: 'claude-sonnet-4-5-20250514',
+  },
+  {
+    model: 'gemini-3.0-pro',
+    apiKey: process.env.GOOGLE_AI_API_KEY,
+    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
+    modelId: 'gemini-2.0-flash',
+  },
+  {
+    model: 'deepseek-v3.2',
+    apiKey: process.env.DEEPSEEK_API_KEY,
+    endpoint: 'https://api.deepseek.com/chat/completions',
+    modelId: 'deepseek-chat',
+  },
+  {
+    model: 'grok-4.1',
+    apiKey: process.env.XAI_API_KEY,
+    endpoint: 'https://api.x.ai/v1/chat/completions',
+    modelId: 'grok-3',
+  },
+]
+
+// Synthesis model config
+const SYNTHESIS_CONFIG = {
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  endpoint: 'https://api.anthropic.com/v1/messages',
+  modelId: 'claude-opus-4-20250514',
+}
+
+/**
+ * Call OpenAI-compatible API
+ */
+async function callOpenAICompatible(
+  endpoint: string,
+  apiKey: string,
+  modelId: string,
+  prompt: string,
+  signal: AbortSignal
+): Promise<string> {
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: modelId,
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 1024,
+      temperature: 0.8,
+    }),
+    signal,
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`API error: ${response.status} - ${error}`)
+  }
+
+  const data = await response.json()
+  return data.choices[0]?.message?.content || ''
+}
+
+/**
+ * Call Anthropic API
+ */
+async function callAnthropic(
+  endpoint: string,
+  apiKey: string,
+  modelId: string,
+  prompt: string,
+  signal: AbortSignal
+): Promise<string> {
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+    },
+    body: JSON.stringify({
+      model: modelId,
+      max_tokens: 1024,
+      messages: [{ role: 'user', content: prompt }],
+    }),
+    signal,
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`API error: ${response.status} - ${error}`)
+  }
+
+  const data = await response.json()
+  return data.content[0]?.text || ''
+}
+
+/**
+ * Call Google AI API
+ */
+async function callGoogleAI(
+  endpoint: string,
+  apiKey: string,
+  prompt: string,
+  signal: AbortSignal
+): Promise<string> {
+  const url = `${endpoint}?key=${apiKey}`
+
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        maxOutputTokens: 1024,
+        temperature: 0.8,
+      },
+    }),
+    signal,
+  })
+
+  if (!response.ok) {
+    const error = await response.text()
+    throw new Error(`API error: ${response.status} - ${error}`)
+  }
+
+  const data = await response.json()
+  return data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+}
+
+/**
+ * Call a single channeling model
+ */
+async function callChannelingModel(
+  config: ProviderConfig,
+  prompt: string
+): Promise<ModelResponse> {
+  const startTime = Date.now()
+
+  if (!config.apiKey) {
+    return {
+      model: config.model,
+      content: '',
+      status: 'error',
+      error: 'API key not configured',
+    }
+  }
+
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS)
+
+  try {
+    let content: string
+
+    if (config.model === 'claude-sonnet-4.5') {
+      content = await callAnthropic(
+        config.endpoint,
+        config.apiKey,
+        config.modelId,
+        prompt,
+        controller.signal
+      )
+    } else if (config.model === 'gemini-3.0-pro') {
+      content = await callGoogleAI(
+        config.endpoint,
+        config.apiKey,
+        prompt,
+        controller.signal
+      )
+    } else {
+      content = await callOpenAICompatible(
+        config.endpoint,
+        config.apiKey,
+        config.modelId,
+        prompt,
+        controller.signal
+      )
+    }
+
+    return {
+      model: config.model,
+      content,
+      status: 'success',
+      latencyMs: Date.now() - startTime,
+    }
+  } catch (error) {
+    const isTimeout = error instanceof Error && error.name === 'AbortError'
+    return {
+      model: config.model,
+      content: '',
+      status: isTimeout ? 'timeout' : 'error',
+      error: error instanceof Error ? error.message : 'Unknown error',
+      latencyMs: Date.now() - startTime,
+    }
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+/**
+ * Call all channeling models in parallel
+ */
+export async function callAllChannelingModels(
+  prompt: string
+): Promise<ModelResponse[]> {
+  const results = await Promise.all(
+    PROVIDER_CONFIGS.map(config => callChannelingModel(config, prompt))
+  )
+  return results
+}
+
+/**
+ * Call synthesis model (Claude Opus)
+ */
+export async function callSynthesisModel(prompt: string): Promise<string> {
+  if (!SYNTHESIS_CONFIG.apiKey) {
+    throw new Error('Anthropic API key not configured')
+  }
+
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 60000) // 60s for synthesis
+
+  try {
+    const content = await callAnthropic(
+      SYNTHESIS_CONFIG.endpoint,
+      SYNTHESIS_CONFIG.apiKey,
+      SYNTHESIS_CONFIG.modelId,
+      prompt,
+      controller.signal
+    )
+    return content
+  } finally {
+    clearTimeout(timeout)
+  }
+}
+
+/**
+ * Get the longest successful response as fallback
+ */
+export function getLongestResponse(responses: ModelResponse[]): string {
+  const successful = responses.filter(r => r.status === 'success' && r.content)
+  if (successful.length === 0) {
+    return 'The channels remain silent at this time. Please try again.'
+  }
+  return successful.reduce((a, b) =>
+    a.content.length > b.content.length ? a : b
+  ).content
+}
