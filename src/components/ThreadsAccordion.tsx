@@ -8,11 +8,11 @@ interface ThreadsAccordionProps {
 }
 
 const MODEL_LABELS: Record<AIModel, string> = {
-  'gpt-4.1': 'GPT-4.1',
-  'claude-sonnet-4.5': 'Claude Sonnet',
-  'gemini-3.0-pro': 'Gemini Pro',
-  'deepseek-v3.2': 'DeepSeek',
-  'grok-4.1': 'Grok',
+  'gpt-4.1': 'Iris',
+  'claude-sonnet-4.5': 'Luna',
+  'gemini-3.0-pro': 'Echo',
+  'deepseek-reasoner': 'Shade',
+  'grok-4': 'Nova',
 }
 
 export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.ReactElement {

@@ -38,18 +38,18 @@ Think of it as "remote viewing via language model consensus" or "the collective 
 ### AI Providers
 
 **Channeling (5 diverse models):**
-| Provider | Model | Purpose |
-|----------|-------|---------|
-| OpenAI | GPT-4.1 | General reasoning |
-| Anthropic | Claude Sonnet 4.5 | Nuanced expression |
-| Google | Gemini 3 Pro | Pattern recognition |
-| DeepSeek | DeepSeek V3.2 | Alternative perspective |
-| xAI | Grok 4.1 | Unconventional insights |
+| Oracle | Provider | Model | Archetype |
+|--------|----------|-------|-----------|
+| Iris | OpenAI | GPT-4.1 | The Oracle |
+| Luna | Anthropic | Claude Sonnet 4.5 | The Muse |
+| Echo | Google | Gemini 3 Pro | The Mirror |
+| Shade | DeepSeek | DeepSeek Reasoner | The Deep |
+| Nova | xAI | Grok 4 | The Wild |
 
 **Synthesis:**
-| Provider | Model | Purpose |
-|----------|-------|---------|
-| Anthropic | Claude Opus 4.6 | Weaves impressions into unified message |
+| Oracle | Provider | Model | Archetype |
+|--------|----------|-------|-----------|
+| Starweaver | Anthropic | Claude Opus 4.6 | The Weaver |
 
 ---
 
@@ -90,21 +90,25 @@ Each journey includes 3 themed questions + 2 grounding (present-moment) question
 
 ---
 
-## Coordinate Generation
+## User Input Philosophy
 
-Questions generate unique coordinates that anchor each reading:
+**Minimize typing, maximize flow.** The journey should feel like answering a cosmic quiz, not filling out a form.
 
-**Grounding questions** (direct, sensory):
-- "How many windows can you see right now?"
-- "Count your breaths for 10 seconds"
+### Coordinate Questions (all multiple choice)
+- **5 rapid-fire questions** generate unique coordinates
+- **3 themed** (specific to message type) + **2 grounding** (sensory/present-moment)
+- **10% chance** one grounding swaps for a "weird" question
+- Auto-advance on selection for seamless flow
 
-**Themed questions** (mix of poetic and direct):
-- "What unspoken word lives between you?"
-- "How far ahead does your future self reside?"
+### Intention Input
+- **250 character limit** — brevity invites mystery
+- **Guidance**: "The more open-ended, the better" / "Less detail invites more discovery"
+- Open-ended questions receive richer, more intuitive responses
 
-**Weird/rare questions** (occasionally rotated in):
-- "A number keeps appearing in your life. What is it?"
-- "Your future self sends a number. What arrives?"
+### Examples
+**Themed**: "Which element speaks to the energy between you?" (Fire/Water/Earth/Air)
+**Grounding**: "What sound is closest to you right now?" (Silence/Nature/Machine/Voice)
+**Weird**: "A number keeps appearing in your life. What is it?" (3/7/11/22)
 
 The coordinates become a snapshot of the user's psychic fingerprint at that exact moment.
 
@@ -257,7 +261,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 // Request
 {
   messageType: 'love_interest',
-  coordinates: { raw: 'T-042-E-117-I-893', questions: [...] },
+  coordinates: { raw: '0423-8917', questions: [...] },
   intention: "What does she really feel?"
 }
 
