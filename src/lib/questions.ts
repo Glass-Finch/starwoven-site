@@ -1,10 +1,16 @@
 /**
  * Question pool for coordinate generation
+ *
+ * Design principles:
+ * - All multiple choice for fast tap-to-select input
+ * - 6 themed questions per type, randomly select 3 (feels both random and pointed)
+ * - Mix of poetic and direct questions
+ * - Grounding questions anchor to present moment
  */
 
 import type { MessageType, Question } from './types'
 
-// Themed questions by message type
+// Themed questions by message type - 6 per type, select 3 randomly
 const themedQuestions: Record<MessageType, Question[]> = {
   love_interest: [
     {
@@ -28,7 +34,32 @@ const themedQuestions: Record<MessageType, Question[]> = {
       messageType: 'love_interest',
       category: 'themed',
       text: 'What word lives unspoken between you?',
-      answerType: 'short_text',
+      answerType: 'multiple_choice',
+      options: ['Love', 'Truth', 'Sorry', 'Stay'],
+    },
+    {
+      id: 'love-4',
+      messageType: 'love_interest',
+      category: 'themed',
+      text: 'What color carries their energy?',
+      answerType: 'multiple_choice',
+      options: ['Red', 'Blue', 'Gold', 'Silver'],
+    },
+    {
+      id: 'love-5',
+      messageType: 'love_interest',
+      category: 'themed',
+      text: 'Where does the connection feel strongest?',
+      answerType: 'multiple_choice',
+      options: ['Heart', 'Mind', 'Hands', 'Eyes'],
+    },
+    {
+      id: 'love-6',
+      messageType: 'love_interest',
+      category: 'themed',
+      text: 'What season reflects your bond?',
+      answerType: 'multiple_choice',
+      options: ['Spring', 'Summer', 'Autumn', 'Winter'],
     },
   ],
   deceased_loved_one: [
@@ -45,7 +76,8 @@ const themedQuestions: Record<MessageType, Question[]> = {
       messageType: 'deceased_loved_one',
       category: 'themed',
       text: 'What did they teach you without words?',
-      answerType: 'short_text',
+      answerType: 'multiple_choice',
+      options: ['Patience', 'Strength', 'Joy', 'Courage'],
     },
     {
       id: 'deceased-3',
@@ -54,6 +86,30 @@ const themedQuestions: Record<MessageType, Question[]> = {
       text: 'Which season holds the strongest memories?',
       answerType: 'multiple_choice',
       options: ['Spring', 'Summer', 'Autumn', 'Winter'],
+    },
+    {
+      id: 'deceased-4',
+      messageType: 'deceased_loved_one',
+      category: 'themed',
+      text: 'What time of day do you think of them most?',
+      answerType: 'multiple_choice',
+      options: ['Morning', 'Afternoon', 'Evening', 'Night'],
+    },
+    {
+      id: 'deceased-5',
+      messageType: 'deceased_loved_one',
+      category: 'themed',
+      text: 'What object carries their essence?',
+      answerType: 'multiple_choice',
+      options: ['Photo', 'Letter', 'Jewelry', 'Clothing'],
+    },
+    {
+      id: 'deceased-6',
+      messageType: 'deceased_loved_one',
+      category: 'themed',
+      text: 'Where do you feel closest to them?',
+      answerType: 'multiple_choice',
+      options: ['Home', 'Nature', 'Sacred space', 'Everywhere'],
     },
   ],
   future_self: [
@@ -70,7 +126,8 @@ const themedQuestions: Record<MessageType, Question[]> = {
       messageType: 'future_self',
       category: 'themed',
       text: 'What quality have you cultivated?',
-      answerType: 'short_text',
+      answerType: 'multiple_choice',
+      options: ['Patience', 'Courage', 'Wisdom', 'Peace'],
     },
     {
       id: 'future-3',
@@ -80,6 +137,30 @@ const themedQuestions: Record<MessageType, Question[]> = {
       answerType: 'multiple_choice',
       options: ['Mountains', 'Ocean', 'Forest', 'City'],
     },
+    {
+      id: 'future-4',
+      messageType: 'future_self',
+      category: 'themed',
+      text: 'What have you released?',
+      answerType: 'multiple_choice',
+      options: ['Fear', 'Doubt', 'Anger', 'Grief'],
+    },
+    {
+      id: 'future-5',
+      messageType: 'future_self',
+      category: 'themed',
+      text: 'What does your future self do each morning?',
+      answerType: 'multiple_choice',
+      options: ['Create', 'Move', 'Stillness', 'Connect'],
+    },
+    {
+      id: 'future-6',
+      messageType: 'future_self',
+      category: 'themed',
+      text: 'What surprised you about becoming them?',
+      answerType: 'multiple_choice',
+      options: ['Softness', 'Strength', 'Simplicity', 'Joy'],
+    },
   ],
   universe_general: [
     {
@@ -87,7 +168,8 @@ const themedQuestions: Record<MessageType, Question[]> = {
       messageType: 'universe_general',
       category: 'themed',
       text: 'What pattern keeps appearing in your life?',
-      answerType: 'short_text',
+      answerType: 'multiple_choice',
+      options: ['Cycles', 'Mirrors', 'Doors', 'Threads'],
     },
     {
       id: 'universe-2',
@@ -102,7 +184,32 @@ const themedQuestions: Record<MessageType, Question[]> = {
       messageType: 'universe_general',
       category: 'themed',
       text: 'What symbol appears when you close your eyes?',
-      answerType: 'short_text',
+      answerType: 'multiple_choice',
+      options: ['Circle', 'Spiral', 'Triangle', 'Wave'],
+    },
+    {
+      id: 'universe-4',
+      messageType: 'universe_general',
+      category: 'themed',
+      text: 'What element is calling you right now?',
+      answerType: 'multiple_choice',
+      options: ['Fire', 'Water', 'Earth', 'Air'],
+    },
+    {
+      id: 'universe-5',
+      messageType: 'universe_general',
+      category: 'themed',
+      text: 'What time of day feels most alive?',
+      answerType: 'multiple_choice',
+      options: ['Dawn', 'Noon', 'Dusk', 'Midnight'],
+    },
+    {
+      id: 'universe-6',
+      messageType: 'universe_general',
+      category: 'themed',
+      text: 'What are you being asked to trust?',
+      answerType: 'multiple_choice',
+      options: ['Timing', 'Process', 'Self', 'Unknown'],
     },
   ],
   life_decision: [
@@ -119,7 +226,8 @@ const themedQuestions: Record<MessageType, Question[]> = {
       messageType: 'life_decision',
       category: 'themed',
       text: 'What does fear want you to choose?',
-      answerType: 'short_text',
+      answerType: 'multiple_choice',
+      options: ['Safety', 'Familiarity', 'Nothing', 'Everything'],
     },
     {
       id: 'decision-3',
@@ -129,6 +237,30 @@ const themedQuestions: Record<MessageType, Question[]> = {
       answerType: 'multiple_choice',
       options: ['Time', 'Identity', 'Relationships', 'Security'],
     },
+    {
+      id: 'decision-4',
+      messageType: 'life_decision',
+      category: 'themed',
+      text: 'What would your younger self choose?',
+      answerType: 'multiple_choice',
+      options: ['Adventure', 'Safety', 'Love', 'Freedom'],
+    },
+    {
+      id: 'decision-5',
+      messageType: 'life_decision',
+      category: 'themed',
+      text: 'What would you regret not trying?',
+      answerType: 'multiple_choice',
+      options: ['The leap', 'The stay', 'The ask', 'The release'],
+    },
+    {
+      id: 'decision-6',
+      messageType: 'life_decision',
+      category: 'themed',
+      text: 'What does your body know?',
+      answerType: 'multiple_choice',
+      options: ['Go', 'Wait', 'Return', 'Transform'],
+    },
   ],
   purpose_world: [
     {
@@ -136,7 +268,8 @@ const themedQuestions: Record<MessageType, Question[]> = {
       messageType: 'purpose_world',
       category: 'themed',
       text: 'What gift do you bring that others need?',
-      answerType: 'short_text',
+      answerType: 'multiple_choice',
+      options: ['Clarity', 'Presence', 'Joy', 'Healing'],
     },
     {
       id: 'purpose-2',
@@ -151,12 +284,37 @@ const themedQuestions: Record<MessageType, Question[]> = {
       messageType: 'purpose_world',
       category: 'themed',
       text: 'What impact do you wish to leave?',
-      answerType: 'short_text',
+      answerType: 'multiple_choice',
+      options: ['Understanding', 'Creation', 'Peace', 'Change'],
+    },
+    {
+      id: 'purpose-4',
+      messageType: 'purpose_world',
+      category: 'themed',
+      text: 'What do people thank you for?',
+      answerType: 'multiple_choice',
+      options: ['Listening', 'Seeing', 'Inspiring', 'Holding'],
+    },
+    {
+      id: 'purpose-5',
+      messageType: 'purpose_world',
+      category: 'themed',
+      text: 'What work would you do for free?',
+      answerType: 'multiple_choice',
+      options: ['Build', 'Teach', 'Heal', 'Create'],
+    },
+    {
+      id: 'purpose-6',
+      messageType: 'purpose_world',
+      category: 'themed',
+      text: 'What child-you always wanted to be?',
+      answerType: 'multiple_choice',
+      options: ['Explorer', 'Artist', 'Helper', 'Leader'],
     },
   ],
 }
 
-// Grounding questions (used for all message types)
+// Grounding questions (used for all message types) - 6 options, select 2 randomly
 const groundingQuestions: Question[] = [
   {
     id: 'ground-1',
@@ -198,6 +356,14 @@ const groundingQuestions: Question[] = [
     answerType: 'multiple_choice',
     options: ['Soft', 'Smooth', 'Rough', 'Cool'],
   },
+  {
+    id: 'ground-6',
+    messageType: null,
+    category: 'grounding',
+    text: 'What is your posture right now?',
+    answerType: 'multiple_choice',
+    options: ['Upright', 'Leaning', 'Lying', 'Moving'],
+  },
 ]
 
 // Weird/rare questions (occasionally rotated in)
@@ -207,7 +373,8 @@ const weirdQuestions: Question[] = [
     messageType: null,
     category: 'weird',
     text: 'A number keeps appearing in your life. What is it?',
-    answerType: 'short_text',
+    answerType: 'multiple_choice',
+    options: ['3', '7', '11', '22'],
   },
   {
     id: 'weird-2',
@@ -222,38 +389,63 @@ const weirdQuestions: Question[] = [
     messageType: null,
     category: 'weird',
     text: 'What animal has appeared in your thoughts lately?',
-    answerType: 'short_text',
+    answerType: 'multiple_choice',
+    options: ['Bird', 'Wolf', 'Cat', 'Snake'],
+  },
+  {
+    id: 'weird-4',
+    messageType: null,
+    category: 'weird',
+    text: 'Pick a direction.',
+    answerType: 'multiple_choice',
+    options: ['North', 'South', 'East', 'West'],
   },
 ]
 
 /**
+ * Shuffle array using Fisher-Yates
+ */
+function shuffle<T>(array: T[]): T[] {
+  const result = [...array]
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[result[i], result[j]] = [result[j], result[i]]
+  }
+  return result
+}
+
+/**
  * Select questions for a journey (3 themed + 2 grounding)
+ * Questions are randomly selected from larger pools for variety
  */
 export function selectQuestions(messageType: MessageType): Question[] {
-  const themed = themedQuestions[messageType]
+  // Randomly select 3 from 6 themed questions
+  const shuffledThemed = shuffle(themedQuestions[messageType])
+  const selectedThemed = shuffledThemed.slice(0, 3)
 
-  // Shuffle grounding questions and pick 2
-  const shuffledGrounding = [...groundingQuestions].sort(() => Math.random() - 0.5)
+  // Randomly select 2 from grounding questions
+  const shuffledGrounding = shuffle(groundingQuestions)
   const selectedGrounding = shuffledGrounding.slice(0, 2)
 
-  // 10% chance to swap one grounding for a weird question
-  if (Math.random() < 0.1 && weirdQuestions.length > 0) {
-    const weirdIndex = Math.floor(Math.random() * weirdQuestions.length)
-    selectedGrounding[1] = weirdQuestions[weirdIndex]
+  // 15% chance to swap one grounding for a weird question
+  if (Math.random() < 0.15 && weirdQuestions.length > 0) {
+    const shuffledWeird = shuffle(weirdQuestions)
+    selectedGrounding[1] = shuffledWeird[0]
   }
 
   // Interleave: themed, grounding, themed, grounding, themed
   return [
-    themed[0],
+    selectedThemed[0],
     selectedGrounding[0],
-    themed[1],
+    selectedThemed[1],
     selectedGrounding[1],
-    themed[2],
+    selectedThemed[2],
   ]
 }
 
 /**
  * Generate coordinate string from answers
+ * Format: xxxx-xxxx (all numbers)
  */
 export function generateCoordinateString(answers: { questionId: string; answer: string }[]): string {
   // Create deterministic but pseudo-random coordinates based on answers
@@ -267,11 +459,10 @@ export function generateCoordinateString(answers: { questionId: string; answer: 
   }
 
   const absHash = Math.abs(hash)
-  const t = String(absHash % 1000).padStart(3, '0')
-  const e = String(Math.floor(absHash / 1000) % 1000).padStart(3, '0')
-  const i = String(Math.floor(absHash / 1000000) % 1000).padStart(3, '0')
+  const first = String(absHash % 10000).padStart(4, '0')
+  const second = String(Math.floor(absHash / 10000) % 10000).padStart(4, '0')
 
-  return `T-${t}-E-${e}-I-${i}`
+  return `${first}-${second}`
 }
 
 export { themedQuestions, groundingQuestions, weirdQuestions }

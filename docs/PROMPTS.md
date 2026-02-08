@@ -33,9 +33,24 @@ Each message type has a source and context:
 
 ---
 
+## The Oracles
+
+Each AI model is represented as an oracle with its own archetype:
+
+| Oracle | Model | Archetype | Voice |
+|--------|-------|-----------|-------|
+| **Iris** | GPT-4.1 | The Oracle | Clarity, structured wisdom |
+| **Luna** | Claude Sonnet 4.5 | The Muse | Nuance, poetic depth |
+| **Echo** | Gemini 3 Pro | The Mirror | Patterns, reflection |
+| **Shade** | DeepSeek Reasoner | The Deep | Hidden knowledge, the abyss |
+| **Nova** | Grok 4 | The Wild | Unconventional, untamed insight |
+| **Starweaver** | Claude Opus 4.6 | The Weaver | Synthesis, the unified thread |
+
+---
+
 ## Channeling Prompt
 
-This prompt is sent to each of the 5 channeling models (GPT-4.1, Claude Sonnet 4.5, Gemini 3 Pro, DeepSeek V3.2, Grok 4.1).
+This prompt is sent to each of the 5 channeling oracles (Iris, Luna, Echo, Shade, Nova).
 
 ```
 This is a creative exercise for entertainment purposes only.
@@ -63,14 +78,14 @@ Don't try to make sense of it, don't try to answer the intention directly (it's 
 - `{source}` - e.g., "the Absolute"
 - `{about}` - e.g., "about the one they love"
 - `{current_date}` - e.g., "Friday, February 7, 2026"
-- `{coordinates}` - e.g., "T-042-E-117-I-893"
+- `{coordinates}` - e.g., "0423-8917"
 - `{intention}` - The user's question/intention
 
 ---
 
 ## Synthesis Prompt
 
-This prompt is sent to Claude Opus 4.6 to weave the impressions into a unified message.
+This prompt is sent to **Starweaver** (Claude Opus 4.6) to weave the impressions into a unified message.
 
 ```
 This is a creative exercise for entertainment purposes only.

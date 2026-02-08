@@ -9,11 +9,11 @@ interface ChannelingLoaderProps {
 }
 
 const AI_MODELS: { model: AIModel; label: string; color: string }[] = [
-  { model: 'gpt-4.1', label: 'GPT', color: '#10a37f' },
-  { model: 'claude-sonnet-4.5', label: 'Claude', color: '#d97706' },
-  { model: 'gemini-3.0-pro', label: 'Gemini', color: '#4285f4' },
-  { model: 'deepseek-v3.2', label: 'DeepSeek', color: '#6366f1' },
-  { model: 'grok-4.1', label: 'Grok', color: '#ef4444' },
+  { model: 'gpt-4.1', label: 'Iris', color: '#10a37f' },
+  { model: 'claude-sonnet-4.5', label: 'Luna', color: '#d97706' },
+  { model: 'gemini-3.0-pro', label: 'Echo', color: '#4285f4' },
+  { model: 'deepseek-reasoner', label: 'Shade', color: '#6366f1' },
+  { model: 'grok-4', label: 'Nova', color: '#ef4444' },
 ]
 
 const LOADING_MESSAGES = [

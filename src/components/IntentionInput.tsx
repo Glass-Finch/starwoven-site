@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react'
 
+const MAX_INTENTION_LENGTH = 250
+
 interface IntentionInputProps {
   onSubmit: (intention: string) => void
   messageTypeLabel?: string
@@ -17,16 +19,25 @@ export function IntentionInput({ onSubmit, messageTypeLabel }: IntentionInputPro
     }
   }, [intention, onSubmit])
 
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value
+    if (value.length <= MAX_INTENTION_LENGTH) {
+      setIntention(value)
+    }
+  }, [])
+
   const placeholder = messageTypeLabel
     ? `What would you ask ${messageTypeLabel.toLowerCase()}?`
     : 'What question calls to be answered?'
+
+  const charsRemaining = MAX_INTENTION_LENGTH - intention.length
 
   return (
     <div className="w-full max-w-xl mx-auto px-4">
       <div className="text-center mb-8">
         <h2 className="text-gradient mb-3">Set your intention</h2>
         <p className="text-gray-muted">
-          Speak your question into the weave
+          The more open-ended, the better
         </p>
       </div>
 
@@ -34,14 +45,15 @@ export function IntentionInput({ onSubmit, messageTypeLabel }: IntentionInputPro
         <div className="relative">
           <textarea
             value={intention}
-            onChange={(e) => setIntention(e.target.value)}
+            onChange={handleChange}
             placeholder={placeholder}
-            rows={4}
+            rows={3}
+            maxLength={MAX_INTENTION_LENGTH}
             className="textarea text-center"
             autoFocus
           />
-          <div className="absolute bottom-3 right-3 text-xs text-gray-muted">
-            {intention.length}/500
+          <div className={`absolute bottom-3 right-3 text-xs ${charsRemaining < 50 ? 'text-gold' : 'text-gray-muted'}`}>
+            {charsRemaining}
           </div>
         </div>
 
@@ -55,9 +67,9 @@ export function IntentionInput({ onSubmit, messageTypeLabel }: IntentionInputPro
       </form>
 
       <p className="mt-8 text-center text-sm text-gray-muted">
-        Your question shapes the message you receive.
+        Less detail invites more discovery.
         <br />
-        Speak from the heart.
+        Let the question breathe.
       </p>
     </div>
   )

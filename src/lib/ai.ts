@@ -28,21 +28,21 @@ const PROVIDER_CONFIGS: ProviderConfig[] = [
   },
   {
     model: 'gemini-3.0-pro',
-    apiKey: process.env.GOOGLE_AI_API_KEY,
+    apiKey: process.env.GOOGLE_API_KEY,
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent',
     modelId: 'gemini-3-pro-preview',
   },
   {
-    model: 'deepseek-v3.2',
+    model: 'deepseek-reasoner',
     apiKey: process.env.DEEPSEEK_API_KEY,
     endpoint: 'https://api.deepseek.com/chat/completions',
-    modelId: 'deepseek-v3.2',
+    modelId: 'deepseek-reasoner',
   },
   {
-    model: 'grok-4.1',
+    model: 'grok-4',
     apiKey: process.env.XAI_API_KEY,
     endpoint: 'https://api.x.ai/v1/chat/completions',
-    modelId: 'grok-4.1',
+    modelId: 'grok-4',
   },
 ]
 

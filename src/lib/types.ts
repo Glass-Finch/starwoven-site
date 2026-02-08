@@ -48,8 +48,8 @@ export type AIModel =
   | 'gpt-4.1'
   | 'claude-sonnet-4.5'
   | 'gemini-3.0-pro'
-  | 'deepseek-v3.2'
-  | 'grok-4.1'
+  | 'deepseek-reasoner'
+  | 'grok-4'
 
 export interface ModelResponse {
   model: AIModel
