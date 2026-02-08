@@ -53,25 +53,50 @@ Think of it as "remote viewing via language model consensus" or "the collective 
 
 ---
 
+## User Stories
+
+**As a seeker**, I want to receive a message from a specific source (love interest's higher self, deceased loved one, future self, the universe) so that I can gain insight into my situation.
+
+**As a seeker**, I want to answer intuitive questions that anchor my reading to this specific moment, so the message feels personal and timely.
+
+**As a seeker**, I want to set an intention that guides what the message addresses, using open-ended language.
+
+**As a seeker**, I want to watch the oracles channel my message, so the experience feels mystical and intentional.
+
+**As a seeker**, I want to receive a synthesized woven message, with the option to see individual oracle threads.
+
+---
+
 ## Design System
+
+**Aesthetic**: Underglow-inspired cosmic minimalism. Deep void backgrounds, golden accents, premium feel.
 
 ### Colors
 ```css
---cosmic-black: #0a0a1a;
---cream: #e8e4dc;
---gold: #c8a84e;
---gray: #9a9488;
+--void: #030308;           /* Deepest background */
+--cosmic-black: #070711;   /* Primary background */
+--cosmic-deep: #0c0c1a;    /* Card backgrounds */
+--cream: #e8e4dc;          /* Primary text */
+--cream-soft: #d4d0c8;     /* Secondary text */
+--cream-muted: #9a9488;    /* Tertiary text */
+--gold: #c8a84e;           /* Accent */
+--gold-bright: #ddc06a;    /* Hover states */
 ```
 
 ### Typography
-- **Headlines**: Playfair Display (elegant serif)
+- **Headlines**: Playfair Display (elegant serif, 400 weight)
 - **Body**: Inter (clean sans-serif)
 
+### Visual Effects
+- **Underglow**: Radial golden glow beneath interactive elements
+- **Card hover**: Subtle lift with border glow
+- **Button glow**: Golden underglow on primary actions
+
 ### Animations
-- `float`: 6s gentle vertical movement
-- `breathe`: 4s opacity/scale pulse
+- `float`: 8s gentle vertical drift
+- `breathe`: 6s opacity/scale pulse
 - `twinkle`: 3s star-like opacity variance
-- `pulse-glow`: 2s gold shadow pulse
+- `pulse-glow`: 4s gold shadow breathing
 
 ---
 
@@ -94,9 +119,15 @@ Each journey includes 3 themed questions + 2 grounding (present-moment) question
 
 **Minimize typing, maximize flow.** The journey should feel like answering a cosmic quiz, not filling out a form.
 
+### Question Design Principles
+- **Intuitive, not trivia**: Questions ask what resonates, not what's factually true
+- **No obvious answers**: Every option should feel meaningful and personal
+- **Present-moment grounding**: Anchor to felt sense, not facts (no "what time is it?")
+- **Evocative language**: "What comes to mind?" / "What do you identify with?"
+
 ### Coordinate Questions (all multiple choice)
 - **5 rapid-fire questions** generate unique coordinates
-- **3 themed** (specific to message type) + **2 grounding** (sensory/present-moment)
+- **3 themed** (specific to message type) + **2 grounding** (present-moment awareness)
 - **10% chance** one grounding swaps for a "weird" question
 - Auto-advance on selection for seamless flow
 

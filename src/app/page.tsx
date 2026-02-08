@@ -158,7 +158,7 @@ export default function Home(): React.ReactElement {
         {currentStep === 'intention' && (
           <IntentionInput
             onSubmit={handleIntentionSubmit}
-            messageTypeLabel={messageTypeConfig?.label}
+            messageTypeConfig={messageTypeConfig}
           />
         )}
 

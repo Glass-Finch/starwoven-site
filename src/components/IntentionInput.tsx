@@ -1,15 +1,16 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import type { MessageTypeConfig } from '@/lib/types'
 
 const MAX_INTENTION_LENGTH = 250
 
 interface IntentionInputProps {
   onSubmit: (intention: string) => void
-  messageTypeLabel?: string
+  messageTypeConfig?: MessageTypeConfig
 }
 
-export function IntentionInput({ onSubmit, messageTypeLabel }: IntentionInputProps): React.ReactElement {
+export function IntentionInput({ onSubmit, messageTypeConfig }: IntentionInputProps): React.ReactElement {
   const [intention, setIntention] = useState('')
 
   const handleSubmit = useCallback((e: React.FormEvent) => {
@@ -26,9 +27,8 @@ export function IntentionInput({ onSubmit, messageTypeLabel }: IntentionInputPro
     }
   }, [])
 
-  const placeholder = messageTypeLabel
-    ? `What would you ask ${messageTypeLabel.toLowerCase()}?`
-    : 'What question calls to be answered?'
+  const prompt = messageTypeConfig?.intentionPrompt || 'What question lives in you?'
+  const placeholder = messageTypeConfig?.intentionPlaceholder || 'The question that calls to be answered...'
 
   const charsRemaining = MAX_INTENTION_LENGTH - intention.length
 
@@ -37,7 +37,7 @@ export function IntentionInput({ onSubmit, messageTypeLabel }: IntentionInputPro
       <div className="text-center mb-8">
         <h2 className="text-gradient mb-3">Set your intention</h2>
         <p className="text-gray-muted">
-          The more open-ended, the better
+          {prompt}
         </p>
       </div>
 
@@ -67,7 +67,7 @@ export function IntentionInput({ onSubmit, messageTypeLabel }: IntentionInputPro
       </form>
 
       <p className="mt-8 text-center text-sm text-gray-muted">
-        Less detail invites more discovery.
+        The more open-ended, the better.
         <br />
         Let the question breathe.
       </p>
