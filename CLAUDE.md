@@ -25,14 +25,6 @@ Starwoven is a consciousness exploration app that sends intentions through 5 div
 **Synthesis (single model):**
 - Anthropic Claude Opus 4.6
 
-## Key Design Decisions
-
-1. **Flat file structure** - Components in `/components`, libs in `/lib`, single Zustand store
-2. **Single API route** - `/api/channel` handles both channeling and synthesis
-3. **Static question pool** - Questions defined in code, not database
-4. **Anonymous sessions** - UUID in localStorage, linked to Supabase readings
-5. **JSONB storage** - Single `readings` table with flexible JSONB columns
-
 ## Design System
 
 ```css
@@ -62,6 +54,15 @@ Starwoven is a consciousness exploration app that sends intentions through 5 div
 | Store | `src/store.ts` |
 | Components | `src/components/` |
 
+## Key Design Decisions
+
+1. **Mobile-first design** - Base styles target mobile, scale up with min-width breakpoints
+2. **Flat file structure** - Components in `/components`, libs in `/lib`, single Zustand store
+3. **Single API route** - `/api/channel` handles both channeling and synthesis
+4. **Static question pool** - Questions defined in code, not database
+5. **Anonymous sessions** - UUID in localStorage, linked to Supabase readings
+6. **JSONB storage** - Single `readings` table with flexible JSONB columns
+
 ## Message Types
 
 6 presets, each with themed questions and a specific "voice":
@@ -72,40 +73,11 @@ Starwoven is a consciousness exploration app that sends intentions through 5 div
 5. Life Decision
 6. Purpose in World
 
-## Domains
+## Infrastructure
 
-Primary: starwoven.app
-All domains mirror to same Vercel deployment.
-
-## Implementation Phases & GitHub Issues
-
-| Phase | GitHub Issue | Status |
-|-------|--------------|--------|
-| Phase 0 | [#1 Infrastructure](https://github.com/Glass-Finch/starwoven-site/issues/1) | ✅ Complete |
-| Phase 1 | [#2 Foundation + Design](https://github.com/Glass-Finch/starwoven-site/issues/2) | Pending |
-| Phase 2 | [#3 UI Components](https://github.com/Glass-Finch/starwoven-site/issues/3) | Pending |
-| Phase 3 | [#4 AI Integration](https://github.com/Glass-Finch/starwoven-site/issues/4) | Pending |
-| Phase 4 | [#5 Polish + Ship](https://github.com/Glass-Finch/starwoven-site/issues/5) | Pending |
-| Standards | [#6 Code Standards](https://github.com/Glass-Finch/starwoven-site/issues/6) | Pending |
-| QA | [#7 AI Response QA](https://github.com/Glass-Finch/starwoven-site/issues/7) | Pending |
-| Auth | [#8 OAuth + Accounts](https://github.com/Glass-Finch/starwoven-site/issues/8) | Future |
-
-## Infrastructure (Complete)
-
-- **Supabase**: `czczdlogtjickwarrjkq` - https://czczdlogtjickwarrjkq.supabase.co
+- **Supabase**: Project ID `czczdlogtjickwarrjkq`
 - **Vercel**: `starwoven-site` with all 6 domains
 - **Domains**: starwoven.app (primary), .academy, .institute, .observer, .org, getstarwoven.com
-
-## Key Design Decisions (Updated)
-
-1. **Mobile-first design** - Base styles target mobile, scale up with min-width breakpoints
-2. **Flat file structure** - Components in `/components`, libs in `/lib`, single Zustand store
-3. **Single API route** - `/api/channel` handles both channeling and synthesis
-4. **Static question pool** - Questions defined in code, not database
-5. **Anonymous sessions** - UUID in localStorage, linked to Supabase readings
-6. **JSONB storage** - Single `readings` table with flexible JSONB columns
-7. **AI Response QA** - Sonnet validates responses before Opus synthesis (GH#7)
-8. **OAuth-ready** - Schema designed for future user accounts (GH#8)
 
 ## Mobile-First Guidelines
 
@@ -131,49 +103,48 @@ All domains mirror to same Vercel deployment.
 Before merging any code, verify:
 
 ### TypeScript
-- [ ] No `any` types - use proper interfaces
-- [ ] All functions have return types
-- [ ] No unused variables or imports
-- [ ] Consistent naming (camelCase for vars, PascalCase for components)
+- No `any` types - use proper interfaces
+- All functions have return types
+- No unused variables or imports
+- Consistent naming (camelCase for vars, PascalCase for components)
 
 ### React/Next.js
-- [ ] Components are in separate files
-- [ ] Props have TypeScript interfaces
-- [ ] No inline styles (use Tailwind)
-- [ ] Keys on list items
-- [ ] No console.log in production code
+- Components are in separate files
+- Props have TypeScript interfaces
+- No inline styles (use Tailwind)
+- Keys on list items
+- No console.log in production code
 
 ### Security
-- [ ] No secrets in code (use env vars)
-- [ ] API keys only accessed server-side
-- [ ] User input validated before use
-- [ ] No SQL injection risks (use parameterized queries)
+- No secrets in code (use env vars)
+- API keys only accessed server-side
+- User input validated before use
+- No SQL injection risks (use parameterized queries)
 
 ### Performance
-- [ ] Images optimized (use next/image)
-- [ ] No unnecessary re-renders
-- [ ] Large dependencies imported dynamically
-- [ ] Animations use transform/opacity (GPU accelerated)
+- Images optimized (use next/image)
+- No unnecessary re-renders
+- Large dependencies imported dynamically
+- Animations use transform/opacity (GPU accelerated)
 
 ### Accessibility
-- [ ] Semantic HTML elements
-- [ ] Alt text on images
-- [ ] Keyboard navigable
-- [ ] Color contrast meets WCAG AA
+- Semantic HTML elements
+- Alt text on images
+- Keyboard navigable
+- Color contrast meets WCAG AA
 
 ### Style
-- [ ] No emojis anywhere
-- [ ] Consistent formatting (Prettier)
-- [ ] Meaningful commit messages
-- [ ] Comments explain "why" not "what"
+- No emojis anywhere
+- Consistent formatting (Prettier)
+- Meaningful commit messages
+- Comments explain "why" not "what"
 
 ## Commands
 
 ```bash
-pnpm dev          # Start dev server
-pnpm build        # Production build
-pnpm lint         # ESLint
-pnpm supabase db push  # Push migrations
+npm run dev          # Start dev server
+npm run build        # Production build
+npm run lint         # ESLint
 ```
 
 ## Environment Variables
@@ -188,12 +159,6 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
-
-## Prompt Templates
-
-See `src/lib/prompts.ts` for:
-- `buildChannelingPrompt()` - Per-model channeling prompt with message type voice
-- `buildSynthesisPrompt()` - Opus synthesis prompt that weaves responses
 
 ## Error Handling
 
