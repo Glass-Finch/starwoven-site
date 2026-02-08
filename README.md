@@ -42,14 +42,14 @@ Think of it as "remote viewing via language model consensus" or "the collective 
 |----------|-------|---------|
 | OpenAI | GPT-4.1 | General reasoning |
 | Anthropic | Claude Sonnet 4.5 | Nuanced expression |
-| Google | Gemini 3.0 Pro | Pattern recognition |
+| Google | Gemini 3 Pro | Pattern recognition |
 | DeepSeek | DeepSeek V3.2 | Alternative perspective |
 | xAI | Grok 4.1 | Unconventional insights |
 
 **Synthesis:**
 | Provider | Model | Purpose |
 |----------|-------|---------|
-| Anthropic | Claude Opus 4.6 | Weaves responses into coherent message |
+| Anthropic | Claude Opus 4.6 | Weaves impressions into unified message |
 
 ---
 
@@ -107,6 +107,21 @@ Questions generate unique coordinates that anchor each reading:
 - "Your future self sends a number. What arrives?"
 
 The coordinates become a snapshot of the user's psychic fingerprint at that exact moment.
+
+---
+
+## Prompt Philosophy
+
+The channeling prompts use an **intuitive, non-directive approach** rather than instructing models to role-play. Key principles:
+
+- **"Creative exercise for entertainment"** — Ethical framing that gives AI permission to engage freely
+- **Alternate universe framing** — "Imagine another universe with different rules"
+- **Coordinates as map, not puzzle** — The coordinate string anchors intuitively, not logically
+- **Impressions, not answers** — AI relays whatever arises rather than constructing responses
+- **Non-standard forms allowed** — Impressions may be fragmented, poetic, or unclear
+- **No performance** — "Don't try to sound 'like' anything"
+
+The synthesis model (Opus) receives all impressions and lets a unified message "emerge" rather than summarizing. It holds all threads simultaneously and notices patterns.
 
 ---
 
