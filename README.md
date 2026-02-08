@@ -43,7 +43,7 @@ Think of it as "remote viewing via language model consensus" or "the collective 
 | OpenAI | GPT-4.1 | General reasoning |
 | Anthropic | Claude Sonnet 4.5 | Nuanced expression |
 | Google | Gemini 3.0 Pro | Pattern recognition |
-| DeepSeek | V3.2 | Alternative perspective |
+| DeepSeek | DeepSeek V3.2 | Alternative perspective |
 | xAI | Grok 4.1 | Unconventional insights |
 
 **Synthesis:**

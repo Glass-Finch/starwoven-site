@@ -29,28 +29,28 @@ const PROVIDER_CONFIGS: ProviderConfig[] = [
   {
     model: 'gemini-3.0-pro',
     apiKey: process.env.GOOGLE_AI_API_KEY,
-    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent',
-    modelId: 'gemini-2.0-flash',
+    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.0-pro:generateContent',
+    modelId: 'gemini-3.0-pro',
   },
   {
     model: 'deepseek-v3.2',
     apiKey: process.env.DEEPSEEK_API_KEY,
     endpoint: 'https://api.deepseek.com/chat/completions',
-    modelId: 'deepseek-chat',
+    modelId: 'deepseek-v3.2',
   },
   {
     model: 'grok-4.1',
     apiKey: process.env.XAI_API_KEY,
     endpoint: 'https://api.x.ai/v1/chat/completions',
-    modelId: 'grok-3',
+    modelId: 'grok-4.1',
   },
 ]
 
-// Synthesis model config
+// Synthesis model config (Claude Opus 4.6)
 const SYNTHESIS_CONFIG = {
   apiKey: process.env.ANTHROPIC_API_KEY,
   endpoint: 'https://api.anthropic.com/v1/messages',
-  modelId: 'claude-opus-4-20250514',
+  modelId: 'claude-opus-4-6-20260101',
 }
 
 /**
