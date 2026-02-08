@@ -24,13 +24,13 @@ const PROVIDER_CONFIGS: ProviderConfig[] = [
     model: 'claude-sonnet-4.5',
     apiKey: process.env.ANTHROPIC_API_KEY,
     endpoint: 'https://api.anthropic.com/v1/messages',
-    modelId: 'claude-sonnet-4-5-20250514',
+    modelId: 'claude-sonnet-4-5',
   },
   {
     model: 'gemini-3.0-pro',
     apiKey: process.env.GOOGLE_AI_API_KEY,
-    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.0-pro:generateContent',
-    modelId: 'gemini-3.0-pro',
+    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent',
+    modelId: 'gemini-3-pro-preview',
   },
   {
     model: 'deepseek-v3.2',
@@ -50,7 +50,7 @@ const PROVIDER_CONFIGS: ProviderConfig[] = [
 const SYNTHESIS_CONFIG = {
   apiKey: process.env.ANTHROPIC_API_KEY,
   endpoint: 'https://api.anthropic.com/v1/messages',
-  modelId: 'claude-opus-4-6-20260101',
+  modelId: 'claude-opus-4-6',
 }
 
 /**
