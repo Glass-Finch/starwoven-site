@@ -35,13 +35,14 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
     const responses = await callAllChannelingModels(channelingPrompt)
 
     // Validate all responses (filters refusals, off-topic, AI meta-commentary)
-    const { validated, validationResults } = await validateAllResponses(
+    // Returns: validated (for synthesis), processed (for display with cleanup/mystical messages)
+    const { validated, processed, validationResults } = await validateAllResponses(
       responses,
       messageType,
       intention
     )
 
-    // Get valid successful responses
+    // Get valid successful responses for synthesis
     const validResponses = validated.filter((r) => r.status === 'success' && r.content)
 
     // Track failed models (either API failures or validation failures)
@@ -58,7 +59,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       if (validResponses.length === 0) {
         return NextResponse.json({
           status: 'partial',
-          threads: responses,
+          threads: processed, // Use processed for display (has mystical messages)
           synthesis: "The oracles couldn't connect. Please try again.",
           validationResults,
           failedModels,
@@ -69,7 +70,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       const fallbackSynthesis = getLongestResponse(validResponses)
       return NextResponse.json({
         status: 'partial',
-        threads: responses,
+        threads: processed, // Use processed for display
         synthesis: fallbackSynthesis,
         validationResults,
         failedModels,
@@ -111,7 +112,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
 
     return NextResponse.json({
       status: failedModels.length === 0 ? 'complete' : 'partial',
-      threads: responses,
+      threads: processed, // Use processed for display (cleaned up, mystical messages)
       synthesis,
       synthesisMetadata,
       validationResults,

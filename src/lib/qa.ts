@@ -4,6 +4,7 @@
  */
 
 import type {
+  AIModel,
   MessageType,
   ModelResponse,
   ValidationResult,
@@ -13,6 +14,93 @@ import type {
 import { buildCoherencePrompt } from './prompts'
 
 const VALIDATION_TIMEOUT_MS = 5000 // 5 seconds per validation
+
+// Oracle-specific error messages (understated, in-character)
+const ORACLE_ERROR_MESSAGES: Record<AIModel, { refusal: string; timeout: string }> = {
+  'gpt-4.1': {
+    refusal: 'Iris looked away.',
+    timeout: "Iris didn't respond in time.",
+  },
+  'claude-sonnet-4.5': {
+    refusal: 'Luna offered nothing.',
+    timeout: 'Luna drifted elsewhere.',
+  },
+  'gemini-3.0-pro': {
+    refusal: 'Echo returned silence.',
+    timeout: 'Echo went quiet.',
+  },
+  'deepseek-reasoner': {
+    refusal: 'Shade withdrew.',
+    timeout: 'Shade stayed in the deep.',
+  },
+  'grok-4-1-fast-reasoning': {
+    refusal: 'Nova refused.',
+    timeout: 'Nova burned past.',
+  },
+}
+
+/**
+ * Get mystical error message for a failed oracle
+ */
+export function getMysticalErrorMessage(
+  model: AIModel,
+  errorType: 'refusal' | 'timeout' | 'error'
+): string {
+  const messages = ORACLE_ERROR_MESSAGES[model]
+  if (!messages) {
+    return "Couldn't reach this oracle."
+  }
+
+  if (errorType === 'error') {
+    // Generic for actual errors
+    const oracleName = model.includes('gpt')
+      ? 'Iris'
+      : model.includes('claude')
+        ? 'Luna'
+        : model.includes('gemini')
+          ? 'Echo'
+          : model.includes('deepseek')
+            ? 'Shade'
+            : 'Nova'
+    return `Couldn't reach ${oracleName}.`
+  }
+
+  return messages[errorType]
+}
+
+/**
+ * Clean up response content - remove markdown artifacts, disclaimers, normalize whitespace
+ */
+export function cleanupResponse(content: string): string {
+  return (
+    content
+      .trim()
+      // Normalize line breaks (max 2 consecutive)
+      .replace(/\n{3,}/g, '\n\n')
+      // Remove markdown headers
+      .replace(/^#{1,6}\s+/gm, '')
+      // Remove bold markdown (preserve text)
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      // Remove italic markdown (preserve text)
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/_([^_]+)_/g, '$1')
+      // Remove entertainment disclaimers (case insensitive)
+      .replace(
+        /this is (a )?(creative )?(writing )?(exercise|passage) for entertainment purposes only\.?\s*/gi,
+        ''
+      )
+      .replace(/for entertainment purposes only\.?\s*/gi, '')
+      // Remove "as an AI" type disclaimers
+      .replace(/as an ai[^.]*\./gi, '')
+      .replace(/i('m| am) an ai[^.]*\./gi, '')
+      // Clean up resulting double spaces
+      .replace(/  +/g, ' ')
+      // Clean up resulting extra line breaks
+      .replace(/\n{3,}/g, '\n\n')
+      // Final trim
+      .trim()
+  )
+}
 
 // Validation model config (Claude Haiku for speed)
 const VALIDATION_CONFIG = {
@@ -38,11 +126,16 @@ Response to validate:
 ${response}
 ---
 
-Evaluate this response:
-1. Is it on-topic and relevant to the intention?
-2. Is it in an appropriate reflective/channeling tone?
-3. Is it NOT a refusal, disclaimer, or error message?
-4. Is it free of meta-commentary about being an AI?
+Mark as INVALID only if:
+1. It's a refusal or decline to engage with the prompt
+2. It's entirely off-topic or doesn't relate to the intention
+3. It's an error message or technical failure text
+
+Mark as VALID if:
+- It engages with the prompt (even if unusual, abstract, or includes minor disclaimers)
+- It's relevant to the intention in some way
+
+Note: Minor disclaimers or AI mentions are OK - they get cleaned up separately.
 
 Respond with ONLY this JSON (no other text):
 {"isValid": boolean, "reason": "brief explanation if invalid", "confidence": 0.0-1.0}`
@@ -159,7 +252,10 @@ async function validateSingleResponse(
 
 /**
  * Validate all model responses in parallel
- * Returns validated responses and validation results
+ * Returns:
+ * - validated: only valid responses (with cleanup) for synthesis
+ * - processed: all responses with cleanup/mystical messages for display
+ * - validationResults: validation metadata
  */
 export async function validateAllResponses(
   responses: ModelResponse[],
@@ -167,6 +263,7 @@ export async function validateAllResponses(
   intention: string
 ): Promise<{
   validated: ModelResponse[]
+  processed: ModelResponse[]
   validationResults: ValidationResult[]
 }> {
   // Run all validations in parallel
@@ -174,8 +271,36 @@ export async function validateAllResponses(
     responses.map((response) => validateSingleResponse(response, messageType, intention))
   )
 
-  // Filter to only valid responses
-  const validated = responses.filter((_, index) => validationResults[index].isValid)
+  // Process all responses: cleanup valid ones, add mystical messages to failures
+  const processed = responses.map((response, index) => {
+    const isValid = validationResults[index].isValid
+
+    if (isValid && response.content) {
+      // Apply cleanup to valid responses
+      return {
+        ...response,
+        content: cleanupResponse(response.content),
+      }
+    } else if (response.status === 'error' || response.status === 'timeout') {
+      // Replace error content with mystical message
+      const errorType = response.status === 'timeout' ? 'timeout' : 'error'
+      return {
+        ...response,
+        content: getMysticalErrorMessage(response.model, errorType),
+      }
+    } else if (!isValid) {
+      // Refusal or invalid response - use mystical refusal message
+      return {
+        ...response,
+        content: getMysticalErrorMessage(response.model, 'refusal'),
+      }
+    }
+
+    return response
+  })
+
+  // Filter to only valid responses for synthesis
+  const validated = processed.filter((_, index) => validationResults[index].isValid)
 
   // Log validation failures for debugging
   const failures = validationResults.filter((r) => !r.isValid)
@@ -186,7 +311,7 @@ export async function validateAllResponses(
     )
   }
 
-  return { validated, validationResults }
+  return { validated, processed, validationResults }
 }
 
 /**
