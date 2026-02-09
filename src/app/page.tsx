@@ -114,6 +114,8 @@ export default function Home(): React.ReactElement {
         metadata: {
           personalization,
           synthesis: data.synthesisMetadata,
+          validation: data.validationResults,
+          coherence: data.coherenceResult,
         },
       }).catch((err) => console.error('Failed to save reading:', err))
     } catch (err) {

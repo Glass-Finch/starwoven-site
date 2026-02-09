@@ -162,7 +162,7 @@ async function callGoogleAI(
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
-        maxOutputTokens: 1024,
+        maxOutputTokens: 4096, // Increased from 1024 to prevent truncation
         temperature: 0.8,
       },
     }),
@@ -175,6 +175,13 @@ async function callGoogleAI(
   }
 
   const data = await response.json()
+
+  // Check for truncation
+  const finishReason = data.candidates?.[0]?.finishReason
+  if (finishReason === 'MAX_TOKENS' || finishReason === 'LENGTH') {
+    console.warn('Gemini response truncated due to token limit')
+  }
+
   return data.candidates?.[0]?.content?.parts?.[0]?.text || ''
 }
 

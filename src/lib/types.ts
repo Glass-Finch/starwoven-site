@@ -112,6 +112,35 @@ export interface ValidationResult {
   latencyMs: number
 }
 
+// Outlier detection for coherence analysis
+export interface OutlierInfo {
+  model: string
+  divergenceType: 'thematic' | 'emotional' | 'temporal' | 'tone'
+  severity: 'minor' | 'moderate' | 'major'
+  description: string
+}
+
+// Per-dimension rubric scores
+export interface CoherenceRubric {
+  thematicAlignment: number // 0-100: Do responses share underlying themes?
+  complementaryPerspectives: number // 0-100: Do they enrich (not contradict)?
+  intuitiveResonance: number // 0-100: Similar feelings/imagery?
+  contextualRelevance: number // 0-100: Connected to intention/personalization?
+  specificity: number // 0-100: Specific vs generic fortune-cookie?
+}
+
+// Coherence analysis result
+export interface CoherenceResult {
+  coherenceScore: number // 0-100 (weighted average of rubric dimensions)
+  rubric: CoherenceRubric // Per-dimension scores
+  confidence: number // 0.0-1.0
+  themeOverlap: string[] // shared themes across 3+ responses
+  outliers: OutlierInfo[] // responses that diverge
+  isCoherent: boolean // coherenceScore >= 75
+  reasoning: string // brief explanation
+  genericPhrases: string[] // detected platitudes
+}
+
 // Metadata for synthesis logging
 export interface SynthesisMetadata {
   prompt: string
@@ -124,6 +153,7 @@ export interface ReadingMetadata {
   personalization?: Record<string, string>
   synthesis?: SynthesisMetadata
   validation?: ValidationResult[]
+  coherence?: CoherenceResult
 }
 
 // Reading (saved to Supabase)
@@ -175,5 +205,6 @@ export interface ChannelResponse {
   synthesis: string
   synthesisMetadata?: SynthesisMetadata
   validationResults?: ValidationResult[]
+  coherenceResult?: CoherenceResult
   failedModels?: AIModel[]
 }
