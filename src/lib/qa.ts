@@ -3,7 +3,14 @@
  * Validates channeling responses using Claude Haiku before synthesis
  */
 
-import type { MessageType, ModelResponse, ValidationResult } from './types'
+import type {
+  MessageType,
+  ModelResponse,
+  ValidationResult,
+  CoherenceResult,
+  CoherenceRubric,
+} from './types'
+import { buildCoherencePrompt } from './prompts'
 
 const VALIDATION_TIMEOUT_MS = 5000 // 5 seconds per validation
 
@@ -186,3 +193,195 @@ export async function validateAllResponses(
  * Get minimum valid response count for synthesis
  */
 export const MIN_VALID_RESPONSES = 3
+
+/**
+ * Coherence validation timeout (longer since it analyzes all responses)
+ */
+const COHERENCE_TIMEOUT_MS = 10000 // 10 seconds
+
+/**
+ * Default rubric scores (used when validation fails/skipped)
+ */
+const DEFAULT_RUBRIC: CoherenceRubric = {
+  thematicAlignment: 75,
+  complementaryPerspectives: 75,
+  intuitiveResonance: 75,
+  contextualRelevance: 75,
+  specificity: 75,
+}
+
+/**
+ * Calculate weighted coherence score from rubric dimensions
+ * Weights: thematic 25%, complementary 20%, resonance 20%, relevance 15%, specificity 20%
+ */
+function calculateCoherenceScore(rubric: CoherenceRubric): number {
+  const weights = {
+    thematicAlignment: 0.25,
+    complementaryPerspectives: 0.2,
+    intuitiveResonance: 0.2,
+    contextualRelevance: 0.15,
+    specificity: 0.2,
+  }
+
+  const score =
+    rubric.thematicAlignment * weights.thematicAlignment +
+    rubric.complementaryPerspectives * weights.complementaryPerspectives +
+    rubric.intuitiveResonance * weights.intuitiveResonance +
+    rubric.contextualRelevance * weights.contextualRelevance +
+    rubric.specificity * weights.specificity
+
+  return Math.round(score)
+}
+
+/**
+ * Validate thematic coherence across all oracle responses
+ * Uses Claude Haiku to analyze overlap, outliers, and specificity
+ */
+export async function validateCoherence(
+  responses: ModelResponse[],
+  messageType: MessageType,
+  intention: string
+): Promise<CoherenceResult> {
+  const startTime = Date.now()
+
+  // Filter to successful responses with content
+  const validResponses = responses.filter((r) => r.status === 'success' && r.content)
+
+  // Need at least 3 responses to measure coherence
+  if (validResponses.length < 3) {
+    return {
+      coherenceScore: 0,
+      rubric: { ...DEFAULT_RUBRIC, thematicAlignment: 0, complementaryPerspectives: 0 },
+      confidence: 0,
+      themeOverlap: [],
+      outliers: [],
+      isCoherent: false,
+      reasoning: 'Insufficient responses for coherence analysis',
+      genericPhrases: [],
+    }
+  }
+
+  // Skip if API key not configured
+  if (!VALIDATION_CONFIG.apiKey) {
+    return {
+      coherenceScore: 75,
+      rubric: DEFAULT_RUBRIC,
+      confidence: 0.5,
+      themeOverlap: [],
+      outliers: [],
+      isCoherent: true,
+      reasoning: 'Coherence validation skipped (no API key)',
+      genericPhrases: [],
+    }
+  }
+
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), COHERENCE_TIMEOUT_MS)
+
+  try {
+    const prompt = buildCoherencePrompt(
+      validResponses.map((r) => ({ model: r.model, content: r.content! })),
+      intention,
+      messageType
+    )
+
+    const apiResponse = await fetch(VALIDATION_CONFIG.endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': VALIDATION_CONFIG.apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: VALIDATION_CONFIG.modelId,
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }],
+      }),
+      signal: controller.signal,
+    })
+
+    if (!apiResponse.ok) {
+      console.warn('Coherence API error:', apiResponse.status)
+      return {
+        coherenceScore: 75,
+        rubric: DEFAULT_RUBRIC,
+        confidence: 0.5,
+        themeOverlap: [],
+        outliers: [],
+        isCoherent: true,
+        reasoning: 'Coherence API error, assuming passing',
+        genericPhrases: [],
+      }
+    }
+
+    const data = await apiResponse.json()
+    const text = data.content?.[0]?.text || ''
+
+    // Parse JSON response
+    try {
+      const jsonMatch = text.match(/\{[\s\S]*\}/)
+      if (!jsonMatch) {
+        throw new Error('No JSON found in coherence response')
+      }
+
+      const result = JSON.parse(jsonMatch[0])
+
+      // Extract rubric scores with defaults
+      const rubric: CoherenceRubric = {
+        thematicAlignment: result.rubric?.thematicAlignment ?? 75,
+        complementaryPerspectives: result.rubric?.complementaryPerspectives ?? 75,
+        intuitiveResonance: result.rubric?.intuitiveResonance ?? 75,
+        contextualRelevance: result.rubric?.contextualRelevance ?? 75,
+        specificity: result.rubric?.specificity ?? 75,
+      }
+
+      const coherenceScore = calculateCoherenceScore(rubric)
+
+      console.log(
+        `Coherence: ${coherenceScore}% [Theme:${rubric.thematicAlignment} Comp:${rubric.complementaryPerspectives} ` +
+          `Res:${rubric.intuitiveResonance} Ctx:${rubric.contextualRelevance} Spec:${rubric.specificity}], ` +
+          `Themes: [${(result.themeOverlap || []).join(', ')}], ` +
+          `Outliers: ${(result.outliers || []).length}, ` +
+          `Latency: ${Date.now() - startTime}ms`
+      )
+
+      return {
+        coherenceScore,
+        rubric,
+        confidence: typeof result.confidence === 'number' ? result.confidence : 0.5,
+        themeOverlap: result.themeOverlap || [],
+        outliers: result.outliers || [],
+        isCoherent: coherenceScore >= 75,
+        reasoning: result.reasoning || '',
+        genericPhrases: result.genericPhrases || [],
+      }
+    } catch (parseError) {
+      console.warn('Coherence parse error:', parseError)
+      return {
+        coherenceScore: 75,
+        rubric: DEFAULT_RUBRIC,
+        confidence: 0.5,
+        themeOverlap: [],
+        outliers: [],
+        isCoherent: true,
+        reasoning: 'Coherence parse error, assuming passing',
+        genericPhrases: [],
+      }
+    }
+  } catch (error) {
+    const isTimeout = error instanceof Error && error.name === 'AbortError'
+    console.warn('Coherence validation error:', isTimeout ? 'timeout' : error)
+    return {
+      coherenceScore: 75,
+      rubric: DEFAULT_RUBRIC,
+      confidence: 0.5,
+      themeOverlap: [],
+      outliers: [],
+      isCoherent: true,
+      reasoning: isTimeout ? 'Coherence validation timeout' : 'Coherence validation error',
+      genericPhrases: [],
+    }
+  } finally {
+    clearTimeout(timeout)
+  }
+}

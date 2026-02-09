@@ -223,3 +223,69 @@ Use the short archetypal names as IDs:
 - Minimum 3 successful responses required
 - Mystical error copy (not technical)
 - Retry functionality preserves intention
+
+## Development Workflow
+
+### Before Committing
+
+1. **Manual Testing Required**: Test all changed functionality in the browser
+2. **Code Review**: Show changes to user for review before committing
+3. **Automated Checks**: Run `npm run lint && npm run build && npm test`
+
+### Commit Process
+
+1. Stage specific files (avoid `git add -A` for large changes)
+2. Show diff to user for approval
+3. Create commit only after explicit user approval
+4. Do NOT push without explicit user approval
+
+### Manual Testing Checklist
+
+Before any commit affecting user-facing features:
+
+- [ ] Start dev server: `npm run dev`
+- [ ] Test the changed feature end-to-end in browser
+- [ ] Test on mobile viewport (use browser dev tools)
+- [ ] Check browser console for errors
+- [ ] Verify API calls work (Network tab)
+- [ ] Test error states if applicable
+
+## Manual Testing Procedures
+
+### Full Journey Test
+
+1. Start dev server: `npm run dev`
+2. Open http://localhost:3000
+3. Complete full flow:
+   - Select a message type
+   - Fill personalization form (if applicable)
+   - Answer all coordinate questions
+   - Enter an intention
+   - Wait for channeling to complete
+   - View synthesized message
+   - Expand threads accordion
+   - Expand coordinates reveal
+   - Click "Begin anew"
+
+### API Testing
+
+1. Check Network tab during channeling
+2. Verify POST to /api/channel
+3. Confirm all 5 model responses in response
+4. Confirm synthesis is present
+5. Check for validation results
+
+### Error State Testing
+
+1. Disconnect network during channeling
+2. Verify error UI appears
+3. Verify "Try again" works
+4. Verify "Begin anew" resets state
+
+### Mobile Testing
+
+1. Use browser dev tools responsive mode
+2. Test at 375px width (iPhone SE)
+3. Verify single-column layout
+4. Verify touch interactions work
+5. Verify keyboard doesn't obscure inputs

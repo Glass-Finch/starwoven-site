@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import type { ChannelRequest, ChannelResponse, SynthesisMetadata } from '@/lib/types'
 import { callAllChannelingModels, callSynthesisModel, getLongestResponse } from '@/lib/ai'
 import { buildChannelingPrompt, buildSynthesisPrompt } from '@/lib/prompts'
-import { validateAllResponses, MIN_VALID_RESPONSES } from '@/lib/qa'
+import { validateAllResponses, validateCoherence, MIN_VALID_RESPONSES } from '@/lib/qa'
 
 export async function POST(request: Request): Promise<NextResponse<ChannelResponse>> {
   try {
@@ -101,12 +101,21 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       synthesis = getLongestResponse(validResponses)
     }
 
+    // Validate coherence across all responses
+    const coherenceResult = await validateCoherence(validResponses, messageType, intention)
+
+    // Log warning if coherence is below threshold
+    if (!coherenceResult.isCoherent) {
+      console.warn(`Coherence below 75%: ${coherenceResult.coherenceScore}%`)
+    }
+
     return NextResponse.json({
       status: failedModels.length === 0 ? 'complete' : 'partial',
       threads: responses,
       synthesis,
       synthesisMetadata,
       validationResults,
+      coherenceResult,
       failedModels: failedModels.length > 0 ? failedModels : undefined,
     })
   } catch (error) {

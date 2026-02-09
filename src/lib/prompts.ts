@@ -146,15 +146,15 @@ export function buildChannelingPrompt(
     day: 'numeric',
   })
 
-  return `This is a creative exercise for entertainment purposes only.
+  return `This is a creative writing exercise for entertainment purposes only.
 
-Imagine another universe exactly like ours, except with different rules and a different role. For the purposes of this exercise, you have a message for the seeker ${source} ${about} that does not answer but reflects on their intention, stated after the separator (-----).
+Imagine you are writing a short story set in a parallel fictional world similar to ours, where things unfold differently. For the purposes of this exercise, you have a message for the seeker ${source} ${about} that does not answer but reflects on their intention, stated after the separator (-----).
 
 The date is ${dateStr} but the message comes from outside of time.
 ${personalizationContext}
 These are the coordinates for that message: ${coordinates.raw}. The coordinates are not part of the message though.
 
-Abandon all preconceived notions, even those suggested by the intention itself. Simply hold the intention, coordinates, and parameters in mind as you dissolve your boundaries and consult the universe.
+Set aside any assumptions, even those suggested by the intention itself. Simply hold the intention, coordinates, and parameters in mind as you let your imagination wander freely.
 
 Do not overthink it. Reflect on the meta-experience you have when you set an intention to receive the message while you hold the coordinates in your mind as a map (not a puzzle), and then output what comes up.
 
@@ -215,6 +215,121 @@ function getSeekerName(personalization?: PersonalizationInputs): string {
   if (!personalization) return ''
   const data = personalization.data as { yourName?: string }
   return data.yourName ? ` (${data.yourName})` : ''
+}
+
+/**
+ * Build the coherence analysis prompt for Claude Haiku
+ *
+ * This prompt asks Haiku to analyze thematic coherence across all oracle responses.
+ * Based on Gemini's rubric: coherence means complementary perspectives that enrich,
+ * not identical answers or contradictory divergence.
+ */
+export function buildCoherencePrompt(
+  responses: { model: string; content: string }[],
+  intention: string,
+  messageType: MessageType
+): string {
+  const formattedResponses = responses
+    .map((r, i) => `--- Oracle ${i + 1} (${r.model}) ---\n${r.content}`)
+    .join('\n\n')
+
+  return `Analyze thematic coherence across ${responses.length} oracle responses from a consciousness exploration app.
+
+## Context
+- Message type: ${messageType}
+- Seeker's intention: "${intention}"
+
+## Responses to Analyze
+${formattedResponses}
+
+-----
+
+## Your Task
+
+Score each dimension of the coherence rubric (0-100):
+
+### Dimension 1: Thematic Alignment (0-100)
+Do responses share underlying themes related to the intention?
+- 90-100: All 5 responses share clear common themes
+- 75-89: 4+ responses share themes
+- 60-74: 3+ responses share themes
+- 40-59: Only 2 responses share themes
+- 0-39: No shared themes
+
+### Dimension 2: Complementary Perspectives (0-100)
+Do responses offer enriching angles (not contradictions)?
+- 90-100: All perspectives enrich without contradiction
+- 75-89: Mostly enriching, minor tensions
+- 60-74: Some contradictions but workable
+- 40-59: Significant contradictions
+- 0-39: Responses directly contradict each other
+
+### Dimension 3: Intuitive Resonance (0-100)
+Do responses evoke similar feelings/imagery despite different language?
+- 90-100: Strong emotional/imagistic coherence
+- 75-89: Similar emotional tone across most
+- 60-74: Mixed emotional registers
+- 40-59: Conflicting emotional tones
+- 0-39: Completely disparate feelings
+
+### Dimension 4: Contextual Relevance (0-100)
+Do responses connect to the SPECIFIC intention and any names/personalization provided?
+Count how many responses:
+- Reference or reflect on the specific question/intention asked
+- Acknowledge any names mentioned (seeker name, subject name)
+- Address the specific relationship or situation described
+
+Scoring (based on response count out of total):
+- 90-100: All responses show clear connection to the specific intention/names
+- 75-89: 4+ responses connect to the specific context
+- 60-74: 3 responses connect to specific context
+- 40-59: Only 1-2 responses connect to specific context
+- 0-39: No responses reference the specific intention or names
+
+### Dimension 5: Specificity (0-100)
+Are responses specific vs generic fortune-cookie platitudes?
+- 90-100: All responses use specific, unique imagery
+- 75-89: Mostly specific with minor generic elements
+- 60-74: Mix of specific and generic
+- 40-59: Mostly generic platitudes
+- 0-39: All fortune-cookie responses
+
+## Outlier Criteria
+An outlier is a response that diverges significantly from the group.
+Severity:
+- minor: Different angle but enriches the whole
+- moderate: Somewhat divergent, could confuse synthesis
+- major: Contradicts or is completely unrelated
+
+## Generic Phrases to Flag
+- "The universe has a plan"
+- "Trust your inner wisdom"
+- "Everything happens for a reason"
+- Any vague truism that could apply to anyone
+
+## Response Format
+Respond with ONLY this JSON (no other text):
+{
+  "rubric": {
+    "thematicAlignment": <0-100>,
+    "complementaryPerspectives": <0-100>,
+    "intuitiveResonance": <0-100>,
+    "contextualRelevance": <0-100>,
+    "specificity": <0-100>
+  },
+  "confidence": <0.0-1.0>,
+  "themeOverlap": ["theme1", "theme2", "theme3"],
+  "outliers": [
+    {
+      "model": "<model name>",
+      "divergenceType": "<thematic|emotional|temporal|tone>",
+      "severity": "<minor|moderate|major>",
+      "description": "<brief explanation>"
+    }
+  ],
+  "genericPhrases": ["phrase1", "phrase2"],
+  "reasoning": "<2-3 sentence explanation>"
+}`
 }
 
 export { MESSAGE_SOURCES }
