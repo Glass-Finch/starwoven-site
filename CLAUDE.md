@@ -252,15 +252,30 @@ Before any commit affecting user-facing features:
 
 ## Manual Testing Procedures
 
+### Testing with Real Data
+
+**CRITICAL**: Always test with real people and genuine intentions.
+
+- **Use real names** (first names only): e.g., "Maki", "Frank"
+- **Never use**: Made-up names, placeholder text, celebrities, or full names
+- **Set your own intention**: The tester must genuinely engage with the question
+- **Why**: AI models detect nonsense inputs and return generic responses. Coherence scoring only works with authentic data.
+
+Example test scenario (Beloved message type):
+
+- Your name: Maki
+- Their name: Frank
+- Intention: "What does he really think about our future together?"
+
 ### Full Journey Test
 
 1. Start dev server: `npm run dev`
 2. Open http://localhost:3000
 3. Complete full flow:
    - Select a message type
-   - Fill personalization form (if applicable)
-   - Answer all coordinate questions
-   - Enter an intention
+   - Fill personalization form with **real first names** (if applicable)
+   - Answer all coordinate questions **intuitively** (don't rush)
+   - Enter a **genuine intention** you actually want insight on
    - Wait for channeling to complete
    - View synthesized message
    - Expand threads accordion
