@@ -25,27 +25,27 @@ Starwoven is a consciousness exploration app that sends intentions through 5 div
 
 Each AI model is represented as an oracle with an archetype:
 
-| Oracle | Provider | Model | Archetype |
-|--------|----------|-------|-----------|
-| **Iris** | OpenAI | gpt-4.1 | The Oracle |
-| **Luna** | Anthropic | claude-sonnet-4.5 | The Muse |
-| **Echo** | Google | gemini-3.0-pro | The Mirror |
-| **Shade** | DeepSeek | deepseek-reasoner | The Deep |
-| **Nova** | xAI | grok-4 | The Wild |
-| **Starweaver** | Anthropic | claude-opus-4.6 | The Weaver (synthesis) |
+| Oracle         | Provider  | Model             | Archetype              |
+| -------------- | --------- | ----------------- | ---------------------- |
+| **Iris**       | OpenAI    | gpt-4.1           | The Oracle             |
+| **Luna**       | Anthropic | claude-sonnet-4.5 | The Muse               |
+| **Echo**       | Google    | gemini-3.0-pro    | The Mirror             |
+| **Shade**      | DeepSeek  | deepseek-reasoner | The Deep               |
+| **Nova**       | xAI       | grok-4            | The Wild               |
+| **Starweaver** | Anthropic | claude-opus-4.6   | The Weaver (synthesis) |
 
 ## Message Types
 
 Think of this as a sophisticated, working magic 8-ball.
 
-| Type | Card Description | User Inputs | Intention Prompt |
-|------|------------------|-------------|------------------|
-| **The Beloved** | Ask about a romantic connection | Your name, Their name | What do you want to know? |
-| **The Ancestor** | Seek connection with someone who has passed | Your name, Their name, Relationship | What do you want to ask or tell them? |
-| **The Sage** | Ask your future self for advice | Your name, Birthday | What do you need advice on? |
-| **The Cosmos** | Seek insight on what's on your mind | (none) | What's on your mind? |
-| **The Crossroads** | Get clarity on a yes or no decision | (none) | What decision do you need help with? |
-| **The Calling** | Explore your purpose | Your name, Birthday | What do you want to know about your purpose? |
+| Type               | Card Description                            | User Inputs                         | Intention Prompt                             |
+| ------------------ | ------------------------------------------- | ----------------------------------- | -------------------------------------------- |
+| **The Beloved**    | Ask about a romantic connection             | Your name, Their name               | What do you want to know?                    |
+| **The Ancestor**   | Seek connection with someone who has passed | Your name, Their name, Relationship | What do you want to ask or tell them?        |
+| **The Sage**       | Ask your future self for advice             | Your name, Birthday                 | What do you need advice on?                  |
+| **The Cosmos**     | Seek insight on what's on your mind         | (none)                              | What's on your mind?                         |
+| **The Crossroads** | Get clarity on a yes or no decision         | (none)                              | What decision do you need help with?         |
+| **The Calling**    | Explore your purpose                        | Your name, Birthday                 | What do you want to know about your purpose? |
 
 See `docs/USER-STORIES.md` for full user stories per message type.
 See GitHub issue #18 for implementation details.
@@ -53,27 +53,31 @@ See GitHub issue #18 for implementation details.
 ## Design System
 
 ### Colors
+
 ```css
---void: #030308;           /* Deepest background */
---cosmic-black: #070711;   /* Primary background */
---cosmic-deep: #0c0c1a;    /* Card backgrounds */
---cream: #e8e4dc;          /* Primary text */
---cream-soft: #d4d0c8;     /* Secondary text */
---cream-muted: #9a9488;    /* Tertiary text */
---gold: #c8a84e;           /* Accent */
---gold-bright: #ddc06a;    /* Hover states */
+--void: #030308; /* Deepest background */
+--cosmic-black: #070711; /* Primary background */
+--cosmic-deep: #0c0c1a; /* Card backgrounds */
+--cream: #e8e4dc; /* Primary text */
+--cream-soft: #d4d0c8; /* Secondary text */
+--cream-muted: #9a9488; /* Tertiary text */
+--gold: #c8a84e; /* Accent */
+--gold-bright: #ddc06a; /* Hover states */
 ```
 
 ### Typography
+
 - **Headlines**: Playfair Display (400 weight, elegant serif)
 - **Body**: Inter (clean sans-serif)
 
 ### Visual Effects
+
 - **Underglow**: Radial golden glow beneath interactive elements
 - **Card hover**: Subtle lift with border glow
 - **Button glow**: Golden underglow on primary actions
 
 ### Animations
+
 - `float`: 8s gentle vertical drift
 - `breathe`: 6s opacity/scale pulse
 - `twinkle`: 3s star-like opacity variance
@@ -81,30 +85,32 @@ See GitHub issue #18 for implementation details.
 
 ## File Locations
 
-| What | Where |
-|------|-------|
-| Main page | `src/app/page.tsx` |
-| API route | `src/app/api/channel/route.ts` |
-| AI providers | `src/lib/ai.ts` |
-| Prompts | `src/lib/prompts.ts` |
-| Questions | `src/lib/questions.ts` |
-| Message types | `src/lib/message-types.ts` |
-| Types | `src/lib/types.ts` |
-| Store | `src/store.ts` |
-| Components | `src/components/` |
-| User Stories | `docs/USER-STORIES.md` |
-| Prompt Docs | `docs/PROMPTS.md` |
+| What          | Where                          |
+| ------------- | ------------------------------ |
+| Main page     | `src/app/page.tsx`             |
+| API route     | `src/app/api/channel/route.ts` |
+| AI providers  | `src/lib/ai.ts`                |
+| Prompts       | `src/lib/prompts.ts`           |
+| Questions     | `src/lib/questions.ts`         |
+| Message types | `src/lib/message-types.ts`     |
+| Types         | `src/lib/types.ts`             |
+| Store         | `src/store.ts`                 |
+| Components    | `src/components/`              |
+| User Stories  | `docs/USER-STORIES.md`         |
+| Prompt Docs   | `docs/PROMPTS.md`              |
 
 ## Question Philosophy
 
 Questions must be **intuitive** or **grounding**, never **trivia**:
 
 **DO:**
+
 - "What moon do you identify with right now?" (intuitive)
 - "What texture comes to mind?" (grounding)
 - "What is the light like in this moment?" (present-moment awareness)
 
 **DON'T:**
+
 - "What phase is the moon?" (factual/trivia)
 - "What time is it?" (auto-generatable)
 - "Are you alone?" (too direct)
@@ -130,6 +136,7 @@ The channeling prompts use an **intuitive, non-directive approach**:
 - **Avoid New Age clichés**: If it sounds like a yoga studio, rewrite it.
 
 ### Words to Avoid
+
 - Magic, magical, mystical, spiritual (too on-the-nose)
 - Weave, woven (sounds like hair products)
 - AI, model, algorithm, minds (breaks immersion)
@@ -187,7 +194,9 @@ SUPABASE_SERVICE_ROLE_KEY=
 ## Naming Conventions
 
 ### Message Type IDs
+
 Use the short archetypal names as IDs:
+
 - `beloved` (not `love_interest`)
 - `ancestor` (not `deceased_loved_one`)
 - `sage` (not `future_self`)
@@ -196,12 +205,14 @@ Use the short archetypal names as IDs:
 - `calling` (not `purpose_world`)
 
 ### Variable Naming
+
 - **TypeScript**: `camelCase` for variables/functions, `PascalCase` for types/interfaces
 - **CSS/Tailwind**: `kebab-case` for custom classes
 - **Files**: `PascalCase` for components, `camelCase` for utilities
 - **Constants**: `SCREAMING_SNAKE_CASE` for true constants
 
 ### Display Names vs IDs
+
 - ID: `beloved` (used in code, URLs, database)
 - Label: "The Beloved" (used in UI)
 - Description: "Ask about a romantic connection" (card subtitle)

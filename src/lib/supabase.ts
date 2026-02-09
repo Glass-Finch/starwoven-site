@@ -3,6 +3,7 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+
 import type { MessageType, CoordinateSet, ModelResponse, ReadingMetadata } from './types'
 
 // Types for database records
@@ -91,10 +92,7 @@ export async function saveReading(reading: ReadingInsert): Promise<{ id: string 
 /**
  * Get readings for a session (for future reading history feature)
  */
-export async function getSessionReadings(
-  sessionId: string,
-  limit = 10
-): Promise<ReadingRecord[]> {
+export async function getSessionReadings(sessionId: string, limit = 10): Promise<ReadingRecord[]> {
   const client = getSupabaseClient()
   if (!client) {
     return []
@@ -130,11 +128,7 @@ export async function getReading(id: string): Promise<ReadingRecord | null> {
   }
 
   try {
-    const { data, error } = await client
-      .from('readings')
-      .select('*')
-      .eq('id', id)
-      .single()
+    const { data, error } = await client.from('readings').select('*').eq('id', id).single()
 
     if (error) {
       console.error('Error fetching reading:', error)

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+
 import type { CoordinateSet } from '@/lib/types'
 
 interface CoordinateRevealProps {
@@ -44,18 +45,11 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
 
           <div className="space-y-3">
             {coordinates.questions.map((question) => {
-              const answer = coordinates.answers.find(a => a.questionId === question.id)
+              const answer = coordinates.answers.find((a) => a.questionId === question.id)
               return (
-                <div
-                  key={question.id}
-                  className="p-3 bg-cosmic-deep/50 rounded-lg"
-                >
-                  <p className="text-sm text-cream/60 mb-1">
-                    {question.text}
-                  </p>
-                  <p className="text-sm text-cream font-medium">
-                    {answer?.answer || '—'}
-                  </p>
+                <div key={question.id} className="p-3 bg-cosmic-deep/50 rounded-lg">
+                  <p className="text-sm text-cream/60 mb-1">{question.text}</p>
+                  <p className="text-sm text-cream font-medium">{answer?.answer || '—'}</p>
                 </div>
               )
             })}

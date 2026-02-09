@@ -24,7 +24,7 @@ interface SupabaseKeys {
 async function getOrganizations(): Promise<{ id: string; name: string }[]> {
   const response = await fetch(`${SUPABASE_API_URL}/organizations`, {
     headers: {
-      'Authorization': `Bearer ${SUPABASE_ACCESS_TOKEN}`,
+      Authorization: `Bearer ${SUPABASE_ACCESS_TOKEN}`,
       'Content-Type': 'application/json',
     },
   })
@@ -40,7 +40,7 @@ async function createProject(orgId: string): Promise<SupabaseProject> {
   const response = await fetch(`${SUPABASE_API_URL}/projects`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${SUPABASE_ACCESS_TOKEN}`,
+      Authorization: `Bearer ${SUPABASE_ACCESS_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -68,7 +68,7 @@ interface ApiKey {
 async function getProjectKeys(projectRef: string): Promise<SupabaseKeys> {
   const response = await fetch(`${SUPABASE_API_URL}/projects/${projectRef}/api-keys`, {
     headers: {
-      'Authorization': `Bearer ${SUPABASE_ACCESS_TOKEN}`,
+      Authorization: `Bearer ${SUPABASE_ACCESS_TOKEN}`,
       'Content-Type': 'application/json',
     },
   })
@@ -90,7 +90,7 @@ async function waitForProjectReady(projectRef: string, maxAttempts = 30): Promis
   for (let i = 0; i < maxAttempts; i++) {
     const response = await fetch(`${SUPABASE_API_URL}/projects/${projectRef}`, {
       headers: {
-        'Authorization': `Bearer ${SUPABASE_ACCESS_TOKEN}`,
+        Authorization: `Bearer ${SUPABASE_ACCESS_TOKEN}`,
         'Content-Type': 'application/json',
       },
     })
@@ -104,7 +104,7 @@ async function waitForProjectReady(projectRef: string, maxAttempts = 30): Promis
     }
 
     console.log(`  Attempt ${i + 1}/${maxAttempts}...`)
-    await new Promise(resolve => setTimeout(resolve, 10000)) // Wait 10 seconds
+    await new Promise((resolve) => setTimeout(resolve, 10000)) // Wait 10 seconds
   }
 
   throw new Error('Project did not become ready in time')
@@ -122,7 +122,7 @@ async function runMigrations(projectRef: string): Promise<void> {
   const response = await fetch(`${SUPABASE_API_URL}/projects/${projectRef}/database/query`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${SUPABASE_ACCESS_TOKEN}`,
+      Authorization: `Bearer ${SUPABASE_ACCESS_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ query: sql }),
@@ -137,6 +137,7 @@ async function runMigrations(projectRef: string): Promise<void> {
 }
 
 function generatePassword(): string {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   const crypto = require('crypto')
   return crypto.randomBytes(18).toString('base64').replace(/[+/=]/g, 'x')
 }
@@ -188,13 +189,13 @@ export async function setupSupabase(): Promise<{
 // Run if called directly
 if (require.main === module) {
   setupSupabase()
-    .then(result => {
+    .then((result) => {
       console.log('\nAdd these to your .env:')
       console.log(`NEXT_PUBLIC_SUPABASE_URL=${result.url}`)
       console.log(`NEXT_PUBLIC_SUPABASE_ANON_KEY=${result.anonKey}`)
       console.log(`SUPABASE_SERVICE_ROLE_KEY=${result.serviceRoleKey}`)
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Setup failed:', error)
       process.exit(1)
     })

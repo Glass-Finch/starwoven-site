@@ -46,10 +46,10 @@ async function main(): Promise<void> {
     'SUPABASE_ACCESS_TOKEN',
   ]
 
-  const missing = required.filter(key => !process.env[key])
+  const missing = required.filter((key) => !process.env[key])
   if (missing.length > 0) {
     console.error('Missing required environment variables:')
-    missing.forEach(key => console.error(`  - ${key}`))
+    missing.forEach((key) => console.error(`  - ${key}`))
     process.exit(1)
   }
 
@@ -108,7 +108,6 @@ async function main(): Promise<void> {
     console.log('  2. Run: pnpm install')
     console.log('  3. Run: pnpm dev')
     console.log('  4. Deploy: vercel --prod')
-
   } catch (error) {
     console.error('\nSetup failed:', error)
     process.exit(1)

@@ -27,6 +27,7 @@ Each message type serves a different user need. The intention prompt and placeho
 **Note:** We're not asking the person directly — we're asking ABOUT them and the relationship.
 
 **What they're really asking:**
+
 - Does this person like me?
 - What do they really feel about me?
 - Why did they act that way?
@@ -41,6 +42,7 @@ Each message type serves a different user need. The intention prompt and placeho
 | `intention` | What do you want to know? | Does this person like me? What do they really feel? Is there a future here? | Yes |
 
 **Example intentions:**
+
 - "Does he like me?"
 - "Why has she been distant?"
 - "Is there a future here?"
@@ -53,6 +55,7 @@ Each message type serves a different user need. The intention prompt and placeho
 **Who uses this:** Someone grieving, seeking closure, or wanting connection with someone who has passed. They might want to ask something OR express something.
 
 **What they're really asking:**
+
 - Are they okay?
 - Do they forgive me?
 - What would they say to me now?
@@ -68,6 +71,7 @@ Each message type serves a different user need. The intention prompt and placeho
 | `intention` | What do you want to ask or tell them? | Are they okay? Do they forgive me? What would they say to me now? | Yes |
 
 **Example intentions:**
+
 - "Are you okay?"
 - "Do you forgive me?"
 - "What would you say about my life now?"
@@ -80,6 +84,7 @@ Each message type serves a different user need. The intention prompt and placeho
 **Who uses this:** Someone wanting to ask their future self for advice. The version of them that has already lived through whatever they're facing now.
 
 **What they're really asking:**
+
 - What would I tell myself if I could look back?
 - What do I already know, deep down?
 - What would my wiser self say about this?
@@ -92,6 +97,7 @@ Each message type serves a different user need. The intention prompt and placeho
 | `intention` | What do you need advice on? | Should I take this job? Am I on the right path? What should I focus on? | Yes |
 
 **Example intentions:**
+
 - "Should I take this job?"
 - "Am I on the right path?"
 - "What should I focus on right now?"
@@ -104,6 +110,7 @@ Each message type serves a different user need. The intention prompt and placeho
 **Who uses this:** Someone with something on their mind, not tied to a specific person or decision. Seeking insight or reflection.
 
 **What they're really asking:**
+
 - What do I need to hear right now?
 - What's going on with me?
 - What am I not seeing?
@@ -116,6 +123,7 @@ Each message type serves a different user need. The intention prompt and placeho
 No additional personalization fields — just the intention.
 
 **Example intentions:**
+
 - "What do I need to hear right now?"
 - "What am I not seeing?"
 - "What am I avoiding?"
@@ -127,6 +135,7 @@ No additional personalization fields — just the intention.
 **Who uses this:** Someone facing a yes/no decision. Like a sophisticated magic 8-ball — they have a specific question they need an answer to.
 
 **What they're really asking:**
+
 - Should I do this or not?
 - Is it time?
 - Yes or no?
@@ -139,6 +148,7 @@ No additional personalization fields — just the intention.
 No additional personalization fields — the question itself is the focus.
 
 **Example intentions:**
+
 - "Should I take the job?"
 - "Should I move?"
 - "Is it time to end this relationship?"
@@ -151,6 +161,7 @@ No additional personalization fields — the question itself is the focus.
 **Who uses this:** Someone asking about their purpose. What they're meant to do. What they're here for.
 
 **What they're really asking:**
+
 - What is my purpose?
 - What am I meant to do?
 - What is my calling?
@@ -164,6 +175,7 @@ No additional personalization fields — the question itself is the focus.
 | `intention` | What do you want to know about your purpose? | What is my purpose? What am I meant to do? What is my calling? | Yes |
 
 **Example intentions:**
+
 - "What is my purpose?"
 - "What am I meant to do?"
 - "What is my calling?"
@@ -178,6 +190,7 @@ No additional personalization fields — the question itself is the focus.
 **As a user**, I want to choose the type of message I need so that it speaks to my specific situation.
 
 **Acceptance Criteria:**
+
 - I see 6 distinct options, each with a clear label and description
 - The descriptions are functional and clear (user knows what each channel is for)
 - I understand the framing before I commit
@@ -200,6 +213,7 @@ No additional personalization fields — the question itself is the focus.
 **As a user**, I want to answer quick intuitive questions so that my reading is anchored to this specific moment.
 
 **Acceptance Criteria:**
+
 - Questions feel personal and evocative, not like a quiz
 - All questions are multiple choice (4 options)
 - I tap once and immediately advance
@@ -208,6 +222,7 @@ No additional personalization fields — the question itself is the focus.
 - Questions should NEVER be trivia or factual
 
 **Question Categories:**
+
 - **Themed**: Intuitive questions related to my message type
   - "What word lives unspoken between you?"
   - "Which element speaks to the energy between you?"
@@ -216,6 +231,7 @@ No additional personalization fields — the question itself is the focus.
   - "What texture comes to mind?"
 
 **Anti-patterns (never do this):**
+
 - "What phase is the moon?" (trivia)
 - "What time of day is it?" (auto-generatable)
 - "Are you alone?" (too direct/factual)
@@ -227,6 +243,7 @@ No additional personalization fields — the question itself is the focus.
 **As a user**, I want to provide a name or brief context so the reading feels personal without requiring deep disclosure.
 
 **Acceptance Criteria:**
+
 - Only certain message types ask for a name
 - Single text field, optional
 - Name appears in the synthesized message where appropriate
@@ -249,6 +266,7 @@ No additional personalization fields — the question itself is the focus.
 **As a user**, I want to set an intention for my reading so the message addresses what I actually need.
 
 **Acceptance Criteria:**
+
 - The prompt is specific to my message type
 - The placeholder text gives a starting point
 - Encouraged to be open-ended, not specific
@@ -272,12 +290,14 @@ No additional personalization fields — the question itself is the focus.
 **As a user**, I want to see progress while the oracles respond, without theatrical copy that breaks the spell.
 
 **Acceptance Criteria:**
+
 - Visual progression, not text: the starfield deepens, constellations form, the field "fills in"
 - Oracle indicators light up as each model responds
 - Constellation lines connect between completed responses
 - The experience feels like watching something assemble, not waiting
 
 **Loading Experience Options:**
+
 1. **Silent visual** — No text. Stars multiply, brightness increases, lines form between oracles.
 2. **Minimal status** — Just "3 of 5" or progress indicator. No poetic loading messages.
 3. **Wry single line** — One understated phrase that doesn't rotate: "Listening." or "Gathering."
@@ -291,6 +311,7 @@ Avoid: rotating mystical phrases, anything that sounds like a loading screen wro
 **As a user**, I want to receive the synthesized message so that I can reflect on what emerged.
 
 **Acceptance Criteria:**
+
 - The synthesis appears word-by-word (60ms per word)
 - A cursor blinks during reveal
 - After reveal, I can expand to see individual threads
@@ -316,6 +337,7 @@ Avoid: rotating mystical phrases, anything that sounds like a loading screen wro
 **As a user**, if some oracles fail to respond, I still want to receive a message from those that succeeded.
 
 **Acceptance Criteria:**
+
 - Synthesis proceeds with 3+ successful responses
 - Failed oracles are dimmed in the loader
 - No explicit failure messaging (just visual dimming)
@@ -328,12 +350,14 @@ Avoid: rotating mystical phrases, anything that sounds like a loading screen wro
 **As a user**, if channeling fails completely, I want to try again without losing my intention.
 
 **Acceptance Criteria:**
+
 - Error message is clear and understated, not theatrical
 - I can retry with one tap
 - I can start over with a different message type
 - My coordinates are preserved for retry
 
 **Error Copy (understated, not theatrical):**
+
 - "Something slipped. Try again." (generic)
 - "The connection timed out." (timeout)
 - "Couldn't reach the oracles. Check your connection." (network)
@@ -356,19 +380,24 @@ Avoid: "The cosmic threads have frayed" or similar overwrought language.
 ### Register Examples
 
 **Too theatrical:**
+
 > "The veils between worlds grow thin as the oracles attune to your intention..."
 
 **Too clinical:**
+
 > "Five AI models are processing your query in parallel."
 
 **Right register:**
+
 > "The oracles are listening."
 
 ### Words to Use Sparingly
+
 - Thread, pattern, convergence (fine, but don't overuse)
 - Emerge, surface, arise (one per page max)
 
 ### Words to Avoid
+
 - Magic, magical, mystical, spiritual (too on-the-nose)
 - Weave, woven (sounds like hair products)
 - AI, model, algorithm (breaks immersion)

@@ -2,9 +2,10 @@
  * Run Supabase migration
  */
 import 'dotenv/config'
-import { createClient } from '@supabase/supabase-js'
 import * as fs from 'fs'
 import * as path from 'path'
+
+import { createClient } from '@supabase/supabase-js'
 
 async function runMigration() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -26,8 +27,8 @@ async function runMigration() {
   // Split into statements and execute each
   const statements = sql
     .split(';')
-    .map(s => s.trim())
-    .filter(s => s.length > 0 && !s.startsWith('--'))
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0 && !s.startsWith('--'))
 
   console.log(`Running ${statements.length} SQL statements...`)
 
@@ -42,7 +43,7 @@ async function runMigration() {
       } else {
         console.log(`Statement ${i + 1}: OK`)
       }
-    } catch (e) {
+    } catch {
       console.log(`Statement ${i + 1}: Skipped (may not be supported via RPC)`)
     }
   }

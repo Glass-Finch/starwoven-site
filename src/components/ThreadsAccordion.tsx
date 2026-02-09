@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+
 import type { ModelResponse, AIModel } from '@/lib/types'
 import { ORACLE_INFO } from '@/lib/ai'
 
@@ -12,7 +13,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
   const [isOpen, setIsOpen] = useState(false)
   const [expandedThread, setExpandedThread] = useState<AIModel | null>(null)
 
-  const successfulThreads = threads.filter(t => t.status === 'success')
+  const successfulThreads = threads.filter((t) => t.status === 'success')
 
   return (
     <div className="border border-cream/10 rounded-xl overflow-hidden">
@@ -21,9 +22,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
         onClick={() => setIsOpen(!isOpen)}
         className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-cream/5 transition-colors"
       >
-        <span className="text-sm text-cream">
-          View threads ({successfulThreads.length})
-        </span>
+        <span className="text-sm text-cream">View threads ({successfulThreads.length})</span>
         <svg
           className={`w-4 h-4 text-gray-muted transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
@@ -59,7 +58,12 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
                   viewBox="0 0 24 24"
                   stroke="currentColor"
                 >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
                 </svg>
               </button>
 
@@ -81,13 +85,13 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
           ))}
 
           {/* Failed threads */}
-          {threads.filter(t => t.status !== 'success').length > 0 && (
+          {threads.filter((t) => t.status !== 'success').length > 0 && (
             <div className="px-4 py-3 border-t border-cream/10">
               <p className="text-xs text-gray-muted">
                 Some channels did not respond:{' '}
                 {threads
-                  .filter(t => t.status !== 'success')
-                  .map(t => ORACLE_INFO[t.model].name)
+                  .filter((t) => t.status !== 'success')
+                  .map((t) => ORACLE_INFO[t.model].name)
                   .join(', ')}
               </p>
             </div>

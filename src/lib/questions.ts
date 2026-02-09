@@ -490,7 +490,7 @@ const sageQuestions: Question[] = [
     id: 'future-work',
     messageType: 'sage',
     category: 'themed',
-    text: 'What is your future self\'s work?',
+    text: "What is your future self's work?",
     answerType: 'multiple_choice',
     options: ['Creating', 'Healing', 'Teaching', 'Leading'],
   },
@@ -524,7 +524,7 @@ const sageQuestions: Question[] = [
     category: 'themed',
     text: 'What did you have to let go of?',
     answerType: 'multiple_choice',
-    options: ['Control', 'Safety', 'Others\' opinions', 'The past'],
+    options: ['Control', 'Safety', "Others' opinions", 'The past'],
   },
   {
     id: 'future-gain',
@@ -916,10 +916,18 @@ const callingQuestions: Question[] = [
 // Combine type-specific with some universal questions for variety
 const themedQuestions: Record<MessageType, Question[]> = {
   beloved: [...belovedQuestions, ...colorQuestions.slice(0, 2), ...cosmicQuestions.slice(0, 2)],
-  ancestor: [...ancestorQuestions, ...symbolicQuestions.slice(0, 2), ...emotionalQuestions.slice(0, 2)],
+  ancestor: [
+    ...ancestorQuestions,
+    ...symbolicQuestions.slice(0, 2),
+    ...emotionalQuestions.slice(0, 2),
+  ],
   sage: [...sageQuestions, ...cosmicQuestions.slice(0, 2), ...colorQuestions.slice(0, 2)],
   cosmos: [...cosmosQuestions, ...symbolicQuestions.slice(0, 2), ...cosmicQuestions.slice(0, 2)],
-  crossroads: [...crossroadsQuestions, ...emotionalQuestions.slice(0, 2), ...symbolicQuestions.slice(0, 2)],
+  crossroads: [
+    ...crossroadsQuestions,
+    ...emotionalQuestions.slice(0, 2),
+    ...symbolicQuestions.slice(0, 2),
+  ],
   calling: [...callingQuestions, ...cosmicQuestions.slice(0, 2), ...emotionalQuestions.slice(0, 2)],
 }
 
@@ -1001,7 +1009,7 @@ const groundingQuestions: Question[] = [
     id: 'ground-space-energy',
     messageType: null,
     category: 'grounding',
-    text: 'How would you describe this space\'s energy?',
+    text: "How would you describe this space's energy?",
     answerType: 'multiple_choice',
     options: ['Grounded', 'Airy', 'Vibrant', 'Still'],
   },
@@ -1120,14 +1128,16 @@ export function selectQuestions(messageType: MessageType): Question[] {
  * Generate coordinate string from answers
  * Format: xxxx-xxxx (all numbers)
  */
-export function generateCoordinateString(answers: { questionId: string; answer: string }[]): string {
+export function generateCoordinateString(
+  answers: { questionId: string; answer: string }[]
+): string {
   // Create deterministic but pseudo-random coordinates based on answers
   let hash = 0
-  const answerStr = answers.map(a => `${a.questionId}:${a.answer}`).join('|')
+  const answerStr = answers.map((a) => `${a.questionId}:${a.answer}`).join('|')
 
   for (let i = 0; i < answerStr.length; i++) {
     const char = answerStr.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
+    hash = (hash << 5) - hash + char
     hash = hash & hash
   }
 

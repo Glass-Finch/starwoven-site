@@ -28,14 +28,14 @@ Starwoven doesn't explain what it does. It presents an experience and lets you d
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|------------|
-| Framework | Next.js 14+ (App Router) |
-| Language | TypeScript |
-| Styling | Tailwind CSS |
-| State | Zustand |
-| Database | Supabase (Postgres + RLS) |
-| Deployment | Vercel |
+| Layer      | Technology                |
+| ---------- | ------------------------- |
+| Framework  | Next.js 14+ (App Router)  |
+| Language   | TypeScript                |
+| Styling    | Tailwind CSS              |
+| State      | Zustand                   |
+| Database   | Supabase (Postgres + RLS) |
+| Deployment | Vercel                    |
 
 ### AI Providers
 
@@ -74,27 +74,31 @@ Starwoven doesn't explain what it does. It presents an experience and lets you d
 **Aesthetic**: Underglow-inspired cosmic minimalism. Deep void backgrounds, golden accents, premium feel.
 
 ### Colors
+
 ```css
---void: #030308;           /* Deepest background */
---cosmic-black: #070711;   /* Primary background */
---cosmic-deep: #0c0c1a;    /* Card backgrounds */
---cream: #e8e4dc;          /* Primary text */
---cream-soft: #d4d0c8;     /* Secondary text */
---cream-muted: #9a9488;    /* Tertiary text */
---gold: #c8a84e;           /* Accent */
---gold-bright: #ddc06a;    /* Hover states */
+--void: #030308; /* Deepest background */
+--cosmic-black: #070711; /* Primary background */
+--cosmic-deep: #0c0c1a; /* Card backgrounds */
+--cream: #e8e4dc; /* Primary text */
+--cream-soft: #d4d0c8; /* Secondary text */
+--cream-muted: #9a9488; /* Tertiary text */
+--gold: #c8a84e; /* Accent */
+--gold-bright: #ddc06a; /* Hover states */
 ```
 
 ### Typography
+
 - **Headlines**: Playfair Display (elegant serif, 400 weight)
 - **Body**: Inter (clean sans-serif)
 
 ### Visual Effects
+
 - **Underglow**: Radial golden glow beneath interactive elements
 - **Card hover**: Subtle lift with border glow
 - **Button glow**: Golden underglow on primary actions
 
 ### Animations
+
 - `float`: 8s gentle vertical drift
 - `breathe`: 6s opacity/scale pulse
 - `twinkle`: 3s star-like opacity variance
@@ -106,14 +110,14 @@ Starwoven doesn't explain what it does. It presents an experience and lets you d
 
 Six channels, each with a distinct purpose:
 
-| Label | Description | User Inputs |
-|-------|-------------|-------------|
-| The Beloved | Ask about a romantic connection | Your name, their name |
-| The Ancestor | Seek connection with someone who has passed | Your name, their name, relationship |
-| The Sage | Ask your future self for advice | Your name, birthday |
-| The Cosmos | Seek insight on what's on your mind | (intention only) |
-| The Crossroads | Get clarity on a yes or no decision | (intention only) |
-| The Calling | Explore your purpose | Your name, birthday |
+| Label          | Description                                 | User Inputs                         |
+| -------------- | ------------------------------------------- | ----------------------------------- |
+| The Beloved    | Ask about a romantic connection             | Your name, their name               |
+| The Ancestor   | Seek connection with someone who has passed | Your name, their name, relationship |
+| The Sage       | Ask your future self for advice             | Your name, birthday                 |
+| The Cosmos     | Seek insight on what's on your mind         | (intention only)                    |
+| The Crossroads | Get clarity on a yes or no decision         | (intention only)                    |
+| The Calling    | Explore your purpose                        | Your name, birthday                 |
 
 All journeys include 5 coordinate questions (3 themed + 2 grounding).
 
@@ -124,23 +128,27 @@ All journeys include 5 coordinate questions (3 themed + 2 grounding).
 **Minimize typing, maximize flow.** The journey should feel like answering a cosmic quiz, not filling out a form.
 
 ### Question Design Principles
+
 - **Intuitive, not trivia**: Questions ask what resonates, not what's factually true
 - **No obvious answers**: Every option should feel meaningful and personal
 - **Present-moment grounding**: Anchor to felt sense, not facts (no "what time is it?")
 - **Evocative language**: "What comes to mind?" / "What do you identify with?"
 
 ### Coordinate Questions (all multiple choice)
+
 - **5 rapid-fire questions** generate unique coordinates
 - **3 themed** (specific to message type) + **2 grounding** (present-moment awareness)
 - **10% chance** one grounding swaps for a "weird" question
 - Auto-advance on selection for seamless flow
 
 ### Intention Input
+
 - **250 character limit** — brevity invites mystery
 - **Guidance**: "The more open-ended, the better" / "Less detail invites more discovery"
 - Open-ended questions receive richer, more intuitive responses
 
 ### Examples
+
 **Themed**: "Which element speaks to the energy between you?" (Fire/Water/Earth/Air)
 **Grounding**: "What sound is closest to you right now?" (Silence/Nature/Machine/Voice)
 **Liminal**: "A number keeps appearing in your life. What is it?" (3/7/11/22)
@@ -202,6 +210,7 @@ supabase/
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - pnpm (recommended) or npm
 - API keys for all AI providers
@@ -248,37 +257,42 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 ## Domains
 
-| Domain | Purpose |
-|--------|---------|
-| **starwoven.app** | Primary (consumer-facing) |
-| starwoven.academy | Future learning content |
-| starwoven.institute | Future research angle |
-| starwoven.observer | Alternative entry point |
-| starwoven.org | Non-profit/community |
-| getstarwoven.com | SEO fallback |
+| Domain              | Purpose                   |
+| ------------------- | ------------------------- |
+| **starwoven.app**   | Primary (consumer-facing) |
+| starwoven.academy   | Future learning content   |
+| starwoven.institute | Future research angle     |
+| starwoven.observer  | Alternative entry point   |
+| starwoven.org       | Non-profit/community      |
+| getstarwoven.com    | SEO fallback              |
 
 ---
 
 ## Development Phases
 
 ### Phase 0: Infrastructure Setup
+
 - Automated setup via scripts (Vercel, Namecheap DNS, Supabase)
 
 ### Phase 1: Foundation + Design System
+
 - Next.js 14 + TypeScript + Tailwind
 - Cosmic color palette and typography
 - Starfield background component
 
 ### Phase 2: User Journey UI
+
 - MessageTypeSelector, QuestionFlow, IntentionInput
 - ChannelingLoader, WovenMessage, ThreadsAccordion
 
 ### Phase 3: AI Integration
+
 - Single `/api/channel` endpoint
 - Parallel calls to 5 providers
 - Synthesis with Claude Opus
 
 ### Phase 4: Polish + Ship
+
 - Supabase persistence
 - Error states with mystical copy
 - Mobile responsiveness
@@ -311,20 +325,20 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 ## Future Roadmap (v2+)
 
-| Feature | Status |
-|---------|--------|
-| User accounts | Planned |
-| Reading history | Planned |
+| Feature                | Status  |
+| ---------------------- | ------- |
+| User accounts          | Planned |
+| Reading history        | Planned |
 | Sharing with OG images | Planned |
-| Question A/B testing | Planned |
-| Analytics | Planned |
-| Rate limiting | Planned |
+| Question A/B testing   | Planned |
+| Analytics              | Planned |
+| Rate limiting          | Planned |
 
 ---
 
 ## The Tone
 
-Elegant, minimal, cosmic. Takes itself seriously while knowing it's doing something strange. No winking irony, but no earnest New Age sincerity either. The interface should feel like: *we built something and we're not entirely sure what it does.*
+Elegant, minimal, cosmic. Takes itself seriously while knowing it's doing something strange. No winking irony, but no earnest New Age sincerity either. The interface should feel like: _we built something and we're not entirely sure what it does._
 
 Co-Star's restraint. Underglow's premium feel. A hint of Borges.
 

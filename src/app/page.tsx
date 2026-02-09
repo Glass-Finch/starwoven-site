@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useCallback } from 'react'
+
 import { Starfield } from '@/components/Starfield'
 import { MessageTypeSelector } from '@/components/MessageTypeSelector'
 import { PersonalizationForm } from '@/components/PersonalizationForm'
@@ -119,7 +120,16 @@ export default function Home(): React.ReactElement {
       console.error('Channeling error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     }
-  }, [messageType, coordinates, intention, personalization, sessionId, addModelResponse, setSynthesis, setError])
+  }, [
+    messageType,
+    coordinates,
+    intention,
+    personalization,
+    sessionId,
+    addModelResponse,
+    setSynthesis,
+    setError,
+  ])
 
   // Handle intention submission
   const handleIntentionSubmit = async (intentionText: string) => {
@@ -150,9 +160,7 @@ export default function Home(): React.ReactElement {
         {currentStep === 'select' && (
           <div className="space-y-8">
             <div className="text-center mb-12">
-              <h1 className="text-gradient mb-4">
-                Starwoven
-              </h1>
+              <h1 className="text-gradient mb-4">Starwoven</h1>
               <p className="text-gray-muted text-lg max-w-md mx-auto">
                 A question, seen from many angles.
               </p>
@@ -173,26 +181,17 @@ export default function Home(): React.ReactElement {
 
         {/* Coordinate questions step */}
         {currentStep === 'coordinates' && questions.length > 0 && (
-          <QuestionFlow
-            questions={questions}
-            onComplete={handleQuestionsComplete}
-          />
+          <QuestionFlow questions={questions} onComplete={handleQuestionsComplete} />
         )}
 
         {/* Intention step */}
         {currentStep === 'intention' && (
-          <IntentionInput
-            onSubmit={handleIntentionSubmit}
-            messageTypeConfig={messageTypeConfig}
-          />
+          <IntentionInput onSubmit={handleIntentionSubmit} messageTypeConfig={messageTypeConfig} />
         )}
 
         {/* Channeling step */}
         {currentStep === 'channeling' && (
-          <ChannelingLoader
-            responses={modelResponses}
-            isComplete={!!synthesis}
-          />
+          <ChannelingLoader responses={modelResponses} isComplete={!!synthesis} />
         )}
 
         {/* Error state */}
@@ -201,22 +200,32 @@ export default function Home(): React.ReactElement {
             <div className="card p-8 mb-4">
               {/* Mystical error icon */}
               <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="w-8 h-8 text-gold">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  className="w-8 h-8 text-gold"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"
+                  />
                 </svg>
               </div>
 
-              <h3 className="font-serif text-xl text-cream mb-3">
-                Something slipped
-              </h3>
+              <h3 className="font-serif text-xl text-cream mb-3">Something slipped</h3>
               <p className="text-gray-muted mb-2">
                 {error.includes('timeout') || error.includes('Timeout')
                   ? 'The connection timed out.'
-                  : error.includes('network') || error.includes('Network') || error.includes('fetch')
-                  ? 'Couldn\'t reach the oracles. Check your connection.'
-                  : error.includes('API') || error.includes('500')
-                  ? 'One or more oracles didn\'t respond.'
-                  : 'The transmission was interrupted.'}
+                  : error.includes('network') ||
+                      error.includes('Network') ||
+                      error.includes('fetch')
+                    ? "Couldn't reach the oracles. Check your connection."
+                    : error.includes('API') || error.includes('500')
+                      ? "One or more oracles didn't respond."
+                      : 'The transmission was interrupted.'}
               </p>
               <p className="text-gray-muted/60 text-sm mb-8">
                 Your intention and coordinates are preserved.

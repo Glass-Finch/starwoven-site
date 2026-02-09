@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback, useEffect } from 'react'
+
 import type { MessageTypeConfig, InputFieldConfig } from '@/lib/types'
 
 interface PersonalizationFormProps {
@@ -24,10 +25,13 @@ export function PersonalizationForm({
     setValues((prev) => ({ ...prev, [field]: value }))
   }, [])
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault()
-    onSubmit(values)
-  }, [values, onSubmit])
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault()
+      onSubmit(values)
+    },
+    [values, onSubmit]
+  )
 
   const isValid = messageTypeConfig.inputFields.every((field) => {
     if (!field.required) return true
@@ -38,9 +42,7 @@ export function PersonalizationForm({
     <div className="w-full max-w-md mx-auto px-4">
       <div className="text-center mb-8">
         <h2 className="text-gradient mb-3">{messageTypeConfig.label}</h2>
-        <p className="text-gray-muted">
-          {messageTypeConfig.description}
-        </p>
+        <p className="text-gray-muted">{messageTypeConfig.description}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-5">

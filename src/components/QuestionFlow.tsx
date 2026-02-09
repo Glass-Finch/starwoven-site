@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+
 import type { Question, Answer } from '@/lib/types'
 
 interface QuestionFlowProps {
@@ -17,35 +18,41 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
   const currentQuestion = questions[currentIndex]
   const progress = ((currentIndex + 1) / questions.length) * 100
 
-  const handleAnswer = useCallback((answer: string) => {
-    const newAnswer: Answer = {
-      questionId: currentQuestion.id,
-      answer,
-      timestamp: Date.now(),
-    }
-
-    const updatedAnswers = [...answers, newAnswer]
-    setAnswers(updatedAnswers)
-    setTextInput('')
-
-    // Transition to next question or complete
-    setIsTransitioning(true)
-    setTimeout(() => {
-      if (currentIndex < questions.length - 1) {
-        setCurrentIndex(currentIndex + 1)
-      } else {
-        onComplete(updatedAnswers)
+  const handleAnswer = useCallback(
+    (answer: string) => {
+      const newAnswer: Answer = {
+        questionId: currentQuestion.id,
+        answer,
+        timestamp: Date.now(),
       }
-      setIsTransitioning(false)
-    }, 300)
-  }, [currentQuestion, answers, currentIndex, questions.length, onComplete])
 
-  const handleTextSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault()
-    if (textInput.trim()) {
-      handleAnswer(textInput.trim())
-    }
-  }, [textInput, handleAnswer])
+      const updatedAnswers = [...answers, newAnswer]
+      setAnswers(updatedAnswers)
+      setTextInput('')
+
+      // Transition to next question or complete
+      setIsTransitioning(true)
+      setTimeout(() => {
+        if (currentIndex < questions.length - 1) {
+          setCurrentIndex(currentIndex + 1)
+        } else {
+          onComplete(updatedAnswers)
+        }
+        setIsTransitioning(false)
+      }, 300)
+    },
+    [currentQuestion, answers, currentIndex, questions.length, onComplete]
+  )
+
+  const handleTextSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault()
+      if (textInput.trim()) {
+        handleAnswer(textInput.trim())
+      }
+    },
+    [textInput, handleAnswer]
+  )
 
   // Reset state when questions change
   useEffect(() => {
@@ -119,8 +126,11 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
       {/* Category indicator */}
       <div className="mt-8 text-center">
         <span className="inline-block px-3 py-1 text-xs text-gray-muted bg-cream/5 rounded-full">
-          {currentQuestion.category === 'grounding' ? 'Grounding' :
-           currentQuestion.category === 'weird' ? 'Opening' : 'Attuning'}
+          {currentQuestion.category === 'grounding'
+            ? 'Grounding'
+            : currentQuestion.category === 'weird'
+              ? 'Opening'
+              : 'Attuning'}
         </span>
       </div>
     </div>

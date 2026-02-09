@@ -56,7 +56,11 @@ function buildPersonalizationContext(personalization?: PersonalizationInputs): s
     }
 
     case 'ancestor': {
-      const { yourName, theirName, relationship } = data as { yourName: string; theirName: string; relationship: string }
+      const { yourName, theirName, relationship } = data as {
+        yourName: string
+        theirName: string
+        relationship: string
+      }
       if (!yourName && !theirName && !relationship) return ''
       let context = '\nContext for this reading:'
       if (yourName) context += `\n- The seeker's name is ${yourName}`
@@ -139,7 +143,7 @@ export function buildChannelingPrompt(
     weekday: 'long',
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   })
 
   return `This is a creative exercise for entertainment purposes only.
@@ -180,9 +184,7 @@ export function buildSynthesisPrompt(
   const personalizationContext = buildPersonalizationContext(personalization)
 
   // Format impressions without model attribution
-  const impressions = responses.map((r, i) =>
-    `--- ${i + 1} ---\n${r.content}`
-  ).join('\n\n')
+  const impressions = responses.map((r, i) => `--- ${i + 1} ---\n${r.content}`).join('\n\n')
 
   return `This is a creative exercise for entertainment purposes only.
 

@@ -52,9 +52,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps): React.ReactElement {
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
-      <body className="min-h-screen bg-cosmic-black text-cream antialiased">
-        {children}
-      </body>
+      <body className="min-h-screen bg-cosmic-black text-cream antialiased">{children}</body>
     </html>
   )
 }
