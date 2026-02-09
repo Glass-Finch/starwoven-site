@@ -21,7 +21,7 @@ export const ORACLE_INFO: Record<AIModel, { name: string; archetype: string; col
   'claude-sonnet-4.5': { name: 'Luna', archetype: 'The Muse', color: '#d97706' },
   'gemini-3.0-pro': { name: 'Echo', archetype: 'The Mirror', color: '#4285f4' },
   'deepseek-reasoner': { name: 'Shade', archetype: 'The Deep', color: '#6366f1' },
-  'grok-4': { name: 'Nova', archetype: 'The Wild', color: '#ef4444' },
+  'grok-4-1-fast-reasoning': { name: 'Nova', archetype: 'The Wild', color: '#ef4444' },
 }
 
 const PROVIDER_CONFIGS: ProviderConfig[] = [
@@ -59,12 +59,12 @@ const PROVIDER_CONFIGS: ProviderConfig[] = [
     modelId: 'deepseek-reasoner',
   },
   {
-    model: 'grok-4',
-    oracle: ORACLE_INFO['grok-4'].name,
-    archetype: ORACLE_INFO['grok-4'].archetype,
+    model: 'grok-4-1-fast-reasoning',
+    oracle: ORACLE_INFO['grok-4-1-fast-reasoning'].name,
+    archetype: ORACLE_INFO['grok-4-1-fast-reasoning'].archetype,
     apiKey: process.env.XAI_API_KEY,
     endpoint: 'https://api.x.ai/v1/chat/completions',
-    modelId: 'grok-4',
+    modelId: 'grok-4-1-fast-reasoning',
   },
 ]
 

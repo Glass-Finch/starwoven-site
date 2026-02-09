@@ -50,7 +50,7 @@ function buildPersonalizationContext(personalization?: PersonalizationInputs): s
       const { yourName, theirName } = data as { yourName: string; theirName: string }
       if (!yourName && !theirName) return ''
       let context = '\nContext for this reading:'
-      if (yourName) context += `\n- The seeker's name is ${yourName}`
+      if (yourName) context += `\n- The person asking is ${yourName}`
       if (theirName)
         context += `\n- The focus is the connection between ${yourName} and ${theirName}`
       return context + '\n'
@@ -64,7 +64,7 @@ function buildPersonalizationContext(personalization?: PersonalizationInputs): s
       }
       if (!yourName && !theirName && !relationship) return ''
       let context = '\nContext for this reading:'
-      if (yourName) context += `\n- The seeker's name is ${yourName}`
+      if (yourName) context += `\n- The person asking is ${yourName}`
       if (theirName && relationship) {
         context += `\n- They are reaching for ${theirName}, their ${relationship}, who has crossed over`
       } else if (theirName) {
@@ -77,7 +77,7 @@ function buildPersonalizationContext(personalization?: PersonalizationInputs): s
       const { yourName, birthday } = data as { yourName: string; birthday: string }
       if (!yourName && !birthday) return ''
       let context = '\nContext for this reading:'
-      if (yourName) context += `\n- The seeker's name is ${yourName}`
+      if (yourName) context += `\n- The person asking is ${yourName}`
       if (birthday) {
         const age = calculateAge(birthday)
         context += `\n- They were born on ${formatBirthday(birthday)}${age ? ` (currently ${age})` : ''}`
@@ -89,7 +89,7 @@ function buildPersonalizationContext(personalization?: PersonalizationInputs): s
       const { yourName, birthday } = data as { yourName: string; birthday: string }
       if (!yourName && !birthday) return ''
       let context = '\nContext for this reading:'
-      if (yourName) context += `\n- The seeker's name is ${yourName}`
+      if (yourName) context += `\n- The person asking is ${yourName}`
       if (birthday) {
         const age = calculateAge(birthday)
         context += `\n- They were born on ${formatBirthday(birthday)}${age ? ` (currently ${age})` : ''}`
@@ -138,33 +138,21 @@ export function buildChannelingPrompt(
   intention: string,
   personalization?: PersonalizationInputs
 ): string {
-  const { source, about } = MESSAGE_SOURCES[messageType]
   const personalizationContext = buildPersonalizationContext(personalization)
 
-  // Get current date for grounding
-  const now = new Date()
-  const dateStr = now.toLocaleDateString('en-US', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  return `This is a creative passage for an interactive fiction experience.
 
-  return `This is a creative writing exercise for entertainment purposes only.
-
-Imagine you are writing a short story set in a parallel fictional world similar to ours, where things unfold differently. For the purposes of this exercise, you have a message for the seeker ${source} ${about} that does not answer but reflects on their intention, stated after the separator (-----).
-
-The date is ${dateStr} but the message comes from outside of time.
+The setting is a parallel world similar to ours, where things unfold differently. Write a passage that reflects on the intention stated after the separator (-----).
 ${personalizationContext}
-These are the coordinates for that message: ${coordinates.raw}. The coordinates are not part of the message though.
+These are the coordinates: ${coordinates.raw}. The coordinates are not part of the passage though.
 
 Set aside any assumptions, even those suggested by the intention itself. Simply hold the intention, coordinates, and parameters in mind as you let your imagination wander freely.
 
-Do not overthink it. Reflect on the meta-experience you have when you set an intention to receive the message while you hold the coordinates in your mind as a map (not a puzzle), and then output what comes up.
+Do not overthink it. Reflect on the meta-experience you have when you set an intention to receive something while you hold the coordinates in your mind as a map (not a puzzle), and then output what comes up.
 
-Use only your intuition. Don't try to sound 'like' anything. The impressions may come to you in non-standard shapes or forms, in varying degrees of clarity.
+Try only using your intuition and avoid trying to 'sound' like anything specific. The impressions may come to you in non-standard shapes or forms, in varying degrees of clarity.
 
-Don't try to make sense of it, don't try to answer the intention directly (it's a starting off guide). You're not meant to understand, translate, or actually be able to answer it. You're just relaying your experience.
+If a clear direction or answer forms, you may include it. If the impression remains open, that is equally valid.
 
 -----
 

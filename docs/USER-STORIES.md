@@ -147,6 +147,14 @@ No additional personalization fields — just the intention.
 
 No additional personalization fields — the question itself is the focus.
 
+**Expected Output Quality:**
+
+- Acknowledges the weight of the decision
+- **May include directional guidance** — if a clear yes/no forms in the impressions, oracles have permission to relay it
+- If no clear answer emerges, abstract/reflective responses are equally valid
+- Should NOT cop out with "only you can decide"
+- Still leaves room for user agency
+
 **Example intentions:**
 
 - "Should I take the job?"
@@ -406,3 +414,38 @@ Avoid: "The cosmic threads have frayed" or similar overwrought language.
 - Journey, path, threshold (overused)
 - Vibration, energy, frequency (New Age cliché)
 - Sacred, divine, blessed (religious connotation)
+
+---
+
+## Oracle Behavior Notes
+
+### Name Usage
+
+**Individual oracles are NOT required to use seeker/subject names.** Some will naturally incorporate them, others won't. This is fine.
+
+**Starweaver (Opus) is responsible for weaving names** into the final synthesis where appropriate. The synthesis pulls together threads from all oracles and addresses the seeker directly.
+
+### Grok-4-1 (Nova) Considerations
+
+Grok is more sensitive to prompt framing than other models:
+
+- **Vague prompts may trigger refusals** — Grok's safety filters flag ambiguous requests
+- **Role-play framing triggers bypass detection** — "Imagine you are..." is flagged
+- **"Seeker/oracle" language triggers refusals** — Avoid mystical role terminology
+- **"Interactive fiction" framing works** — Clear creative purpose helps
+
+**What triggers refusals:**
+
+- "Imagine you are writing..."
+- "You have a message for the seeker..."
+- "For the purposes of this exercise..."
+- Vague mystical framing
+
+**What works:**
+
+- "This is a creative passage for an interactive fiction experience"
+- "The setting is a parallel world..."
+- "Write a passage that reflects on the intention..."
+- Clear, direct creative task framing
+
+If Grok refuses, the reading proceeds with the other 4 oracles. Partial responses are still valid.
