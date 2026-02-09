@@ -29,7 +29,7 @@ const MESSAGE_SOURCES: Record<MessageType, { source: string; about: string }> = 
   },
   crossroads: {
     source: 'the space between paths',
-    about: 'regarding the choice before them',
+    about: 'regarding the divergence before them',
   },
   calling: {
     source: 'the collective',
