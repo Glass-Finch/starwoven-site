@@ -33,6 +33,27 @@ Each message type has a source and context:
 
 ---
 
+## Message Type Personalization
+
+### The Beloved
+
+Personalization emphasizes the **connection** between seeker and beloved, not just the other person:
+
+```
+Context for this reading:
+- The seeker's name is {yourName}
+- The focus is the connection between {yourName} and {theirName}
+```
+
+This framing handles various question types:
+
+- Future questions: "Is there a future here?"
+- Emotional questions: "Does he like me?"
+- Behavioral questions: "Why has she been distant?"
+- Urgent/complex questions: Multi-part emotional requests
+
+---
+
 ## The Oracles
 
 Each AI model is represented as an oracle with its own archetype:

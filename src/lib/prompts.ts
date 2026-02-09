@@ -51,7 +51,8 @@ function buildPersonalizationContext(personalization?: PersonalizationInputs): s
       if (!yourName && !theirName) return ''
       let context = '\nContext for this reading:'
       if (yourName) context += `\n- The seeker's name is ${yourName}`
-      if (theirName) context += `\n- They are asking about someone called ${theirName}`
+      if (theirName)
+        context += `\n- The focus is the connection between ${yourName} and ${theirName}`
       return context + '\n'
     }
 
