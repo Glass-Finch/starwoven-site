@@ -3,13 +3,7 @@
  */
 
 // Message type presets (archetypal names)
-export type MessageType =
-  | 'beloved'
-  | 'ancestor'
-  | 'sage'
-  | 'cosmos'
-  | 'crossroads'
-  | 'calling'
+export type MessageType = 'beloved' | 'ancestor' | 'sage' | 'cosmos' | 'crossroads' | 'calling'
 
 // Personalization inputs per message type
 export interface BelovedInputs {
@@ -109,6 +103,15 @@ export interface ModelResponse {
   latencyMs?: number
 }
 
+// Validation result from QA layer
+export interface ValidationResult {
+  model: AIModel
+  isValid: boolean
+  reason?: string
+  confidence: number
+  latencyMs: number
+}
+
 // Metadata for synthesis logging
 export interface SynthesisMetadata {
   prompt: string
@@ -120,6 +123,7 @@ export interface SynthesisMetadata {
 export interface ReadingMetadata {
   personalization?: Record<string, string>
   synthesis?: SynthesisMetadata
+  validation?: ValidationResult[]
 }
 
 // Reading (saved to Supabase)
@@ -170,5 +174,6 @@ export interface ChannelResponse {
   threads: ModelResponse[]
   synthesis: string
   synthesisMetadata?: SynthesisMetadata
+  validationResults?: ValidationResult[]
   failedModels?: AIModel[]
 }

@@ -1,13 +1,13 @@
 import { NextResponse } from 'next/server'
+
 import type { ChannelRequest, ChannelResponse, SynthesisMetadata } from '@/lib/types'
 import { callAllChannelingModels, callSynthesisModel, getLongestResponse } from '@/lib/ai'
 import { buildChannelingPrompt, buildSynthesisPrompt } from '@/lib/prompts'
-
-const MIN_SUCCESSFUL_RESPONSES = 3
+import { validateAllResponses, MIN_VALID_RESPONSES } from '@/lib/qa'
 
 export async function POST(request: Request): Promise<NextResponse<ChannelResponse>> {
   try {
-    const body = await request.json() as ChannelRequest
+    const body = (await request.json()) as ChannelRequest
     const { messageType, coordinates, intention, personalization } = body
 
     // Validate request
@@ -24,34 +24,63 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
     }
 
     // Build channeling prompt with personalization
-    const channelingPrompt = buildChannelingPrompt(messageType, coordinates, intention, personalization)
+    const channelingPrompt = buildChannelingPrompt(
+      messageType,
+      coordinates,
+      intention,
+      personalization
+    )
 
     // Call all channeling models in parallel
     const responses = await callAllChannelingModels(channelingPrompt)
 
-    // Filter successful responses
-    const successfulResponses = responses.filter(r => r.status === 'success' && r.content)
-    const failedModels = responses
-      .filter(r => r.status !== 'success')
-      .map(r => r.model)
+    // Validate all responses (filters refusals, off-topic, AI meta-commentary)
+    const { validated, validationResults } = await validateAllResponses(
+      responses,
+      messageType,
+      intention
+    )
 
-    // Check minimum threshold
-    if (successfulResponses.length < MIN_SUCCESSFUL_RESPONSES) {
-      // Use longest response as fallback
-      const fallbackSynthesis = getLongestResponse(responses)
+    // Get valid successful responses
+    const validResponses = validated.filter((r) => r.status === 'success' && r.content)
+
+    // Track failed models (either API failures or validation failures)
+    const failedModels = responses
+      .filter((r) => {
+        const validation = validationResults.find((v) => v.model === r.model)
+        return r.status !== 'success' || !validation?.isValid
+      })
+      .map((r) => r.model)
+
+    // Check minimum threshold for valid responses
+    if (validResponses.length < MIN_VALID_RESPONSES) {
+      // Fallback behavior based on valid response count
+      if (validResponses.length === 0) {
+        return NextResponse.json({
+          status: 'partial',
+          threads: responses,
+          synthesis: "The oracles couldn't connect. Please try again.",
+          validationResults,
+          failedModels,
+        })
+      }
+
+      // 1-2 valid responses: return longest valid response (no synthesis)
+      const fallbackSynthesis = getLongestResponse(validResponses)
       return NextResponse.json({
         status: 'partial',
         threads: responses,
         synthesis: fallbackSynthesis,
+        validationResults,
         failedModels,
       })
     }
 
-    // Build synthesis prompt with personalization
+    // Build synthesis prompt with valid responses only
     const synthesisPrompt = buildSynthesisPrompt(
       messageType,
       intention,
-      successfulResponses.map(r => ({ model: r.model, content: r.content })),
+      validResponses.map((r) => ({ model: r.model, content: r.content })),
       personalization
     )
 
@@ -64,12 +93,12 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       synthesis = await callSynthesisModel(synthesisPrompt)
       synthesisMetadata = {
         prompt: synthesisPrompt,
-        threadsUsed: successfulResponses.map(r => r.model),
+        threadsUsed: validResponses.map((r) => r.model),
         latencyMs: Date.now() - synthesisStart,
       }
     } catch {
-      // Fallback to longest response if synthesis fails
-      synthesis = getLongestResponse(responses)
+      // Fallback to longest valid response if synthesis fails
+      synthesis = getLongestResponse(validResponses)
     }
 
     return NextResponse.json({
@@ -77,6 +106,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       threads: responses,
       synthesis,
       synthesisMetadata,
+      validationResults,
       failedModels: failedModels.length > 0 ? failedModels : undefined,
     })
   } catch (error) {
