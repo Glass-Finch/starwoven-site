@@ -184,6 +184,28 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
 
+## Naming Conventions
+
+### Message Type IDs
+Use the short archetypal names as IDs:
+- `beloved` (not `love_interest`)
+- `ancestor` (not `deceased_loved_one`)
+- `sage` (not `future_self`)
+- `cosmos` (not `universe_general`)
+- `crossroads` (not `life_decision`)
+- `calling` (not `purpose_world`)
+
+### Variable Naming
+- **TypeScript**: `camelCase` for variables/functions, `PascalCase` for types/interfaces
+- **CSS/Tailwind**: `kebab-case` for custom classes
+- **Files**: `PascalCase` for components, `camelCase` for utilities
+- **Constants**: `SCREAMING_SNAKE_CASE` for true constants
+
+### Display Names vs IDs
+- ID: `beloved` (used in code, URLs, database)
+- Label: "The Beloved" (used in UI)
+- Description: "Ask about a romantic connection" (card subtitle)
+
 ## Error Handling
 
 - 30s timeout per AI model

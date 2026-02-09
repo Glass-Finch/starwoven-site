@@ -3,6 +3,7 @@
 import { useEffect, useCallback } from 'react'
 import { Starfield } from '@/components/Starfield'
 import { MessageTypeSelector } from '@/components/MessageTypeSelector'
+import { PersonalizationForm } from '@/components/PersonalizationForm'
 import { QuestionFlow } from '@/components/QuestionFlow'
 import { IntentionInput } from '@/components/IntentionInput'
 import { ChannelingLoader } from '@/components/ChannelingLoader'
@@ -18,6 +19,7 @@ export default function Home(): React.ReactElement {
     sessionId,
     currentStep,
     messageType,
+    personalization,
     questions,
     coordinates,
     intention,
@@ -26,6 +28,7 @@ export default function Home(): React.ReactElement {
     error,
     initSession,
     setMessageType,
+    setPersonalization,
     setQuestions,
     setCoordinates,
     setIntention,
@@ -46,6 +49,11 @@ export default function Home(): React.ReactElement {
     const selectedQuestions = selectQuestions(type)
     setQuestions(selectedQuestions)
     setMessageType(type)
+  }
+
+  // Handle personalization submission
+  const handlePersonalizationSubmit = (data: Record<string, string>) => {
+    setPersonalization(data)
   }
 
   // Handle question completion
@@ -73,6 +81,10 @@ export default function Home(): React.ReactElement {
           messageType,
           coordinates,
           intention,
+          personalization: {
+            type: messageType,
+            data: personalization,
+          },
         }),
       })
 
@@ -98,12 +110,16 @@ export default function Home(): React.ReactElement {
         coordinates,
         synthesis: data.synthesis,
         threads: data.threads,
+        metadata: {
+          personalization,
+          synthesis: data.synthesisMetadata,
+        },
       }).catch((err) => console.error('Failed to save reading:', err))
     } catch (err) {
       console.error('Channeling error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     }
-  }, [messageType, coordinates, intention, sessionId, addModelResponse, setSynthesis, setError])
+  }, [messageType, coordinates, intention, personalization, sessionId, addModelResponse, setSynthesis, setError])
 
   // Handle intention submission
   const handleIntentionSubmit = async (intentionText: string) => {
@@ -144,6 +160,15 @@ export default function Home(): React.ReactElement {
 
             <MessageTypeSelector onSelect={handleMessageTypeSelect} />
           </div>
+        )}
+
+        {/* Personalization step */}
+        {currentStep === 'personalization' && messageTypeConfig && (
+          <PersonalizationForm
+            messageTypeConfig={messageTypeConfig}
+            onSubmit={handlePersonalizationSubmit}
+            initialValues={personalization}
+          />
         )}
 
         {/* Coordinate questions step */}

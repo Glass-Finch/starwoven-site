@@ -2,19 +2,15 @@
 
 import { useMemo } from 'react'
 import type { AIModel, ModelResponse } from '@/lib/types'
+import { ORACLE_INFO } from '@/lib/ai'
 
 interface ChannelingLoaderProps {
   responses: ModelResponse[]
   isComplete: boolean
 }
 
-const AI_MODELS: { model: AIModel; label: string; color: string }[] = [
-  { model: 'gpt-4.1', label: 'Iris', color: '#10a37f' },
-  { model: 'claude-sonnet-4.5', label: 'Luna', color: '#d97706' },
-  { model: 'gemini-3.0-pro', label: 'Echo', color: '#4285f4' },
-  { model: 'deepseek-reasoner', label: 'Shade', color: '#6366f1' },
-  { model: 'grok-4', label: 'Nova', color: '#ef4444' },
-]
+// Ordered list of AI models for display (derived from ORACLE_INFO)
+const AI_MODELS: AIModel[] = ['gpt-4.1', 'claude-sonnet-4.5', 'gemini-3.0-pro', 'deepseek-reasoner', 'grok-4']
 
 // Single understated message - no rotating poetry
 const LOADING_MESSAGE = 'Listening'
@@ -47,11 +43,12 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
           const radius = 80
           const x = Math.cos(angle) * radius
           const y = Math.sin(angle) * radius
-          const hasResponded = respondedModels.has(model.model)
+          const hasResponded = respondedModels.has(model)
+          const { color } = ORACLE_INFO[model]
 
           return (
             <div
-              key={model.model}
+              key={model}
               className="absolute transition-all duration-500"
               style={{
                 transform: `translate(${x}px, ${y}px)`,
@@ -62,8 +59,8 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
                   hasResponded ? 'scale-125' : 'opacity-40'
                 }`}
                 style={{
-                  backgroundColor: model.color,
-                  boxShadow: hasResponded ? `0 0 20px ${model.color}` : 'none',
+                  backgroundColor: color,
+                  boxShadow: hasResponded ? `0 0 20px ${color}` : 'none',
                 }}
               />
             </div>
@@ -76,7 +73,7 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
           style={{ width: 200, height: 200, left: -52, top: -52 }}
         >
           {AI_MODELS.map((model, i) => {
-            if (!respondedModels.has(model.model)) return null
+            if (!respondedModels.has(model)) return null
 
             const angle1 = (i * 72 - 90) * (Math.PI / 180)
             const x1 = 100 + Math.cos(angle1) * 80
@@ -84,7 +81,7 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
 
             // Draw lines to other responded models
             return AI_MODELS.slice(i + 1).map((otherModel, j) => {
-              if (!respondedModels.has(otherModel.model)) return null
+              if (!respondedModels.has(otherModel)) return null
 
               const angle2 = ((i + j + 1) * 72 - 90) * (Math.PI / 180)
               const x2 = 100 + Math.cos(angle2) * 80
@@ -92,7 +89,7 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
 
               return (
                 <line
-                  key={`${model.model}-${otherModel.model}`}
+                  key={`${model}-${otherModel}`}
                   x1={x1}
                   y1={y1}
                   x2={x2}
@@ -110,17 +107,17 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
       {/* Model status list */}
       <div className="flex justify-center gap-4 mb-8 flex-wrap">
         {AI_MODELS.map((model) => {
-          const hasResponded = respondedModels.has(model.model)
+          const hasResponded = respondedModels.has(model)
           return (
             <div
-              key={model.model}
+              key={model}
               className={`text-xs px-3 py-1 rounded-full transition-all duration-300 ${
                 hasResponded
                   ? 'text-cream bg-cream/10'
                   : 'text-gray-muted bg-cream/5'
               }`}
             >
-              {model.label}
+              {ORACLE_INFO[model].name}
               {hasResponded && (
                 <span className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-gold" />
               )}

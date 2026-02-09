@@ -2,17 +2,10 @@
 
 import { useState } from 'react'
 import type { ModelResponse, AIModel } from '@/lib/types'
+import { ORACLE_INFO } from '@/lib/ai'
 
 interface ThreadsAccordionProps {
   threads: ModelResponse[]
-}
-
-const MODEL_LABELS: Record<AIModel, string> = {
-  'gpt-4.1': 'Iris',
-  'claude-sonnet-4.5': 'Luna',
-  'gemini-3.0-pro': 'Echo',
-  'deepseek-reasoner': 'Shade',
-  'grok-4': 'Nova',
 }
 
 export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.ReactElement {
@@ -56,7 +49,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
               >
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 rounded-full bg-gold/60" />
-                  <span className="text-sm text-cream">{MODEL_LABELS[thread.model]}</span>
+                  <span className="text-sm text-cream">{ORACLE_INFO[thread.model].name}</span>
                 </div>
                 <svg
                   className={`w-3 h-3 text-gray-muted transition-transform duration-200 ${
@@ -94,7 +87,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
                 Some channels did not respond:{' '}
                 {threads
                   .filter(t => t.status !== 'success')
-                  .map(t => MODEL_LABELS[t.model])
+                  .map(t => ORACLE_INFO[t.model].name)
                   .join(', ')}
               </p>
             </div>
