@@ -65,8 +65,11 @@ function buildPersonalizationContext(personalization?: PersonalizationInputs): s
       if (!yourName && !theirName && !relationship) return ''
       let context = '\nContext for this reading:'
       if (yourName) context += `\n- The seeker's name is ${yourName}`
-      if (theirName) context += `\n- They are reaching for ${theirName}`
-      if (relationship) context += `\n- Their relationship: ${relationship}`
+      if (theirName && relationship) {
+        context += `\n- They are reaching for ${theirName}, their ${relationship}, who has crossed over`
+      } else if (theirName) {
+        context += `\n- They are reaching for ${theirName}, who has crossed over`
+      }
       return context + '\n'
     }
 
