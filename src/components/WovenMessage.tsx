@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+
+import type { ModelResponse, CoordinateSet } from '@/lib/types'
+
 import { ThreadsAccordion } from './ThreadsAccordion'
 import { CoordinateReveal } from './CoordinateReveal'
-import type { ModelResponse, CoordinateSet } from '@/lib/types'
 
 interface WovenMessageProps {
   synthesis: string
@@ -33,9 +35,7 @@ export function WovenMessage({
 
     const interval = setInterval(() => {
       if (currentIndex < words.length) {
-        setDisplayedText((prev) =>
-          prev ? `${prev} ${words[currentIndex]}` : words[currentIndex]
-        )
+        setDisplayedText((prev) => (prev ? `${prev} ${words[currentIndex]}` : words[currentIndex]))
         currentIndex++
       } else {
         clearInterval(interval)
@@ -56,9 +56,7 @@ export function WovenMessage({
         <div className="relative">
           <p className="font-serif text-lg sm:text-xl leading-relaxed text-cream">
             {displayedText}
-            {isRevealing && (
-              <span className="inline-block w-0.5 h-5 bg-gold ml-1 animate-pulse" />
-            )}
+            {isRevealing && <span className="inline-block w-0.5 h-5 bg-gold ml-1 animate-pulse" />}
           </p>
         </div>
       </div>
@@ -74,10 +72,7 @@ export function WovenMessage({
 
           {/* Start new reading */}
           <div className="pt-4 flex justify-center">
-            <button
-              onClick={onStartNew}
-              className="btn-secondary"
-            >
+            <button onClick={onStartNew} className="btn-secondary">
               Begin anew
             </button>
           </div>

@@ -31,7 +31,7 @@ async function getOrCreateProject(): Promise<VercelProject> {
   // First, try to get existing project
   const listResponse = await fetch(`${VERCEL_API_URL}/v9/projects?search=starwoven`, {
     headers: {
-      'Authorization': `Bearer ${VERCEL_TOKEN}`,
+      Authorization: `Bearer ${VERCEL_TOKEN}`,
       'Content-Type': 'application/json',
     },
   })
@@ -49,7 +49,7 @@ async function getOrCreateProject(): Promise<VercelProject> {
   const response = await fetch(`${VERCEL_API_URL}/v10/projects`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${VERCEL_TOKEN}`,
+      Authorization: `Bearer ${VERCEL_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -76,7 +76,7 @@ async function addDomain(projectId: string, domain: string): Promise<void> {
   const response = await fetch(`${VERCEL_API_URL}/v10/projects/${projectId}/domains`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${VERCEL_TOKEN}`,
+      Authorization: `Bearer ${VERCEL_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ name: domain }),
@@ -102,7 +102,7 @@ async function setEnvVariable(
   const response = await fetch(`${VERCEL_API_URL}/v10/projects/${projectId}/env`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${VERCEL_TOKEN}`,
+      Authorization: `Bearer ${VERCEL_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -170,12 +170,12 @@ export async function setupVercel(envVars: Record<string, string> = {}): Promise
 // Run if called directly
 if (require.main === module) {
   setupVercel()
-    .then(result => {
+    .then(() => {
       console.log('\nNext steps:')
       console.log('1. Configure DNS for each domain (see setup-dns.ts)')
       console.log('2. Deploy with: vercel --prod')
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Setup failed:', error)
       process.exit(1)
     })

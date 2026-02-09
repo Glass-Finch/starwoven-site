@@ -42,28 +42,31 @@ export function Starfield({ className = '' }: StarfieldProps): React.ReactElemen
     return STAR_COUNTS.desktop
   }, [])
 
-  const createStars = useCallback((width: number, height: number): Star[] => {
-    const count = getStarCount()
-    const stars: Star[] = []
+  const createStars = useCallback(
+    (width: number, height: number): Star[] => {
+      const count = getStarCount()
+      const stars: Star[] = []
 
-    for (let i = 0; i < count; i++) {
-      const layerIndex = Math.floor(Math.random() * LAYERS.length)
-      const layer = LAYERS[layerIndex]
-      const [minSize, maxSize] = layer.sizeRange
+      for (let i = 0; i < count; i++) {
+        const layerIndex = Math.floor(Math.random() * LAYERS.length)
+        const layer = LAYERS[layerIndex]
+        const [minSize, maxSize] = layer.sizeRange
 
-      stars.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: minSize + Math.random() * (maxSize - minSize),
-        opacity: 0.3 + Math.random() * 0.7,
-        twinkleSpeed: 0.5 + Math.random() * 2,
-        twinklePhase: Math.random() * Math.PI * 2,
-        layer: layerIndex,
-      })
-    }
+        stars.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          radius: minSize + Math.random() * (maxSize - minSize),
+          opacity: 0.3 + Math.random() * 0.7,
+          twinkleSpeed: 0.5 + Math.random() * 2,
+          twinklePhase: Math.random() * Math.PI * 2,
+          layer: layerIndex,
+        })
+      }
 
-    return stars
-  }, [getStarCount])
+      return stars
+    },
+    [getStarCount]
+  )
 
   const draw = useCallback((ctx: CanvasRenderingContext2D, time: number): void => {
     const { width, height } = ctx.canvas
@@ -88,8 +91,12 @@ export function Starfield({ className = '' }: StarfieldProps): React.ReactElemen
         ctx.beginPath()
         ctx.arc(star.x, star.y, star.radius * 2, 0, Math.PI * 2)
         const gradient = ctx.createRadialGradient(
-          star.x, star.y, 0,
-          star.x, star.y, star.radius * 2
+          star.x,
+          star.y,
+          0,
+          star.x,
+          star.y,
+          star.radius * 2
         )
         gradient.addColorStop(0, `rgba(200, 168, 78, ${opacity * 0.3})`)
         gradient.addColorStop(1, 'rgba(200, 168, 78, 0)')
@@ -99,22 +106,25 @@ export function Starfield({ className = '' }: StarfieldProps): React.ReactElemen
     })
   }, [])
 
-  const animate = useCallback((time: number): void => {
-    const canvas = canvasRef.current
-    const ctx = canvas?.getContext('2d')
+  const animate = useCallback(
+    (time: number): void => {
+      const canvas = canvasRef.current
+      const ctx = canvas?.getContext('2d')
 
-    if (!ctx) return
+      if (!ctx) return
 
-    // Throttle to ~30fps for performance
-    if (time - lastTimeRef.current < 33) {
+      // Throttle to ~30fps for performance
+      if (time - lastTimeRef.current < 33) {
+        animationRef.current = requestAnimationFrame(animate)
+        return
+      }
+      lastTimeRef.current = time
+
+      draw(ctx, time)
       animationRef.current = requestAnimationFrame(animate)
-      return
-    }
-    lastTimeRef.current = time
-
-    draw(ctx, time)
-    animationRef.current = requestAnimationFrame(animate)
-  }, [draw])
+    },
+    [draw]
+  )
 
   const handleResize = useCallback((): void => {
     const canvas = canvasRef.current

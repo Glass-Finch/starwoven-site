@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+
 import type { MessageTypeConfig } from '@/lib/types'
 
 const MAX_INTENTION_LENGTH = 250
@@ -10,15 +11,21 @@ interface IntentionInputProps {
   messageTypeConfig?: MessageTypeConfig
 }
 
-export function IntentionInput({ onSubmit, messageTypeConfig }: IntentionInputProps): React.ReactElement {
+export function IntentionInput({
+  onSubmit,
+  messageTypeConfig,
+}: IntentionInputProps): React.ReactElement {
   const [intention, setIntention] = useState('')
 
-  const handleSubmit = useCallback((e: React.FormEvent) => {
-    e.preventDefault()
-    if (intention.trim()) {
-      onSubmit(intention.trim())
-    }
-  }, [intention, onSubmit])
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault()
+      if (intention.trim()) {
+        onSubmit(intention.trim())
+      }
+    },
+    [intention, onSubmit]
+  )
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
@@ -28,7 +35,8 @@ export function IntentionInput({ onSubmit, messageTypeConfig }: IntentionInputPr
   }, [])
 
   const prompt = messageTypeConfig?.intentionPrompt || 'What question lives in you?'
-  const placeholder = messageTypeConfig?.intentionPlaceholder || 'The question that calls to be answered...'
+  const placeholder =
+    messageTypeConfig?.intentionPlaceholder || 'The question that calls to be answered...'
 
   const charsRemaining = MAX_INTENTION_LENGTH - intention.length
 
@@ -36,9 +44,7 @@ export function IntentionInput({ onSubmit, messageTypeConfig }: IntentionInputPr
     <div className="w-full max-w-xl mx-auto px-4">
       <div className="text-center mb-8">
         <h2 className="text-gradient mb-3">Set your intention</h2>
-        <p className="text-gray-muted">
-          {prompt}
-        </p>
+        <p className="text-gray-muted">{prompt}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -52,7 +58,9 @@ export function IntentionInput({ onSubmit, messageTypeConfig }: IntentionInputPr
             className="textarea text-center"
             autoFocus
           />
-          <div className={`absolute bottom-3 right-3 text-xs ${charsRemaining < 50 ? 'text-gold' : 'text-gray-muted'}`}>
+          <div
+            className={`absolute bottom-3 right-3 text-xs ${charsRemaining < 50 ? 'text-gold' : 'text-gray-muted'}`}
+          >
             {charsRemaining}
           </div>
         </div>

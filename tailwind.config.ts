@@ -30,11 +30,11 @@ const config: Config = {
         sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
       },
       animation: {
-        'float': 'float 8s ease-in-out infinite',
-        'breathe': 'breathe 6s ease-in-out infinite',
-        'twinkle': 'twinkle 3s ease-in-out infinite',
+        float: 'float 8s ease-in-out infinite',
+        breathe: 'breathe 6s ease-in-out infinite',
+        twinkle: 'twinkle 3s ease-in-out infinite',
         'pulse-glow': 'pulse-glow 4s ease-in-out infinite',
-        'fadeIn': 'fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+        fadeIn: 'fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
       },
       keyframes: {
         float: {

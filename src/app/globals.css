@@ -100,11 +100,7 @@
   /* Card with underglow */
   .card {
     position: relative;
-    background: linear-gradient(
-      180deg,
-      rgba(12, 12, 26, 0.8) 0%,
-      rgba(12, 12, 26, 0.4) 100%
-    );
+    background: linear-gradient(180deg, rgba(12, 12, 26, 0.8) 0%, rgba(12, 12, 26, 0.4) 100%);
     border: 1px solid rgba(232, 228, 220, 0.06);
     border-radius: 20px;
     padding: 1.75rem;
@@ -116,11 +112,7 @@
     position: absolute;
     inset: -1px;
     border-radius: 21px;
-    background: linear-gradient(
-      180deg,
-      rgba(232, 228, 220, 0.08) 0%,
-      transparent 50%
-    );
+    background: linear-gradient(180deg, rgba(232, 228, 220, 0.08) 0%, transparent 50%);
     pointer-events: none;
     opacity: 0;
     transition: opacity 0.4s ease;
@@ -133,11 +125,7 @@
     left: 10%;
     right: 10%;
     height: 60px;
-    background: radial-gradient(
-      ellipse at center,
-      var(--underglow) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(ellipse at center, var(--underglow) 0%, transparent 70%);
     filter: blur(20px);
     pointer-events: none;
     transition: opacity 0.4s ease;
@@ -181,11 +169,7 @@
     left: 20%;
     right: 20%;
     height: 40px;
-    background: radial-gradient(
-      ellipse at center,
-      var(--glow-gold) 0%,
-      transparent 70%
-    );
+    background: radial-gradient(ellipse at center, var(--glow-gold) 0%, transparent 70%);
     filter: blur(16px);
     pointer-events: none;
     opacity: 0.6;
@@ -362,7 +346,8 @@
 }
 
 @keyframes breathe {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.4;
     transform: scale(1);
   }
@@ -373,7 +358,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -382,7 +368,8 @@
 }
 
 @keyframes pulse-glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px var(--glow-gold-soft);
   }
   50% {
@@ -391,7 +378,8 @@
 }
 
 @keyframes twinkle {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.3;
   }
   50% {

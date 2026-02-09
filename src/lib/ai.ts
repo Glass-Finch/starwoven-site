@@ -46,7 +46,8 @@ const PROVIDER_CONFIGS: ProviderConfig[] = [
     oracle: ORACLE_INFO['gemini-3.0-pro'].name,
     archetype: ORACLE_INFO['gemini-3.0-pro'].archetype,
     apiKey: process.env.GOOGLE_API_KEY,
-    endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent',
+    endpoint:
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent',
     modelId: 'gemini-3-pro-preview',
   },
   {
@@ -88,7 +89,7 @@ async function callOpenAICompatible(
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
     },
     body: JSON.stringify({
       model: modelId,
@@ -180,10 +181,7 @@ async function callGoogleAI(
 /**
  * Call a single channeling model
  */
-async function callChannelingModel(
-  config: ProviderConfig,
-  prompt: string
-): Promise<ModelResponse> {
+async function callChannelingModel(config: ProviderConfig, prompt: string): Promise<ModelResponse> {
   const startTime = Date.now()
 
   if (!config.apiKey) {
@@ -212,12 +210,7 @@ async function callChannelingModel(
         controller.signal
       )
     } else if (config.model === 'gemini-3.0-pro') {
-      content = await callGoogleAI(
-        config.endpoint,
-        config.apiKey,
-        prompt,
-        controller.signal
-      )
+      content = await callGoogleAI(config.endpoint, config.apiKey, prompt, controller.signal)
     } else {
       content = await callOpenAICompatible(
         config.endpoint,
@@ -255,11 +248,9 @@ async function callChannelingModel(
 /**
  * Call all channeling models in parallel
  */
-export async function callAllChannelingModels(
-  prompt: string
-): Promise<ModelResponse[]> {
+export async function callAllChannelingModels(prompt: string): Promise<ModelResponse[]> {
   const results = await Promise.all(
-    PROVIDER_CONFIGS.map(config => callChannelingModel(config, prompt))
+    PROVIDER_CONFIGS.map((config) => callChannelingModel(config, prompt))
   )
   return results
 }
@@ -293,11 +284,9 @@ export async function callSynthesisModel(prompt: string): Promise<string> {
  * Get the longest successful response as fallback
  */
 export function getLongestResponse(responses: ModelResponse[]): string {
-  const successful = responses.filter(r => r.status === 'success' && r.content)
+  const successful = responses.filter((r) => r.status === 'success' && r.content)
   if (successful.length === 0) {
     return 'The channels remain silent at this time. Please try again.'
   }
-  return successful.reduce((a, b) =>
-    a.content.length > b.content.length ? a : b
-  ).content
+  return successful.reduce((a, b) => (a.content.length > b.content.length ? a : b)).content
 }

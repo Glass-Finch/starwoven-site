@@ -12,7 +12,8 @@ export const messageTypes: MessageTypeConfig[] = [
     voice: 'Higher self of the beloved',
     icon: 'heart',
     intentionPrompt: 'What do you want to know?',
-    intentionPlaceholder: 'Does this person like me? What do they really feel? Is there a future here?',
+    intentionPlaceholder:
+      'Does this person like me? What do they really feel? Is there a future here?',
     inputFields: [
       {
         name: 'yourName',
@@ -90,10 +91,10 @@ export const messageTypes: MessageTypeConfig[] = [
   {
     id: 'cosmos',
     label: 'The Cosmos',
-    description: 'Seek insight on what\'s on your mind',
+    description: "Seek insight on what's on your mind",
     voice: 'Cosmic consciousness',
     icon: 'sparkles',
-    intentionPrompt: 'What\'s on your mind?',
+    intentionPrompt: "What's on your mind?",
     intentionPlaceholder: 'What do I need to hear right now? What am I not seeing?',
     inputFields: [],
   },
@@ -135,5 +136,5 @@ export const messageTypes: MessageTypeConfig[] = [
 ]
 
 export function getMessageTypeConfig(type: MessageType): MessageTypeConfig | undefined {
-  return messageTypes.find(m => m.id === type)
+  return messageTypes.find((m) => m.id === type)
 }

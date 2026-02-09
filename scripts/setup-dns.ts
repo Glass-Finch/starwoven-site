@@ -69,15 +69,15 @@ async function setDnsRecords(sld: string, tld: string): Promise<void> {
     SLD: sld,
     TLD: tld,
     // Record 1: A record for root domain
-    'HostName1': '@',
-    'RecordType1': 'A',
-    'Address1': VERCEL_A_RECORD,
-    'TTL1': '1800',
+    HostName1: '@',
+    RecordType1: 'A',
+    Address1: VERCEL_A_RECORD,
+    TTL1: '1800',
     // Record 2: CNAME for www
-    'HostName2': 'www',
-    'RecordType2': 'CNAME',
-    'Address2': VERCEL_CNAME,
-    'TTL2': '1800',
+    HostName2: 'www',
+    RecordType2: 'CNAME',
+    Address2: VERCEL_CNAME,
+    TTL2: '1800',
   }
 
   await callNamecheapApi('namecheap.domains.dns.setHosts', params)
@@ -97,7 +97,7 @@ export async function setupDns(): Promise<void> {
       console.error(`  Failed for ${domain.sld}.${domain.tld}:`, error)
     }
     // Rate limiting - wait between requests
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
   }
 
   console.log('\nDNS setup complete!')
@@ -110,7 +110,7 @@ if (require.main === module) {
     .then(() => {
       console.log('\nDone!')
     })
-    .catch(error => {
+    .catch((error) => {
       console.error('Setup failed:', error)
       process.exit(1)
     })

@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo } from 'react'
+
 import type { AIModel, ModelResponse } from '@/lib/types'
 import { ORACLE_INFO } from '@/lib/ai'
 
@@ -10,16 +11,24 @@ interface ChannelingLoaderProps {
 }
 
 // Ordered list of AI models for display (derived from ORACLE_INFO)
-const AI_MODELS: AIModel[] = ['gpt-4.1', 'claude-sonnet-4.5', 'gemini-3.0-pro', 'deepseek-reasoner', 'grok-4']
+const AI_MODELS: AIModel[] = [
+  'gpt-4.1',
+  'claude-sonnet-4.5',
+  'gemini-3.0-pro',
+  'deepseek-reasoner',
+  'grok-4',
+]
 
 // Single understated message - no rotating poetry
 const LOADING_MESSAGE = 'Listening'
 
-export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProps): React.ReactElement {
-
+export function ChannelingLoader({
+  responses,
+  isComplete,
+}: ChannelingLoaderProps): React.ReactElement {
   // Track which models have responded
   const respondedModels = useMemo(() => {
-    return new Set(responses.filter(r => r.status === 'success').map(r => r.model))
+    return new Set(responses.filter((r) => r.status === 'success').map((r) => r.model))
   }, [responses])
 
   return (
@@ -112,9 +121,7 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
             <div
               key={model}
               className={`text-xs px-3 py-1 rounded-full transition-all duration-300 ${
-                hasResponded
-                  ? 'text-cream bg-cream/10'
-                  : 'text-gray-muted bg-cream/5'
+                hasResponded ? 'text-cream bg-cream/10' : 'text-gray-muted bg-cream/5'
               }`}
             >
               {ORACLE_INFO[model].name}
@@ -128,9 +135,7 @@ export function ChannelingLoader({ responses, isComplete }: ChannelingLoaderProp
 
       {/* Loading message */}
       <div className="text-center">
-        <p className="text-gray-muted animate-breathe">
-          {isComplete ? '' : LOADING_MESSAGE}
-        </p>
+        <p className="text-gray-muted animate-breathe">{isComplete ? '' : LOADING_MESSAGE}</p>
       </div>
 
       {/* Response count */}
