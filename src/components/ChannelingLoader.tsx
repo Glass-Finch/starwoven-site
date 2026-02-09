@@ -16,7 +16,7 @@ const AI_MODELS: AIModel[] = [
   'claude-sonnet-4.5',
   'gemini-3.0-pro',
   'deepseek-reasoner',
-  'grok-4',
+  'grok-4-1-fast-reasoning',
 ]
 
 // Single understated message - no rotating poetry

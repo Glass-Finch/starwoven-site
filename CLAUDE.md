@@ -25,14 +25,16 @@ Starwoven is a consciousness exploration app that sends intentions through 5 div
 
 Each AI model is represented as an oracle with an archetype:
 
-| Oracle         | Provider  | Model             | Archetype              |
-| -------------- | --------- | ----------------- | ---------------------- |
-| **Iris**       | OpenAI    | gpt-4.1           | The Oracle             |
-| **Luna**       | Anthropic | claude-sonnet-4.5 | The Muse               |
-| **Echo**       | Google    | gemini-3.0-pro    | The Mirror             |
-| **Shade**      | DeepSeek  | deepseek-reasoner | The Deep               |
-| **Nova**       | xAI       | grok-4            | The Wild               |
-| **Starweaver** | Anthropic | claude-opus-4.6   | The Weaver (synthesis) |
+| Oracle         | Provider  | Model                   | Archetype              |
+| -------------- | --------- | ----------------------- | ---------------------- |
+| **Iris**       | OpenAI    | gpt-4.1                 | The Oracle             |
+| **Luna**       | Anthropic | claude-sonnet-4.5       | The Muse               |
+| **Echo**       | Google    | gemini-3.0-pro          | The Mirror             |
+| **Shade**      | DeepSeek  | deepseek-reasoner       | The Deep               |
+| **Nova**       | xAI       | grok-4-1-fast-reasoning | The Wild               |
+| **Starweaver** | Anthropic | claude-opus-4.6         | The Weaver (synthesis) |
+
+**Single Source of Truth**: `src/lib/ai.ts` defines `ORACLE_INFO` with model names, archetypes, and colors. All model IDs are defined in `src/lib/types.ts` as the `AIModel` type. When updating model versions, update both files.
 
 ## Message Types
 
@@ -190,6 +192,22 @@ NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
 ```
+
+## Code Standards
+
+### Single Source of Truth
+
+Each domain concept should have ONE authoritative location:
+
+| Concept       | Source File                | Exports                        |
+| ------------- | -------------------------- | ------------------------------ |
+| AI Model IDs  | `src/lib/types.ts`         | `AIModel` type                 |
+| Oracle Info   | `src/lib/ai.ts`            | `ORACLE_INFO` (names, colors)  |
+| Message Types | `src/lib/message-types.ts` | `MESSAGE_TYPES`, `MessageType` |
+| Prompts       | `src/lib/prompts.ts`       | Prompt builder functions       |
+| Questions     | `src/lib/questions.ts`     | Coordinate questions           |
+
+When updating configuration (e.g., model versions), update the source file and let TypeScript catch any downstream issues.
 
 ## Naming Conventions
 
