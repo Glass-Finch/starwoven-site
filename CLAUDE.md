@@ -261,11 +261,23 @@ Before any commit affecting user-facing features:
 - **Set your own intention**: The tester must genuinely engage with the question
 - **Why**: AI models detect nonsense inputs and return generic responses. Coherence scoring only works with authentic data.
 
-Example test scenario (Beloved message type):
+**Test data is stored in `.env`** (variables starting with `TEST_`):
 
-- Your name: Maki
-- Their name: Frank
-- Intention: "What does he really think about our future together?"
+| Variable                     | Used By       | Example     |
+| ---------------------------- | ------------- | ----------- |
+| `TEST_SEEKER_NAME`           | All types     | Maki        |
+| `TEST_SEEKER_BIRTHDAY`       | Sage, Calling | 1986-09-23  |
+| `TEST_BELOVED_NAME`          | Beloved       | Frank       |
+| `TEST_ANCESTOR_NAME`         | Ancestor      | Fred        |
+| `TEST_ANCESTOR_RELATIONSHIP` | Ancestor      | grandfather |
+
+Test each message type with genuine intentions:
+
+- **Beloved**: Ask about the relationship with TEST_BELOVED_NAME
+- **Ancestor**: Reach for TEST_ANCESTOR_NAME (TEST_ANCESTOR_RELATIONSHIP)
+- **Sage**: Ask your future self for real advice
+- **Calling**: Explore your actual purpose questions
+- **Cosmos/Crossroads**: No personalization needed, just real intentions
 
 ### Full Journey Test
 
