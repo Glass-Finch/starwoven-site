@@ -179,19 +179,19 @@ No additional personalization fields — the question itself is the focus.
 
 **Acceptance Criteria:**
 - I see 6 distinct options, each with a clear label and description
-- The descriptions are evocative but not cheesy
+- The descriptions are functional and clear (user knows what each channel is for)
 - I understand the framing before I commit
 - Tapping advances me immediately
 
 **Final Copy:**
 | Label | Description |
 |-------|-------------|
-| The Beloved | "What echoes between you" |
-| The Ancestor | "From a familiar silence" |
-| The Sage | "A glimpse of what you might know" |
-| The Cosmos | "A voice from nowhere in particular" |
-| The Crossroads | "Clarity from the impartial eye" |
-| The Calling | "What might be asked of you" |
+| The Beloved | "Ask about a romantic connection" |
+| The Ancestor | "Seek connection with someone who has passed" |
+| The Sage | "Ask your future self for advice" |
+| The Cosmos | "Seek insight on what's on your mind" |
+| The Crossroads | "Get clarity on a yes or no decision" |
+| The Calling | "Explore your purpose" |
 
 ---
 

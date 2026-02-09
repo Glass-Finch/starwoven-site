@@ -78,7 +78,7 @@ export function WovenMessage({
               onClick={onStartNew}
               className="btn-secondary"
             >
-              Begin another journey
+              Begin anew
             </button>
           </div>
         </div>

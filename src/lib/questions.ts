@@ -175,10 +175,10 @@ const emotionalQuestions: Question[] = [
 // TYPE-SPECIFIC QUESTIONS (15+ per type)
 // ============================================
 
-const loveInterestQuestions: Question[] = [
+const belovedQuestions: Question[] = [
   {
     id: 'love-element',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'Which element speaks to the energy between you?',
     answerType: 'multiple_choice',
@@ -186,7 +186,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-time',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What time of day do you feel them most?',
     answerType: 'multiple_choice',
@@ -194,7 +194,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-word',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What word lives unspoken between you?',
     answerType: 'multiple_choice',
@@ -202,7 +202,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-color',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What color carries their energy?',
     answerType: 'multiple_choice',
@@ -210,7 +210,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-body',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'Where does the connection feel strongest?',
     answerType: 'multiple_choice',
@@ -218,7 +218,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-season',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What season reflects your bond?',
     answerType: 'multiple_choice',
@@ -226,7 +226,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-distance',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'How close do they feel right now?',
     answerType: 'multiple_choice',
@@ -234,7 +234,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-sound',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What sound represents them?',
     answerType: 'multiple_choice',
@@ -242,7 +242,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-weather',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What weather is this love?',
     answerType: 'multiple_choice',
@@ -250,7 +250,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-moon',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'This connection is which moon?',
     answerType: 'multiple_choice',
@@ -258,7 +258,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-fear',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What fear lives in this space?',
     answerType: 'multiple_choice',
@@ -266,7 +266,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-gift',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What gift do they carry for you?',
     answerType: 'multiple_choice',
@@ -274,7 +274,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-texture',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What texture is this bond?',
     answerType: 'multiple_choice',
@@ -282,7 +282,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-direction',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'Which direction does this love pull?',
     answerType: 'multiple_choice',
@@ -290,7 +290,7 @@ const loveInterestQuestions: Question[] = [
   },
   {
     id: 'love-animal',
-    messageType: 'love_interest',
+    messageType: 'beloved',
     category: 'themed',
     text: 'What animal embodies them?',
     answerType: 'multiple_choice',
@@ -298,10 +298,10 @@ const loveInterestQuestions: Question[] = [
   },
 ]
 
-const deceasedLovedOneQuestions: Question[] = [
+const ancestorQuestions: Question[] = [
   {
     id: 'deceased-presence',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'In what form do you sense their presence?',
     answerType: 'multiple_choice',
@@ -309,7 +309,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-teaching',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What did they teach you without words?',
     answerType: 'multiple_choice',
@@ -317,7 +317,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-season',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'Which season holds the strongest memories?',
     answerType: 'multiple_choice',
@@ -325,7 +325,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-time',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What time of day do you think of them most?',
     answerType: 'multiple_choice',
@@ -333,7 +333,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-object',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What object carries their essence?',
     answerType: 'multiple_choice',
@@ -341,7 +341,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-place',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'Where do you feel closest to them?',
     answerType: 'multiple_choice',
@@ -349,7 +349,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-element',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'Which element carries their spirit?',
     answerType: 'multiple_choice',
@@ -357,7 +357,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-sound',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What sound reminds you of them?',
     answerType: 'multiple_choice',
@@ -365,7 +365,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-scent',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What scent brings them near?',
     answerType: 'multiple_choice',
@@ -373,7 +373,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-message',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'How do they send messages?',
     answerType: 'multiple_choice',
@@ -381,7 +381,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-emotion',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What emotion rises when you think of them?',
     answerType: 'multiple_choice',
@@ -389,7 +389,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-gift',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What gift did they leave you?',
     answerType: 'multiple_choice',
@@ -397,7 +397,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-color',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What color represents them?',
     answerType: 'multiple_choice',
@@ -405,7 +405,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-distance',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'How far away do they feel?',
     answerType: 'multiple_choice',
@@ -413,7 +413,7 @@ const deceasedLovedOneQuestions: Question[] = [
   },
   {
     id: 'deceased-word',
-    messageType: 'deceased_loved_one',
+    messageType: 'ancestor',
     category: 'themed',
     text: 'What word would they say to you now?',
     answerType: 'multiple_choice',
@@ -421,10 +421,10 @@ const deceasedLovedOneQuestions: Question[] = [
   },
 ]
 
-const futureSelfQuestions: Question[] = [
+const sageQuestions: Question[] = [
   {
     id: 'future-timeline',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'How far ahead does your future self reside?',
     answerType: 'multiple_choice',
@@ -432,7 +432,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-quality',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What quality have you cultivated?',
     answerType: 'multiple_choice',
@@ -440,7 +440,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-dwelling',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'Where does your future self dwell?',
     answerType: 'multiple_choice',
@@ -448,7 +448,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-released',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What have you released?',
     answerType: 'multiple_choice',
@@ -456,7 +456,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-morning',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What does your future self do each morning?',
     answerType: 'multiple_choice',
@@ -464,7 +464,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-surprise',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What surprised you about becoming them?',
     answerType: 'multiple_choice',
@@ -472,7 +472,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-element',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'Which element guides your future self?',
     answerType: 'multiple_choice',
@@ -480,7 +480,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-color',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What color does your future self wear?',
     answerType: 'multiple_choice',
@@ -488,7 +488,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-work',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What is your future self\'s work?',
     answerType: 'multiple_choice',
@@ -496,7 +496,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-company',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'Who surrounds your future self?',
     answerType: 'multiple_choice',
@@ -504,7 +504,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-pace',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What is the pace of that life?',
     answerType: 'multiple_choice',
@@ -512,7 +512,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-advice',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What would they tell you now?',
     answerType: 'multiple_choice',
@@ -520,7 +520,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-sacrifice',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What did you have to let go of?',
     answerType: 'multiple_choice',
@@ -528,7 +528,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-gain',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What did you gain?',
     answerType: 'multiple_choice',
@@ -536,7 +536,7 @@ const futureSelfQuestions: Question[] = [
   },
   {
     id: 'future-animal',
-    messageType: 'future_self',
+    messageType: 'sage',
     category: 'themed',
     text: 'What animal walks with your future self?',
     answerType: 'multiple_choice',
@@ -544,10 +544,10 @@ const futureSelfQuestions: Question[] = [
   },
 ]
 
-const universeGeneralQuestions: Question[] = [
+const cosmosQuestions: Question[] = [
   {
     id: 'universe-pattern',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What pattern keeps appearing in your life?',
     answerType: 'multiple_choice',
@@ -555,7 +555,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-celestial',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'Which celestial body calls to you?',
     answerType: 'multiple_choice',
@@ -563,7 +563,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-symbol',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What symbol appears when you close your eyes?',
     answerType: 'multiple_choice',
@@ -571,7 +571,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-element',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What element is calling you right now?',
     answerType: 'multiple_choice',
@@ -579,7 +579,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-time',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What time of day feels most alive?',
     answerType: 'multiple_choice',
@@ -587,7 +587,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-trust',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What are you being asked to trust?',
     answerType: 'multiple_choice',
@@ -595,7 +595,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-season',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What season is your soul in?',
     answerType: 'multiple_choice',
@@ -603,7 +603,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-lesson',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What lesson keeps returning?',
     answerType: 'multiple_choice',
@@ -611,7 +611,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-gift',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What gift is trying to reach you?',
     answerType: 'multiple_choice',
@@ -619,7 +619,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-direction',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'Which direction is the universe pulling you?',
     answerType: 'multiple_choice',
@@ -627,7 +627,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-portal',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What kind of portal is opening?',
     answerType: 'multiple_choice',
@@ -635,7 +635,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-number',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What number keeps appearing?',
     answerType: 'multiple_choice',
@@ -643,7 +643,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-animal',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What animal messenger appears?',
     answerType: 'multiple_choice',
@@ -651,7 +651,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-moon',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What phase is your inner moon?',
     answerType: 'multiple_choice',
@@ -659,7 +659,7 @@ const universeGeneralQuestions: Question[] = [
   },
   {
     id: 'universe-sound',
-    messageType: 'universe_general',
+    messageType: 'cosmos',
     category: 'themed',
     text: 'What sound does the universe make for you?',
     answerType: 'multiple_choice',
@@ -667,10 +667,10 @@ const universeGeneralQuestions: Question[] = [
   },
 ]
 
-const lifeDecisionQuestions: Question[] = [
+const crossroadsQuestions: Question[] = [
   {
     id: 'decision-paths',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'How many paths do you see before you?',
     answerType: 'multiple_choice',
@@ -678,7 +678,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-fear',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What does fear want you to choose?',
     answerType: 'multiple_choice',
@@ -686,7 +686,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-stakes',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What stakes feel heaviest?',
     answerType: 'multiple_choice',
@@ -694,7 +694,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-younger',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What would your younger self choose?',
     answerType: 'multiple_choice',
@@ -702,7 +702,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-regret',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What would you regret not trying?',
     answerType: 'multiple_choice',
@@ -710,7 +710,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-body',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What does your body know?',
     answerType: 'multiple_choice',
@@ -718,7 +718,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-weather',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What weather is this decision?',
     answerType: 'multiple_choice',
@@ -726,7 +726,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-color',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What color is this crossroads?',
     answerType: 'multiple_choice',
@@ -734,7 +734,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-element',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'Which element should guide this choice?',
     answerType: 'multiple_choice',
@@ -742,7 +742,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-time',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'How long have you been here?',
     answerType: 'multiple_choice',
@@ -750,7 +750,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-advisor',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'Whose voice do you hear?',
     answerType: 'multiple_choice',
@@ -758,7 +758,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-lose',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What might you lose?',
     answerType: 'multiple_choice',
@@ -766,7 +766,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-gain',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What might you gain?',
     answerType: 'multiple_choice',
@@ -774,7 +774,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-moon',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'This choice is which moon?',
     answerType: 'multiple_choice',
@@ -782,7 +782,7 @@ const lifeDecisionQuestions: Question[] = [
   },
   {
     id: 'decision-animal',
-    messageType: 'life_decision',
+    messageType: 'crossroads',
     category: 'themed',
     text: 'What animal guards this crossroads?',
     answerType: 'multiple_choice',
@@ -790,10 +790,10 @@ const lifeDecisionQuestions: Question[] = [
   },
 ]
 
-const purposeWorldQuestions: Question[] = [
+const callingQuestions: Question[] = [
   {
     id: 'purpose-gift',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What gift do you bring that others need?',
     answerType: 'multiple_choice',
@@ -801,7 +801,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-alive',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'When do you feel most alive?',
     answerType: 'multiple_choice',
@@ -809,7 +809,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-impact',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What impact do you wish to leave?',
     answerType: 'multiple_choice',
@@ -817,7 +817,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-thanks',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What do people thank you for?',
     answerType: 'multiple_choice',
@@ -825,7 +825,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-free',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What work would you do for free?',
     answerType: 'multiple_choice',
@@ -833,7 +833,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-child',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What did child-you want to be?',
     answerType: 'multiple_choice',
@@ -841,7 +841,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-element',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'Which element powers your purpose?',
     answerType: 'multiple_choice',
@@ -849,7 +849,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-color',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What color is your purpose?',
     answerType: 'multiple_choice',
@@ -857,7 +857,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-scale',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What scale feels right?',
     answerType: 'multiple_choice',
@@ -865,7 +865,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-tool',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What is your tool?',
     answerType: 'multiple_choice',
@@ -873,7 +873,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-block',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What blocks your purpose?',
     answerType: 'multiple_choice',
@@ -881,7 +881,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-space',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'Where does your purpose live?',
     answerType: 'multiple_choice',
@@ -889,7 +889,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-time',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'When does your purpose shine?',
     answerType: 'multiple_choice',
@@ -897,7 +897,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-ancestor',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What purpose flows through your lineage?',
     answerType: 'multiple_choice',
@@ -905,7 +905,7 @@ const purposeWorldQuestions: Question[] = [
   },
   {
     id: 'purpose-animal',
-    messageType: 'purpose_world',
+    messageType: 'calling',
     category: 'themed',
     text: 'What animal shares your purpose?',
     answerType: 'multiple_choice',
@@ -915,12 +915,12 @@ const purposeWorldQuestions: Question[] = [
 
 // Combine type-specific with some universal questions for variety
 const themedQuestions: Record<MessageType, Question[]> = {
-  love_interest: [...loveInterestQuestions, ...colorQuestions.slice(0, 2), ...cosmicQuestions.slice(0, 2)],
-  deceased_loved_one: [...deceasedLovedOneQuestions, ...symbolicQuestions.slice(0, 2), ...emotionalQuestions.slice(0, 2)],
-  future_self: [...futureSelfQuestions, ...cosmicQuestions.slice(0, 2), ...colorQuestions.slice(0, 2)],
-  universe_general: [...universeGeneralQuestions, ...symbolicQuestions.slice(0, 2), ...cosmicQuestions.slice(0, 2)],
-  life_decision: [...lifeDecisionQuestions, ...emotionalQuestions.slice(0, 2), ...symbolicQuestions.slice(0, 2)],
-  purpose_world: [...purposeWorldQuestions, ...cosmicQuestions.slice(0, 2), ...emotionalQuestions.slice(0, 2)],
+  beloved: [...belovedQuestions, ...colorQuestions.slice(0, 2), ...cosmicQuestions.slice(0, 2)],
+  ancestor: [...ancestorQuestions, ...symbolicQuestions.slice(0, 2), ...emotionalQuestions.slice(0, 2)],
+  sage: [...sageQuestions, ...cosmicQuestions.slice(0, 2), ...colorQuestions.slice(0, 2)],
+  cosmos: [...cosmosQuestions, ...symbolicQuestions.slice(0, 2), ...cosmicQuestions.slice(0, 2)],
+  crossroads: [...crossroadsQuestions, ...emotionalQuestions.slice(0, 2), ...symbolicQuestions.slice(0, 2)],
+  calling: [...callingQuestions, ...cosmicQuestions.slice(0, 2), ...emotionalQuestions.slice(0, 2)],
 }
 
 // Grounding questions (used for all message types) - intuitive, present-moment

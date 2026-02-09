@@ -8,38 +8,59 @@ const TIMEOUT_MS = 30000
 
 interface ProviderConfig {
   model: AIModel
+  oracle: string // Display name (Iris, Luna, etc.)
+  archetype: string // The Oracle, The Muse, etc.
   apiKey: string | undefined
   endpoint: string
   modelId: string
 }
 
+// Oracle display names, archetypes, and colors - single source of truth
+export const ORACLE_INFO: Record<AIModel, { name: string; archetype: string; color: string }> = {
+  'gpt-4.1': { name: 'Iris', archetype: 'The Oracle', color: '#10a37f' },
+  'claude-sonnet-4.5': { name: 'Luna', archetype: 'The Muse', color: '#d97706' },
+  'gemini-3.0-pro': { name: 'Echo', archetype: 'The Mirror', color: '#4285f4' },
+  'deepseek-reasoner': { name: 'Shade', archetype: 'The Deep', color: '#6366f1' },
+  'grok-4': { name: 'Nova', archetype: 'The Wild', color: '#ef4444' },
+}
+
 const PROVIDER_CONFIGS: ProviderConfig[] = [
   {
     model: 'gpt-4.1',
+    oracle: ORACLE_INFO['gpt-4.1'].name,
+    archetype: ORACLE_INFO['gpt-4.1'].archetype,
     apiKey: process.env.OPENAI_API_KEY,
     endpoint: 'https://api.openai.com/v1/chat/completions',
     modelId: 'gpt-4.1',
   },
   {
     model: 'claude-sonnet-4.5',
+    oracle: ORACLE_INFO['claude-sonnet-4.5'].name,
+    archetype: ORACLE_INFO['claude-sonnet-4.5'].archetype,
     apiKey: process.env.ANTHROPIC_API_KEY,
     endpoint: 'https://api.anthropic.com/v1/messages',
     modelId: 'claude-sonnet-4-5',
   },
   {
     model: 'gemini-3.0-pro',
+    oracle: ORACLE_INFO['gemini-3.0-pro'].name,
+    archetype: ORACLE_INFO['gemini-3.0-pro'].archetype,
     apiKey: process.env.GOOGLE_API_KEY,
     endpoint: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent',
     modelId: 'gemini-3-pro-preview',
   },
   {
     model: 'deepseek-reasoner',
+    oracle: ORACLE_INFO['deepseek-reasoner'].name,
+    archetype: ORACLE_INFO['deepseek-reasoner'].archetype,
     apiKey: process.env.DEEPSEEK_API_KEY,
     endpoint: 'https://api.deepseek.com/chat/completions',
     modelId: 'deepseek-reasoner',
   },
   {
     model: 'grok-4',
+    oracle: ORACLE_INFO['grok-4'].name,
+    archetype: ORACLE_INFO['grok-4'].archetype,
     apiKey: process.env.XAI_API_KEY,
     endpoint: 'https://api.x.ai/v1/chat/completions',
     modelId: 'grok-4',
@@ -168,6 +189,8 @@ async function callChannelingModel(
   if (!config.apiKey) {
     return {
       model: config.model,
+      oracle: config.oracle,
+      prompt,
       content: '',
       status: 'error',
       error: 'API key not configured',
@@ -207,6 +230,8 @@ async function callChannelingModel(
 
     return {
       model: config.model,
+      oracle: config.oracle,
+      prompt,
       content,
       status: 'success',
       latencyMs: Date.now() - startTime,
@@ -215,6 +240,8 @@ async function callChannelingModel(
     const isTimeout = error instanceof Error && error.name === 'AbortError'
     return {
       model: config.model,
+      oracle: config.oracle,
+      prompt,
       content: '',
       status: isTimeout ? 'timeout' : 'error',
       error: error instanceof Error ? error.message : 'Unknown error',

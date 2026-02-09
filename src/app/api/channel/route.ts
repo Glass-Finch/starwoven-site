@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import type { ChannelRequest, ChannelResponse } from '@/lib/types'
+import type { ChannelRequest, ChannelResponse, SynthesisMetadata } from '@/lib/types'
 import { callAllChannelingModels, callSynthesisModel, getLongestResponse } from '@/lib/ai'
 import { buildChannelingPrompt, buildSynthesisPrompt } from '@/lib/prompts'
 
@@ -8,7 +8,7 @@ const MIN_SUCCESSFUL_RESPONSES = 3
 export async function POST(request: Request): Promise<NextResponse<ChannelResponse>> {
   try {
     const body = await request.json() as ChannelRequest
-    const { messageType, coordinates, intention } = body
+    const { messageType, coordinates, intention, personalization } = body
 
     // Validate request
     if (!messageType || !coordinates || !intention) {
@@ -23,8 +23,8 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       )
     }
 
-    // Build channeling prompt
-    const channelingPrompt = buildChannelingPrompt(messageType, coordinates, intention)
+    // Build channeling prompt with personalization
+    const channelingPrompt = buildChannelingPrompt(messageType, coordinates, intention, personalization)
 
     // Call all channeling models in parallel
     const responses = await callAllChannelingModels(channelingPrompt)
@@ -47,17 +47,26 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       })
     }
 
-    // Build synthesis prompt
+    // Build synthesis prompt with personalization
     const synthesisPrompt = buildSynthesisPrompt(
       messageType,
       intention,
-      successfulResponses.map(r => ({ model: r.model, content: r.content }))
+      successfulResponses.map(r => ({ model: r.model, content: r.content })),
+      personalization
     )
 
-    // Call synthesis model
+    // Call synthesis model and track timing
+    const synthesisStart = Date.now()
     let synthesis: string
+    let synthesisMetadata: SynthesisMetadata | undefined
+
     try {
       synthesis = await callSynthesisModel(synthesisPrompt)
+      synthesisMetadata = {
+        prompt: synthesisPrompt,
+        threadsUsed: successfulResponses.map(r => r.model),
+        latencyMs: Date.now() - synthesisStart,
+      }
     } catch {
       // Fallback to longest response if synthesis fails
       synthesis = getLongestResponse(responses)
@@ -67,6 +76,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       status: failedModels.length === 0 ? 'complete' : 'partial',
       threads: responses,
       synthesis,
+      synthesisMetadata,
       failedModels: failedModels.length > 0 ? failedModels : undefined,
     })
   } catch (error) {

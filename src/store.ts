@@ -12,6 +12,7 @@ import type {
   CoordinateSet,
   ModelResponse,
 } from '@/lib/types'
+import { getMessageTypeConfig } from '@/lib/message-types'
 
 interface JourneyStore {
   // Session
@@ -20,6 +21,7 @@ interface JourneyStore {
   // Journey state
   currentStep: JourneyStep
   messageType: MessageType | null
+  personalization: Record<string, string>
   questions: Question[]
   answers: Answer[]
   coordinates: CoordinateSet | null
@@ -32,6 +34,8 @@ interface JourneyStore {
   // Actions
   initSession: () => void
   setMessageType: (type: MessageType) => void
+  setPersonalization: (data: Record<string, string>) => void
+  setPersonalizationField: (field: string, value: string) => void
   setQuestions: (questions: Question[]) => void
   addAnswer: (answer: Answer) => void
   setCoordinates: (coordinates: CoordinateSet) => void
@@ -48,6 +52,7 @@ const initialState = {
   sessionId: null,
   currentStep: 'select' as JourneyStep,
   messageType: null,
+  personalization: {},
   questions: [],
   answers: [],
   coordinates: null,
@@ -70,9 +75,13 @@ export const useJourneyStore = create<JourneyStore>()(
       },
 
       setMessageType: (type) => {
+        const config = getMessageTypeConfig(type)
+        const hasInputFields = config?.inputFields && config.inputFields.length > 0
+
         set({
           messageType: type,
-          currentStep: 'coordinates',
+          currentStep: hasInputFields ? 'personalization' : 'coordinates',
+          personalization: {},
           answers: [],
           coordinates: null,
           intention: '',
@@ -80,6 +89,22 @@ export const useJourneyStore = create<JourneyStore>()(
           synthesis: null,
           error: null,
         })
+      },
+
+      setPersonalization: (data) => {
+        set({
+          personalization: data,
+          currentStep: 'coordinates',
+        })
+      },
+
+      setPersonalizationField: (field, value) => {
+        set((state) => ({
+          personalization: {
+            ...state.personalization,
+            [field]: value,
+          },
+        }))
       },
 
       setQuestions: (questions) => {

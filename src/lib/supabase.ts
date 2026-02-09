@@ -3,7 +3,7 @@
  */
 
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import type { MessageType, CoordinateSet, ModelResponse } from './types'
+import type { MessageType, CoordinateSet, ModelResponse, ReadingMetadata } from './types'
 
 // Types for database records
 export interface ReadingRecord {
@@ -15,7 +15,7 @@ export interface ReadingRecord {
   coordinates: CoordinateSet
   synthesis: string
   threads: ModelResponse[]
-  metadata?: Record<string, unknown>
+  metadata?: ReadingMetadata
 }
 
 export interface ReadingInsert {
@@ -25,7 +25,7 @@ export interface ReadingInsert {
   coordinates: CoordinateSet
   synthesis: string
   threads: ModelResponse[]
-  metadata?: Record<string, unknown>
+  metadata?: ReadingMetadata
 }
 
 // Environment validation
