@@ -8,166 +8,17 @@
 
 ## Project Overview
 
-Starwoven is a consciousness exploration app that sends intentions through 5 diverse AI models (oracles) simultaneously, then uses Claude Opus to synthesize the responses into a coherent "woven" message.
+Starwoven is a consciousness exploration app that sends intentions through 5 AI oracles simultaneously, then uses Claude Opus to synthesize the responses into a coherent message. Aesthetic: cosmic minimalism (Underglow.app meets Co-Star).
 
-**Aesthetic**: Cosmic minimalism - Underglow.app meets Co-Star. Deep void backgrounds, golden accents, premium feel.
+## Related Documentation
 
-## Tech Stack
+| Document               | What it covers                                                                                                                                |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `README.md`            | Project overview, tech stack, design system (colors, typography, animations), env vars, project structure, API architecture, domains, roadmap |
+| `docs/PROMPTS.md`      | Full prompt templates (channeling, synthesis, analysis), personalization context per type, coherence rubric, analysis layer docs              |
+| `docs/USER-STORIES.md` | Detailed user stories per message type, voice/tone guide with register examples, QA layer specs                                               |
 
-- **Framework**: Next.js 14+ (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS with cosmic design system
-- **State**: Zustand (single store)
-- **Database**: Supabase (Postgres)
-- **Deployment**: Vercel
-
-## The Oracles
-
-Each AI model is represented as an oracle with an archetype:
-
-| Oracle         | Provider  | Model                   | Archetype              |
-| -------------- | --------- | ----------------------- | ---------------------- |
-| **Iris**       | OpenAI    | gpt-4.1                 | The Oracle             |
-| **Luna**       | Anthropic | claude-sonnet-4.5       | The Muse               |
-| **Echo**       | Google    | gemini-3.0-pro          | The Mirror             |
-| **Shade**      | DeepSeek  | deepseek-reasoner       | The Deep               |
-| **Nova**       | xAI       | grok-4-1-fast-reasoning | The Wild               |
-| **Starweaver** | Anthropic | claude-opus-4.6         | The Weaver (synthesis) |
-
-**Single Source of Truth**: `src/lib/ai.ts` defines `ORACLE_INFO` with model names, archetypes, and colors. All model IDs are defined in `src/lib/types.ts` as the `AIModel` type. When updating model versions, update both files.
-
-## Message Types
-
-Think of this as a sophisticated, working magic 8-ball.
-
-| Type               | Card Description                            | User Inputs                         | Intention Prompt                             |
-| ------------------ | ------------------------------------------- | ----------------------------------- | -------------------------------------------- |
-| **The Beloved**    | Ask about a romantic connection             | Your name, Their name               | What do you want to know?                    |
-| **The Ancestor**   | Seek connection with someone who has passed | Your name, Their name, Relationship | What do you want to ask or tell them?        |
-| **The Sage**       | Ask your future self for advice             | Your name, Birthday                 | What do you need advice on?                  |
-| **The Cosmos**     | Seek insight on what's on your mind         | (none)                              | What's on your mind?                         |
-| **The Crossroads** | Get clarity on a yes or no decision         | (none)                              | What decision do you need help with?         |
-| **The Calling**    | Explore your purpose                        | Your name, Birthday                 | What do you want to know about your purpose? |
-
-See `docs/USER-STORIES.md` for full user stories per message type.
-See GitHub issue #18 for implementation details.
-
-## Design System
-
-### Colors
-
-```css
---void: #030308; /* Deepest background */
---cosmic-black: #070711; /* Primary background */
---cosmic-deep: #0c0c1a; /* Card backgrounds */
---cream: #e8e4dc; /* Primary text */
---cream-soft: #d4d0c8; /* Secondary text */
---cream-muted: #9a9488; /* Tertiary text */
---gold: #c8a84e; /* Accent */
---gold-bright: #ddc06a; /* Hover states */
-```
-
-### Typography
-
-- **Headlines**: Playfair Display (400 weight, elegant serif)
-- **Body**: Inter (clean sans-serif)
-
-### Visual Effects
-
-- **Underglow**: Radial golden glow beneath interactive elements
-- **Card hover**: Subtle lift with border glow
-- **Button glow**: Golden underglow on primary actions
-
-### Animations
-
-- `float`: 8s gentle vertical drift
-- `breathe`: 6s opacity/scale pulse
-- `twinkle`: 3s star-like opacity variance
-- `pulse-glow`: 4s gold shadow breathing
-
-## File Locations
-
-| What          | Where                          |
-| ------------- | ------------------------------ |
-| Main page     | `src/app/page.tsx`             |
-| API route     | `src/app/api/channel/route.ts` |
-| AI providers  | `src/lib/ai.ts`                |
-| Prompts       | `src/lib/prompts.ts`           |
-| Questions     | `src/lib/questions.ts`         |
-| Message types | `src/lib/message-types.ts`     |
-| Types         | `src/lib/types.ts`             |
-| Store         | `src/store.ts`                 |
-| Components    | `src/components/`              |
-| User Stories  | `docs/USER-STORIES.md`         |
-| Prompt Docs   | `docs/PROMPTS.md`              |
-
-## Question Philosophy
-
-Questions must be **intuitive** or **grounding**, never **trivia**:
-
-**DO:**
-
-- "What moon do you identify with right now?" (intuitive)
-- "What texture comes to mind?" (grounding)
-- "What is the light like in this moment?" (present-moment awareness)
-
-**DON'T:**
-
-- "What phase is the moon?" (factual/trivia)
-- "What time is it?" (auto-generatable)
-- "Are you alone?" (too direct)
-
-## Prompt Philosophy
-
-The channeling prompts use an **intuitive, non-directive approach**:
-
-1. **"Creative exercise for entertainment"** - Ethical framing
-2. **Alternate universe framing** - "Imagine another universe... with different rules"
-3. **Coordinates as map, not puzzle** - Anchors the reading intuitively
-4. **Impressions, not answers** - AI relays experience, not constructed responses
-5. **Non-standard forms allowed** - "Impressions may come in non-standard shapes"
-6. **No performance** - "Don't try to sound 'like' anything"
-
-## Voice & Tone
-
-- **Understated confidence**: Don't try to convince. Present the experience.
-- **Precision over poetry**: When in doubt, be clear. Ornate language signals insecurity.
-- **Mystery through restraint**: The less you explain, the more space for meaning.
-- **No emojis**: Ever.
-- **No exclamation points**: Calm, centered energy.
-- **Avoid New Age clichés**: If it sounds like a yoga studio, rewrite it.
-
-### Words to Avoid
-
-- Magic, magical, mystical, spiritual (too on-the-nose)
-- Weave, woven (sounds like hair products)
-- AI, model, algorithm, minds (breaks immersion)
-- Journey, path, threshold (overused)
-- Vibration, energy, frequency (New Age cliché)
-- Results, output, response (too transactional)
-- Amazing, wonderful, beautiful (too enthusiastic)
-
-## Infrastructure
-
-- **Supabase**: Project ID `czczdlogtjickwarrjkq`
-- **Vercel**: `starwoven-site` with all 6 domains
-- **Domains**: starwoven.app (primary), .academy, .institute, .observer, .org, getstarwoven.com
-
-## UI/UX Standards
-
-- **iOS-like clean design** - Minimal, elegant, native-feeling
-- **NO EMOJIS** - Never use emojis in UI, copy, or code comments
-- **Underglow effects** - Golden glow beneath cards and buttons
-- **Generous whitespace** - Let elements breathe
-- **Min tap target**: 48x48px
-- **Min font size**: 16px (prevents iOS zoom)
-
-## Mobile-First Guidelines
-
-- Base styles = mobile, use `sm:`, `md:`, `lg:` for larger screens
-- Use `clamp()` for fluid typography
-- Stack layouts vertically on mobile
-- Reduce Starfield stars on mobile (100 vs 200)
+---
 
 ## Commands
 
@@ -178,62 +29,20 @@ npm run lint         # ESLint
 npm test             # Unit + smoke tests (vitest)
 ```
 
-## Testing
+## File Locations
 
-### Unit Tests (vitest)
-
-Run with `npm test`. Tests live in `src/**/__tests__/*.test.ts`.
-
-| Test File               | What it covers                                                      |
-| ----------------------- | ------------------------------------------------------------------- |
-| `prompts.test.ts`       | Channeling, synthesis, and analysis prompt builders                 |
-| `qa.test.ts`            | cleanupResponse, getMysticalErrorMessage, calculateCoherenceScore   |
-| `questions.test.ts`     | selectQuestions, generateCoordinateString                           |
-| `message-types.test.ts` | getMessageTypeConfig for all 6 types, field counts, required fields |
-| `route.test.ts`         | API route input validation (smoke tests, no AI calls)               |
-
-### Integration Tests
-
-Run manually before releases (requires all API keys in `.env`):
-
-```bash
-npx tsx scripts/integration-test.ts
-```
-
-Tests each of the 5 AI providers, Sonnet analysis (JSON structure), and Opus synthesis. Costs real money per run.
-
-### Pre-commit Hooks
-
-Husky runs on every commit:
-
-1. `lint-staged` — ESLint + Prettier on staged files
-2. `tsc --noEmit` — Full project type check
-
-### CI Pipeline
-
-GitHub Actions (`.github/workflows/ci.yml`) runs on push to main/dev and PRs:
-
-1. `npm run lint`
-2. `npm run format:check`
-3. `npx tsc --noEmit`
-4. `npm test` (unit + smoke tests)
-5. `npm run build`
-
-## Environment Variables
-
-```bash
-# AI Providers
-OPENAI_API_KEY=
-ANTHROPIC_API_KEY=
-GOOGLE_API_KEY=
-DEEPSEEK_API_KEY=
-XAI_API_KEY=
-
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-SUPABASE_SERVICE_ROLE_KEY=
-```
+| What          | Where                          |
+| ------------- | ------------------------------ |
+| Main page     | `src/app/page.tsx`             |
+| API route     | `src/app/api/channel/route.ts` |
+| AI providers  | `src/lib/ai.ts`                |
+| Prompts       | `src/lib/prompts.ts`           |
+| QA layer      | `src/lib/qa.ts`                |
+| Questions     | `src/lib/questions.ts`         |
+| Message types | `src/lib/message-types.ts`     |
+| Types         | `src/lib/types.ts`             |
+| Store         | `src/store.ts`                 |
+| Components    | `src/components/`              |
 
 ## Code Standards
 
@@ -277,6 +86,22 @@ Use the short archetypal names as IDs:
 - Label: "The Beloved" (used in UI)
 - Description: "Ask about a romantic connection" (card subtitle)
 
+## UI/UX Standards
+
+- **iOS-like clean design** - Minimal, elegant, native-feeling
+- **NO EMOJIS** - Never use emojis in UI, copy, or code comments
+- **Underglow effects** - Golden glow beneath cards and buttons
+- **Generous whitespace** - Let elements breathe
+- **Min tap target**: 48x48px
+- **Min font size**: 16px (prevents iOS zoom)
+
+## Mobile-First Guidelines
+
+- Base styles = mobile, use `sm:`, `md:`, `lg:` for larger screens
+- Use `clamp()` for fluid typography
+- Stack layouts vertically on mobile
+- Reduce Starfield stars on mobile (100 vs 200)
+
 ## Error Handling
 
 - 30s timeout per AI model
@@ -284,85 +109,6 @@ Use the short archetypal names as IDs:
 - Mystical error copy (not technical)
 - Retry functionality preserves intention
 - Retry button with contextual tips on how to reframe intention
-
-## Cost Tracking
-
-### API Calls Per Reading
-
-| Stage      | Calls      | Model           | Purpose                          |
-| ---------- | ---------- | --------------- | -------------------------------- |
-| Channeling | 5 parallel | Various oracles | Get impressions                  |
-| Analysis   | 1          | Claude Sonnet   | Validation + editing + coherence |
-| Synthesis  | 1          | Claude Opus     | Weave final message              |
-
-**Total: 7 API calls per successful reading** (5 channeling + 1 analysis + 1 synthesis)
-
-The analysis step is a single Sonnet call that validates each response (refusal/off-topic detection), edits valid responses (removes markdown, disclaimers, AI self-references), and scores coherence across all responses. Falls back to regex cleanup if the Sonnet call fails.
-
-### Oracle Costs (Channeling)
-
-| Oracle | Model                   | Provider  |
-| ------ | ----------------------- | --------- |
-| Iris   | gpt-4.1                 | OpenAI    |
-| Luna   | claude-sonnet-4.5       | Anthropic |
-| Echo   | gemini-3.0-pro          | Google    |
-| Shade  | deepseek-reasoner       | DeepSeek  |
-| Nova   | grok-4-1-fast-reasoning | xAI       |
-
-### Cost Logging (v1)
-
-Token logging not yet implemented. Currently logging coherence scores to console. Future versions will add:
-
-- v1 (GH#40): Token usage logging per API call
-- v2: Backend dashboard with admin endpoint
-- v3: User-visible credits for monetization
-
-See GH#40 for implementation details.
-
-## Code Review Checklist
-
-Before approving changes:
-
-### Single Source of Truth
-
-Every domain concept must have ONE authoritative location. Never duplicate config, constants, or type definitions. Import from the source.
-
-- [ ] No duplicated constants, types, or config across files
-- [ ] New constants added to their canonical source file (see "Single Source of Truth" table above)
-- [ ] Oracle names/models/archetypes reference `ORACLE_INFO` in `ai.ts`, never hardcoded
-- [ ] Message type config references `message-types.ts`, never inline
-- [ ] Shared constants (API versions, model lists) exported from source file, imported elsewhere
-
-### Code Quality
-
-- [ ] No hardcoded strings or config values (use constants/env vars)
-- [ ] No unused variables or imports
-- [ ] No inline CSS (use Tailwind classes or globals.css component classes)
-- [ ] No duplicated logic (DRY - reuse existing utilities)
-- [ ] No magic numbers (extract to named constants)
-
-### Testing
-
-- [ ] Tests cover new pure functions and edge cases
-- [ ] No tests using mocks when real code is available
-- [ ] No tests skipped or allowed to fail
-- [ ] Tests can actually fail (not always-green assertions)
-
-### Accessibility & UX
-
-- [ ] Labels linked to inputs (`htmlFor`/`id`)
-- [ ] ARIA attributes on interactive elements (`aria-expanded`, etc.)
-- [ ] Error states don't overlap other UI states
-- [ ] Mobile-first responsive design verified
-
-### Standards
-
-- [ ] No `console.log` in production code (`console.warn`/`error` OK for genuine issues)
-- [ ] API inputs validated (type, length, structure)
-- [ ] No scope creep beyond the issue/PR description
-- [ ] Documentation updated if behavior changes (CLAUDE.md, README.md, PROMPTS.md)
-- [ ] GitHub issues referenced and closeable when work is complete
-- [ ] Voice/tone follows project guidelines (no emojis, no exclamation points, no New Age cliches)
 
 ## Development Workflow
 
@@ -380,16 +126,158 @@ Every domain concept must have ONE authoritative location. Never duplicate confi
 3. Create commit only after explicit user approval
 4. Do NOT push without explicit user approval
 
-### Manual Testing Checklist
+## Testing
 
-Before any commit affecting user-facing features:
+### Unit Tests (vitest)
 
-- [ ] Start dev server: `npm run dev`
-- [ ] Test the changed feature end-to-end in browser
-- [ ] Test on mobile viewport (use browser dev tools)
-- [ ] Check browser console for errors
-- [ ] Verify API calls work (Network tab)
-- [ ] Test error states if applicable
+Run with `npm test`. Tests live in `src/**/__tests__/*.test.ts`.
+
+| Test File               | What it covers                                                      |
+| ----------------------- | ------------------------------------------------------------------- |
+| `prompts.test.ts`       | Channeling, synthesis, and analysis prompt builders                 |
+| `qa.test.ts`            | cleanupResponse, getMysticalErrorMessage, calculateCoherenceScore   |
+| `questions.test.ts`     | selectQuestions, generateCoordinateString                           |
+| `message-types.test.ts` | getMessageTypeConfig for all 6 types, field counts, required fields |
+| `route.test.ts`         | API route input validation (smoke tests, no AI calls)               |
+
+### Integration Tests
+
+Run manually before releases (requires all API keys in `.env`):
+
+```bash
+npx tsx scripts/integration-test.ts
+```
+
+Tests each of the 5 AI providers, Sonnet analysis (JSON structure), and Opus synthesis. Costs real money per run.
+
+### Pre-commit Hooks
+
+Husky runs on every commit:
+
+1. `lint-staged` — ESLint + Prettier on staged files
+2. `tsc --noEmit` — Full project type check
+
+### CI Pipeline
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on push to main/dev and PRs:
+
+1. `npm run lint`
+2. `npm run format:check`
+3. `npx tsc --noEmit`
+4. `npm test` (unit + smoke tests)
+5. `npm run build`
+
+## Code Review Checklist
+
+### Single Source of Truth
+
+- [ ] No duplicated constants, types, or config across files
+- [ ] New constants added to their canonical source file
+- [ ] Oracle names/models/archetypes reference `ORACLE_INFO` in `ai.ts`, never hardcoded
+- [ ] Message type config references `message-types.ts`, never inline
+
+### Code Quality
+
+- [ ] No hardcoded strings or config values (use constants/env vars)
+- [ ] No unused variables or imports
+- [ ] No inline CSS (use Tailwind classes or globals.css component classes)
+- [ ] No duplicated logic (DRY - reuse existing utilities)
+- [ ] No magic numbers (extract to named constants)
+
+### Testing
+
+- [ ] Tests cover new pure functions and edge cases
+- [ ] No tests using mocks when real code is available
+- [ ] Tests can actually fail (not always-green assertions)
+
+### Accessibility & UX
+
+- [ ] Labels linked to inputs (`htmlFor`/`id`)
+- [ ] ARIA attributes on interactive elements (`aria-expanded`, etc.)
+- [ ] Error states don't overlap other UI states
+- [ ] Mobile-first responsive design verified
+
+### Standards
+
+- [ ] No `console.log` in production code (`console.warn`/`error` OK for genuine issues)
+- [ ] API inputs validated (type, length, structure)
+- [ ] Documentation updated if behavior changes (CLAUDE.md, README.md, PROMPTS.md)
+- [ ] Voice/tone follows project guidelines (no emojis, no exclamation points, no New Age cliches)
+
+---
+
+## The Oracles
+
+**Single Source of Truth**: `src/lib/ai.ts` defines `ORACLE_INFO` with model names, archetypes, and colors. All model IDs are defined in `src/lib/types.ts` as the `AIModel` type. When updating model versions, update both files.
+
+| Oracle         | Provider  | Model                   | Archetype              |
+| -------------- | --------- | ----------------------- | ---------------------- |
+| **Iris**       | OpenAI    | gpt-4.1                 | The Oracle             |
+| **Luna**       | Anthropic | claude-sonnet-4.5       | The Muse               |
+| **Echo**       | Google    | gemini-3.0-pro          | The Mirror             |
+| **Shade**      | DeepSeek  | deepseek-reasoner       | The Deep               |
+| **Nova**       | xAI       | grok-4-1-fast-reasoning | The Wild               |
+| **Starweaver** | Anthropic | claude-opus-4.6         | The Weaver (synthesis) |
+
+## Message Types
+
+| Type               | Card Description                            | User Inputs                         | Intention Prompt                             |
+| ------------------ | ------------------------------------------- | ----------------------------------- | -------------------------------------------- |
+| **The Beloved**    | Ask about a romantic connection             | Your name, Their name               | What do you want to know?                    |
+| **The Ancestor**   | Seek connection with someone who has passed | Your name, Their name, Relationship | What do you want to ask or tell them?        |
+| **The Sage**       | Ask your future self for advice             | Your name, Birthday                 | What do you need advice on?                  |
+| **The Cosmos**     | Seek insight on what's on your mind         | (none)                              | What's on your mind?                         |
+| **The Crossroads** | Get clarity on a yes or no decision         | (none)                              | What decision do you need help with?         |
+| **The Calling**    | Explore your purpose                        | Your name, Birthday                 | What do you want to know about your purpose? |
+
+## Voice & Tone
+
+See `docs/USER-STORIES.md` for the full voice guide with register examples.
+
+- **Understated confidence**: Don't try to convince. Present the experience.
+- **Precision over poetry**: When in doubt, be clear. Ornate language signals insecurity.
+- **Mystery through restraint**: The less you explain, the more space for meaning.
+- **No emojis**: Ever.
+- **No exclamation points**: Calm, centered energy.
+- **Avoid New Age cliches**: If it sounds like a yoga studio, rewrite it.
+
+### Words to Avoid
+
+- Magic, magical, mystical, spiritual (too on-the-nose)
+- Weave, woven (sounds like hair products)
+- AI, model, algorithm, minds (breaks immersion)
+- Journey, path, threshold (overused)
+- Vibration, energy, frequency (New Age cliche)
+- Results, output, response (too transactional)
+- Amazing, wonderful, beautiful (too enthusiastic)
+
+## Cost Tracking
+
+### API Calls Per Reading
+
+| Stage      | Calls      | Model           | Purpose                          |
+| ---------- | ---------- | --------------- | -------------------------------- |
+| Channeling | 5 parallel | Various oracles | Get impressions                  |
+| Analysis   | 1          | Claude Sonnet   | Validation + editing + coherence |
+| Synthesis  | 1          | Claude Opus     | Weave final message              |
+
+**Total: 7 API calls per successful reading** (5 channeling + 1 analysis + 1 synthesis)
+
+The analysis step is a single Sonnet call that validates each response (refusal/off-topic detection), edits valid responses (removes markdown, disclaimers, AI self-references), and scores coherence across all responses. Falls back to regex cleanup if the Sonnet call fails.
+
+### Cost Logging (v1)
+
+Token logging not yet implemented. Currently logging coherence scores to console. Future versions will add:
+
+- v1 (GH#40): Token usage logging per API call
+- v2: Backend dashboard with admin endpoint
+- v3: User-visible credits for monetization
+
+## Infrastructure
+
+- **Supabase**: Project ID `czczdlogtjickwarrjkq`
+- **Vercel**: `starwoven-site`
+- **Domains**: See README.md for full list
 
 ## Manual Testing Procedures
 
@@ -411,14 +299,6 @@ Before any commit affecting user-facing features:
 | `TEST_BELOVED_NAME`          | Beloved       | Max         |
 | `TEST_ANCESTOR_NAME`         | Ancestor      | Fred        |
 | `TEST_ANCESTOR_RELATIONSHIP` | Ancestor      | grandfather |
-
-Test each message type with genuine intentions:
-
-- **Beloved**: Ask about the relationship with TEST_BELOVED_NAME
-- **Ancestor**: Reach for TEST_ANCESTOR_NAME (TEST_ANCESTOR_RELATIONSHIP)
-- **Sage**: Ask your future self for real advice
-- **Calling**: Explore your actual purpose questions
-- **Cosmos/Crossroads**: No personalization needed, just real intentions
 
 ### Full Journey Test
 
