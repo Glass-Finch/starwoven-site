@@ -16,6 +16,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
       {/* Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
         className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-cream/5 transition-colors"
       >
         <div className="flex items-center gap-3">

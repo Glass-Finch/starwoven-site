@@ -138,7 +138,7 @@ All journeys include 5 coordinate questions (3 themed + 2 grounding).
 
 - **5 rapid-fire questions** generate unique coordinates
 - **3 themed** (specific to message type) + **2 grounding** (present-moment awareness)
-- **10% chance** one grounding swaps for a "weird" question
+- **15% chance** one grounding swaps for a "weird" question
 - Auto-advance on selection for seamless flow
 
 ### Intention Input
@@ -182,21 +182,24 @@ src/
 │       └── channel/route.ts    # AI orchestration + synthesis
 │
 ├── components/
-│   ├── Starfield.tsx           # Animated background
-│   ├── MessageTypeSelector.tsx # 6 preset cards
-│   ├── QuestionFlow.tsx        # Rapid-fire questions
-│   ├── IntentionInput.tsx      # User's question
-│   ├── ChannelingLoader.tsx    # Cosmic loading animation
-│   ├── WovenMessage.tsx        # Final result display
-│   ├── ThreadsAccordion.tsx    # Expandable raw responses
-│   └── CoordinateReveal.tsx    # What generated coordinates
+│   ├── Starfield.tsx              # Animated background
+│   ├── MessageTypeSelector.tsx    # 6 preset cards
+│   ├── PersonalizationForm.tsx    # Dynamic per-type input form
+│   ├── QuestionFlow.tsx           # Rapid-fire questions
+│   ├── IntentionInput.tsx         # User's question
+│   ├── ChannelingLoader.tsx       # Cosmic loading animation
+│   ├── WovenMessage.tsx           # Final result display
+│   ├── ThreadsAccordion.tsx       # Expandable raw responses
+│   └── CoordinateReveal.tsx       # What generated coordinates
 │
 ├── lib/
-│   ├── ai.ts                   # All AI provider calls
-│   ├── prompts.ts              # Channeling + synthesis prompts
-│   ├── questions.ts            # Static question pool
-│   ├── supabase.ts             # Database client
-│   └── types.ts                # TypeScript interfaces
+│   ├── ai.ts                      # All AI provider calls
+│   ├── prompts.ts                 # Channeling + synthesis prompts
+│   ├── qa.ts                      # Response validation + coherence
+│   ├── questions.ts               # Static question pool
+│   ├── message-types.ts           # Message type configurations
+│   ├── supabase.ts                # Database client
+│   └── types.ts                   # TypeScript interfaces
 │
 └── store.ts                    # Zustand journey state
 
@@ -212,7 +215,7 @@ supabase/
 ### Prerequisites
 
 - Node.js 18+
-- pnpm (recommended) or npm
+- npm (recommended) or npm
 - API keys for all AI providers
 - Supabase account
 
@@ -224,17 +227,17 @@ git clone https://github.com/yourusername/starwoven-site.git
 cd starwoven-site
 
 # Install dependencies
-pnpm install
+npm install
 
 # Set up environment variables
 cp .env.example .env.local
 # Edit .env.local with your API keys
 
 # Run database migrations
-pnpm supabase db push
+npm supabase db push
 
 # Start development server
-pnpm dev
+npm dev
 ```
 
 ### Environment Variables
@@ -243,7 +246,7 @@ pnpm dev
 # AI Providers
 OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
-GOOGLE_AI_API_KEY=
+GOOGLE_API_KEY=
 DEEPSEEK_API_KEY=
 XAI_API_KEY=
 
@@ -307,7 +310,7 @@ SUPABASE_SERVICE_ROLE_KEY=
 ```typescript
 // Request
 {
-  messageType: 'love_interest',
+  messageType: 'beloved',
   coordinates: { raw: '0423-8917', questions: [...] },
   intention: "What does she really feel?"
 }

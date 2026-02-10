@@ -20,6 +20,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
       {/* Header */}
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
         className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-cream/5 transition-colors"
       >
         <span className="text-sm text-cream">View threads ({successfulThreads.length})</span>
@@ -44,6 +45,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
                 onClick={() =>
                   setExpandedThread(expandedThread === thread.model ? null : thread.model)
                 }
+                aria-expanded={expandedThread === thread.model}
                 className="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-cream/5 transition-colors"
               >
                 <div className="flex items-center gap-2">

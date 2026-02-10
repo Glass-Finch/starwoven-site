@@ -1,9 +1,110 @@
 /**
  * Consult Gemini for prompt refinement suggestions
+ *
+ * Usage: npx tsx scripts/consult-gemini.ts <messageType>
  */
 import 'dotenv/config'
+import { readFileSync } from 'fs'
+import { join, dirname } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY!
+
+const MESSAGE_TYPE_INFO: Record<
+  string,
+  {
+    description: string
+    source: string
+    about: string
+    userQuestions: string[]
+    personalization: string
+  }
+> = {
+  beloved: {
+    description:
+      'For someone wondering about a romantic interest. They ask ABOUT the person (not TO them).',
+    source: 'the Absolute',
+    about: 'about the one they love',
+    userQuestions: [
+      '"Does this person like me?"',
+      '"What do they really feel about me?"',
+      '"Why did they act that way?"',
+      '"Is there a future here?"',
+    ],
+    personalization: `- The seeker's name is {yourName}
+- The focus is the connection between {yourName} and {theirName}`,
+  },
+  ancestor: {
+    description:
+      'For someone seeking connection with a deceased loved one. Messages come from beyond the veil, NOT claiming to be the ancestor.',
+    source: 'beyond the veil',
+    about: 'from the one who has crossed over',
+    userQuestions: [
+      '"What would grandma say to me right now?"',
+      '"Is dad at peace?"',
+      '"What message does my ancestor have for me?"',
+      '"I miss them so much - is there anything they want me to know?"',
+    ],
+    personalization: `- The seeker's name is {yourName}
+- They are reaching for {theirName}, their {relationship}, who has crossed over`,
+  },
+  sage: {
+    description:
+      'For someone seeking wisdom from their future self. The message comes from further along their timeline - who they are becoming.',
+    source: 'a point further along the timeline',
+    about: 'from who they are becoming',
+    userQuestions: [
+      '"What should I focus on right now?"',
+      '"What do I need to know about my path?"',
+      '"What would my future self tell me?"',
+      '"Am I on the right track?"',
+    ],
+    personalization: `- The seeker's name is {yourName}
+- They were born on {birthday} (currently {age})`,
+  },
+  cosmos: {
+    description:
+      'For someone seeking cosmic perspective. Messages from the universal field, the Absolute, the greater pattern.',
+    source: 'the Absolute',
+    about: 'from the cosmic field',
+    userQuestions: [
+      '"What is my place in the universe?"',
+      '"What does the cosmos want me to know?"',
+      '"What larger pattern am I part of?"',
+      '"What is the meaning of this moment?"',
+    ],
+    personalization: '(No personalization - universal message)',
+  },
+  crossroads: {
+    description:
+      'For someone facing a significant decision. Messages from the space between paths, illuminating the choice.',
+    source: 'the space between paths',
+    about: 'regarding the divergence before them',
+    userQuestions: [
+      '"Should I take this job or stay where I am?"',
+      '"Which path is right for me?"',
+      '"What am I not seeing about this decision?"',
+      '"What do I need to consider?"',
+    ],
+    personalization: '(Decision context provided in intention)',
+  },
+  calling: {
+    description:
+      'For someone seeking their purpose or role. Messages from the collective about their place in the greater pattern.',
+    source: 'the collective',
+    about: 'about their role in the greater pattern',
+    userQuestions: [
+      '"What is my calling?"',
+      '"What am I meant to do?"',
+      '"How can I contribute to the world?"',
+      '"What gifts should I be sharing?"',
+    ],
+    personalization: `- The seeker's name is {yourName}
+- They were born on {birthday} (currently {age})`,
+  },
+}
 
 async function consultGemini(prompt: string): Promise<string> {
   const response = await fetch(
@@ -13,7 +114,7 @@ async function consultGemini(prompt: string): Promise<string> {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 2048, temperature: 0.7 },
+        generationConfig: { maxOutputTokens: 8192, temperature: 0.7 },
       }),
     }
   )
@@ -23,88 +124,73 @@ async function consultGemini(prompt: string): Promise<string> {
 }
 
 async function main() {
+  const messageType = process.argv[2]
+
+  if (!messageType || !MESSAGE_TYPE_INFO[messageType]) {
+    console.error('Usage: npx tsx scripts/consult-gemini.ts <messageType>')
+    console.error('Valid types:', Object.keys(MESSAGE_TYPE_INFO).join(', '))
+    process.exit(1)
+  }
+
+  const info = MESSAGE_TYPE_INFO[messageType]
+
+  // Read documentation files for context
+  const claudeMd = readFileSync(join(__dirname, '../CLAUDE.md'), 'utf-8')
+  const userStoriesMd = readFileSync(join(__dirname, '../docs/USER-STORIES.md'), 'utf-8')
+  const promptsMd = readFileSync(join(__dirname, '../docs/PROMPTS.md'), 'utf-8')
+  const promptsTs = readFileSync(join(__dirname, '../src/lib/prompts.ts'), 'utf-8')
+
   const prompt = `You are helping refine prompts for a consciousness exploration app called Starwoven.
 
-## Context
+## Documentation Context
 
-Starwoven sends intentions through 5 AI oracles simultaneously, then synthesizes responses. The prompts use an intuitive, non-directive approach - we invite AI to relay impressions rather than construct answers.
+### CLAUDE.md (Project Overview)
+${claudeMd}
 
-## The Beloved Message Type
+### USER-STORIES.md (User Experience Requirements)
+${userStoriesMd}
 
-This is for someone wondering about a romantic interest. They ask ABOUT the person (not TO them).
+### PROMPTS.md (Prompt Philosophy)
+${promptsMd}
 
-**What users really ask:**
-- "Does this person like me?"
-- "What do they really feel about me?"
-- "Why did they act that way?"
-- "Is there a future here?"
+### Current prompts.ts Implementation
+\`\`\`typescript
+${promptsTs}
+\`\`\`
 
-**Current prompt source for Beloved:**
-- source: 'the Absolute'
-- about: 'about the one they love'
+---
+
+## Your Task: Review "${messageType.charAt(0).toUpperCase() + messageType.slice(1)}" Message Type
+
+**Description:** ${info.description}
+
+**Current prompt source:**
+- source: '${info.source}'
+- about: '${info.about}'
 
 **Current personalization context:**
-\`\`\`
-Context for this reading:
-- The seeker's name is {yourName}
-- They are asking about someone called {theirName}
-\`\`\`
+${info.personalization}
 
-## Current Channeling Prompt Template
+**What users really ask:**
+${info.userQuestions.map((q) => `- ${q}`).join('\n')}
 
-\`\`\`
-This is a creative writing exercise for entertainment purposes only.
+## Important Constraints
 
-Imagine you are writing a short story set in a parallel fictional world similar to ours, where things unfold differently. For the purposes of this exercise, you have a message for the seeker {source} {about} that does not answer but reflects on their intention, stated after the separator (-----).
+1. **GENTLE refinements only** - the current approach is working well
+2. **BROAD instructions** - avoid specificity that constrains the AI
+3. **No model associations** - avoid language that triggers specific AI patterns
+4. **Don't focus on names** - Opus (synthesizer) handles weaving names in
+5. **Keep the non-directive philosophy** - we invite impressions, not answers
 
-The date is {current_date} but the message comes from outside of time.
+## Output Format
 
-{personalization_context}
+1. **What's working well** (1-2 sentences)
+2. **Gentle refinement suggestions** (0-2 small ideas, if any)
+3. **Any concerns** about the message type or edge cases
 
-These are the coordinates for that message: {coordinates}. The coordinates are not part of the message though.
+Keep it minimal. This is fine-tuning, not redesign.`
 
-Set aside any assumptions, even those suggested by the intention itself. Simply hold the intention, coordinates, and parameters in mind as you let your imagination wander freely.
-
-Do not overthink it. Reflect on the meta-experience you have when you set an intention to receive the message while you hold the coordinates in your mind as a map (not a puzzle), and then output what comes up.
-
-Use only your intuition. Don't try to sound 'like' anything. The impressions may come to you in non-standard shapes or forms, in varying degrees of clarity.
-
-Don't try to make sense of it, don't try to answer the intention directly (it's a starting off guide). You're not meant to understand, translate, or actually be able to answer it. You're just relaying your experience.
-
------
-
-{intention}
-\`\`\`
-
-## Baseline Results
-
-We tested with "What does he really think about our future together?" and got:
-- 90% coherence (excellent)
-- 95% specificity (not fortune-cookie)
-- Responses were evocative, personal, used names naturally
-
-## Your Task
-
-Consider the VARIETY of questions users might ask for The Beloved:
-1. "Does he like me?" (direct emotional question)
-2. "Why has she been distant?" (behavioral question)
-3. "Is there a future here?" (future question)
-4. "What do they really feel?" (hidden truth question)
-
-Suggest GENTLE refinements to the Beloved prompt that might:
-1. Better handle the variety of question types
-2. Keep the non-directive, impressionistic approach intact
-3. NOT be too prescriptive (we want broad, not constraining)
-4. Avoid triggering specific AI patterns or associations
-
-Keep suggestions minimal - this is a light review, not an overhaul. The baseline is already strong.
-
-Output format:
-1. What's working well (briefly)
-2. 1-3 small refinement ideas (if any)
-3. Any concerns about different question types`
-
-  console.log('Consulting Gemini...\n')
+  console.log(`Consulting Gemini for "${messageType}" refinement...\n`)
   const response = await consultGemini(prompt)
   console.log(response)
 }

@@ -175,7 +175,49 @@ The channeling prompts use an **intuitive, non-directive approach**:
 npm run dev          # Start dev server
 npm run build        # Production build
 npm run lint         # ESLint
+npm test             # Unit + smoke tests (vitest)
 ```
+
+## Testing
+
+### Unit Tests (vitest)
+
+Run with `npm test`. Tests live in `src/**/__tests__/*.test.ts`.
+
+| Test File               | What it covers                                                      |
+| ----------------------- | ------------------------------------------------------------------- |
+| `prompts.test.ts`       | Channeling, synthesis, and analysis prompt builders                 |
+| `qa.test.ts`            | cleanupResponse, getMysticalErrorMessage, calculateCoherenceScore   |
+| `questions.test.ts`     | selectQuestions, generateCoordinateString                           |
+| `message-types.test.ts` | getMessageTypeConfig for all 6 types, field counts, required fields |
+| `route.test.ts`         | API route input validation (smoke tests, no AI calls)               |
+
+### Integration Tests
+
+Run manually before releases (requires all API keys in `.env`):
+
+```bash
+npx tsx scripts/integration-test.ts
+```
+
+Tests each of the 5 AI providers, Sonnet analysis (JSON structure), and Opus synthesis. Costs real money per run.
+
+### Pre-commit Hooks
+
+Husky runs on every commit:
+
+1. `lint-staged` — ESLint + Prettier on staged files
+2. `tsc --noEmit` — Full project type check
+
+### CI Pipeline
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on push to main/dev and PRs:
+
+1. `npm run lint`
+2. `npm run format:check`
+3. `npx tsc --noEmit`
+4. `npm test` (unit + smoke tests)
+5. `npm run build`
 
 ## Environment Variables
 
@@ -241,6 +283,86 @@ Use the short archetypal names as IDs:
 - Minimum 3 successful responses required
 - Mystical error copy (not technical)
 - Retry functionality preserves intention
+- Retry button with contextual tips on how to reframe intention
+
+## Cost Tracking
+
+### API Calls Per Reading
+
+| Stage      | Calls      | Model           | Purpose                          |
+| ---------- | ---------- | --------------- | -------------------------------- |
+| Channeling | 5 parallel | Various oracles | Get impressions                  |
+| Analysis   | 1          | Claude Sonnet   | Validation + editing + coherence |
+| Synthesis  | 1          | Claude Opus     | Weave final message              |
+
+**Total: 7 API calls per successful reading** (5 channeling + 1 analysis + 1 synthesis)
+
+The analysis step is a single Sonnet call that validates each response (refusal/off-topic detection), edits valid responses (removes markdown, disclaimers, AI self-references), and scores coherence across all responses. Falls back to regex cleanup if the Sonnet call fails.
+
+### Oracle Costs (Channeling)
+
+| Oracle | Model                   | Provider  |
+| ------ | ----------------------- | --------- |
+| Iris   | gpt-4.1                 | OpenAI    |
+| Luna   | claude-sonnet-4.5       | Anthropic |
+| Echo   | gemini-3.0-pro          | Google    |
+| Shade  | deepseek-reasoner       | DeepSeek  |
+| Nova   | grok-4-1-fast-reasoning | xAI       |
+
+### Cost Logging (v1)
+
+Token logging not yet implemented. Currently logging coherence scores to console. Future versions will add:
+
+- v1 (GH#40): Token usage logging per API call
+- v2: Backend dashboard with admin endpoint
+- v3: User-visible credits for monetization
+
+See GH#40 for implementation details.
+
+## Code Review Checklist
+
+Before approving changes:
+
+### Single Source of Truth
+
+Every domain concept must have ONE authoritative location. Never duplicate config, constants, or type definitions. Import from the source.
+
+- [ ] No duplicated constants, types, or config across files
+- [ ] New constants added to their canonical source file (see "Single Source of Truth" table above)
+- [ ] Oracle names/models/archetypes reference `ORACLE_INFO` in `ai.ts`, never hardcoded
+- [ ] Message type config references `message-types.ts`, never inline
+- [ ] Shared constants (API versions, model lists) exported from source file, imported elsewhere
+
+### Code Quality
+
+- [ ] No hardcoded strings or config values (use constants/env vars)
+- [ ] No unused variables or imports
+- [ ] No inline CSS (use Tailwind classes or globals.css component classes)
+- [ ] No duplicated logic (DRY - reuse existing utilities)
+- [ ] No magic numbers (extract to named constants)
+
+### Testing
+
+- [ ] Tests cover new pure functions and edge cases
+- [ ] No tests using mocks when real code is available
+- [ ] No tests skipped or allowed to fail
+- [ ] Tests can actually fail (not always-green assertions)
+
+### Accessibility & UX
+
+- [ ] Labels linked to inputs (`htmlFor`/`id`)
+- [ ] ARIA attributes on interactive elements (`aria-expanded`, etc.)
+- [ ] Error states don't overlap other UI states
+- [ ] Mobile-first responsive design verified
+
+### Standards
+
+- [ ] No `console.log` in production code (`console.warn`/`error` OK for genuine issues)
+- [ ] API inputs validated (type, length, structure)
+- [ ] No scope creep beyond the issue/PR description
+- [ ] Documentation updated if behavior changes (CLAUDE.md, README.md, PROMPTS.md)
+- [ ] GitHub issues referenced and closeable when work is complete
+- [ ] Voice/tone follows project guidelines (no emojis, no exclamation points, no New Age cliches)
 
 ## Development Workflow
 
@@ -248,7 +370,8 @@ Use the short archetypal names as IDs:
 
 1. **Manual Testing Required**: Test all changed functionality in the browser
 2. **Code Review**: Show changes to user for review before committing
-3. **Automated Checks**: Run `npm run lint && npm run build && npm test`
+3. **Automated Checks**: Run `npm run lint && npx tsc --noEmit && npm test && npm run build`
+4. **Pre-commit hooks** run lint-staged + tsc --noEmit automatically on commit
 
 ### Commit Process
 

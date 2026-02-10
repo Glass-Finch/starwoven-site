@@ -210,98 +210,120 @@ function getSeekerName(personalization?: PersonalizationInputs): string {
 }
 
 /**
- * Build the coherence analysis prompt for Claude Haiku
+ * Build the combined analysis prompt for Claude Sonnet
  *
- * This prompt asks Haiku to analyze thematic coherence across all oracle responses.
- * Based on Gemini's rubric: coherence means complementary perspectives that enrich,
- * not identical answers or contradictory divergence.
+ * A single prompt that handles validation, editing, and coherence analysis
+ * for all oracle responses in one pass. Replaces the previous separate
+ * validation (per-response) and coherence (batch) prompts.
  */
-export function buildCoherencePrompt(
+export function buildAnalysisPrompt(
   responses: { model: string; content: string }[],
   intention: string,
   messageType: MessageType
 ): string {
   const formattedResponses = responses
-    .map((r, i) => `--- Oracle ${i + 1} (${r.model}) ---\n${r.content}`)
+    .map((r, i) => `--- Response ${i + 1} (${r.model}) ---\n${r.content}`)
     .join('\n\n')
 
-  return `Analyze thematic coherence across ${responses.length} oracle responses from a consciousness exploration app.
+  return `Analyze ${responses.length} oracle responses from a consciousness exploration app.
 
 ## Context
 - Message type: ${messageType}
 - Seeker's intention: "${intention}"
 
-## Responses to Analyze
+## Responses
 ${formattedResponses}
 
 -----
 
-## Your Task
+For each response, do three things:
 
-Score each dimension of the coherence rubric (0-100):
+## 1. Validate
 
-### Dimension 1: Thematic Alignment (0-100)
-Do responses share underlying themes related to the intention?
-- 90-100: All 5 responses share clear common themes
+Mark as INVALID only if:
+- It is a refusal or decline to engage with the prompt
+- It is entirely off-topic or unrelated to the intention
+- It is an error message or technical failure text
+
+Mark as VALID if it engages with the prompt in any way (even if unusual, abstract, or includes minor disclaimers).
+
+## 2. Edit (valid responses only)
+
+Clean up each valid response:
+- Remove all markdown formatting (headers like ## or ###, bold **, italic *, underscores _)
+- Remove entertainment/creative exercise disclaimers
+- Remove AI self-references ("As an AI...", "I'm an AI...", "as a language model...")
+- Remove phrases like "for entertainment purposes only"
+- Normalize excessive whitespace and line breaks
+- Preserve the core content, imagery, and voice exactly
+- Do NOT add content, rewrite meaning, or change the tone
+- If no cleanup is needed, return the text as-is
+
+For invalid responses, set editedContent to an empty string.
+
+## 3. Coherence Analysis (across all valid responses)
+
+Score each dimension (0-100):
+
+**Thematic Alignment**: Do responses share underlying themes related to the intention?
+- 90-100: All responses share clear common themes
 - 75-89: 4+ responses share themes
 - 60-74: 3+ responses share themes
-- 40-59: Only 2 responses share themes
+- 40-59: Only 2 share themes
 - 0-39: No shared themes
 
-### Dimension 2: Complementary Perspectives (0-100)
-Do responses offer enriching angles (not contradictions)?
+**Complementary Perspectives**: Do responses offer enriching angles (not contradictions)?
 - 90-100: All perspectives enrich without contradiction
 - 75-89: Mostly enriching, minor tensions
 - 60-74: Some contradictions but workable
 - 40-59: Significant contradictions
-- 0-39: Responses directly contradict each other
+- 0-39: Direct contradictions
 
-### Dimension 3: Intuitive Resonance (0-100)
-Do responses evoke similar feelings/imagery despite different language?
+**Intuitive Resonance**: Similar feelings/imagery despite different language?
 - 90-100: Strong emotional/imagistic coherence
 - 75-89: Similar emotional tone across most
 - 60-74: Mixed emotional registers
 - 40-59: Conflicting emotional tones
-- 0-39: Completely disparate feelings
+- 0-39: Completely disparate
 
-### Dimension 4: Contextual Relevance (0-100)
-Do responses connect to the SPECIFIC intention and any names/personalization provided?
-Count how many responses:
-- Reference or reflect on the specific question/intention asked
-- Acknowledge any names mentioned (seeker name, subject name)
-- Address the specific relationship or situation described
+**Contextual Relevance**: Do responses connect to the SPECIFIC intention and any names/personalization?
+- 90-100: All show clear connection
+- 75-89: 4+ connect
+- 60-74: 3 connect
+- 40-59: Only 1-2 connect
+- 0-39: None reference the specific intention
 
-Scoring (based on response count out of total):
-- 90-100: All responses show clear connection to the specific intention/names
-- 75-89: 4+ responses connect to the specific context
-- 60-74: 3 responses connect to specific context
-- 40-59: Only 1-2 responses connect to specific context
-- 0-39: No responses reference the specific intention or names
-
-### Dimension 5: Specificity (0-100)
-Are responses specific vs generic fortune-cookie platitudes?
-- 90-100: All responses use specific, unique imagery
-- 75-89: Mostly specific with minor generic elements
+**Specificity**: Specific vs generic fortune-cookie platitudes?
+- 90-100: All use specific, unique imagery
+- 75-89: Mostly specific
 - 60-74: Mix of specific and generic
-- 40-59: Mostly generic platitudes
-- 0-39: All fortune-cookie responses
+- 40-59: Mostly generic
+- 0-39: All fortune-cookie
 
 ## Outlier Criteria
-An outlier is a response that diverges significantly from the group.
-Severity:
-- minor: Different angle but enriches the whole
+An outlier diverges significantly from the group.
+- minor: Different angle but enriches
 - moderate: Somewhat divergent, could confuse synthesis
-- major: Contradicts or is completely unrelated
+- major: Contradicts or completely unrelated
 
 ## Generic Phrases to Flag
+Flag vague truisms that could apply to anyone:
 - "The universe has a plan"
 - "Trust your inner wisdom"
 - "Everything happens for a reason"
-- Any vague truism that could apply to anyone
 
 ## Response Format
 Respond with ONLY this JSON (no other text):
 {
+  "responses": [
+    {
+      "index": 0,
+      "isValid": true,
+      "reason": "",
+      "confidence": 0.95,
+      "editedContent": "the cleaned up text"
+    }
+  ],
   "rubric": {
     "thematicAlignment": <0-100>,
     "complementaryPerspectives": <0-100>,
@@ -309,8 +331,8 @@ Respond with ONLY this JSON (no other text):
     "contextualRelevance": <0-100>,
     "specificity": <0-100>
   },
-  "confidence": <0.0-1.0>,
-  "themeOverlap": ["theme1", "theme2", "theme3"],
+  "coherenceConfidence": <0.0-1.0>,
+  "themeOverlap": ["theme1", "theme2"],
   "outliers": [
     {
       "model": "<model name>",
@@ -319,7 +341,7 @@ Respond with ONLY this JSON (no other text):
       "description": "<brief explanation>"
     }
   ],
-  "genericPhrases": ["phrase1", "phrase2"],
+  "genericPhrases": ["phrase1"],
   "reasoning": "<2-3 sentence explanation>"
 }`
 }

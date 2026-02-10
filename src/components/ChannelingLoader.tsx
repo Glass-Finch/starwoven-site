@@ -2,22 +2,13 @@
 
 import { useMemo } from 'react'
 
-import type { AIModel, ModelResponse } from '@/lib/types'
-import { ORACLE_INFO } from '@/lib/ai'
+import type { ModelResponse } from '@/lib/types'
+import { ORACLE_INFO, AI_MODELS } from '@/lib/ai'
 
 interface ChannelingLoaderProps {
   responses: ModelResponse[]
   isComplete: boolean
 }
-
-// Ordered list of AI models for display (derived from ORACLE_INFO)
-const AI_MODELS: AIModel[] = [
-  'gpt-4.1',
-  'claude-sonnet-4.5',
-  'gemini-3.0-pro',
-  'deepseek-reasoner',
-  'grok-4-1-fast-reasoning',
-]
 
 // Single understated message - no rotating poetry
 const LOADING_MESSAGE = 'Listening'
@@ -30,6 +21,8 @@ export function ChannelingLoader({
   const respondedModels = useMemo(() => {
     return new Set(responses.filter((r) => r.status === 'success').map((r) => r.model))
   }, [responses])
+
+  const angleStep = 360 / AI_MODELS.length
 
   return (
     <div className="w-full max-w-lg mx-auto px-4 py-12">
@@ -48,7 +41,7 @@ export function ChannelingLoader({
 
         {/* Orbiting model indicators */}
         {AI_MODELS.map((model, index) => {
-          const angle = (index * 72 - 90) * (Math.PI / 180)
+          const angle = (index * angleStep - 90) * (Math.PI / 180)
           const radius = 80
           const x = Math.cos(angle) * radius
           const y = Math.sin(angle) * radius
@@ -84,7 +77,7 @@ export function ChannelingLoader({
           {AI_MODELS.map((model, i) => {
             if (!respondedModels.has(model)) return null
 
-            const angle1 = (i * 72 - 90) * (Math.PI / 180)
+            const angle1 = (i * angleStep - 90) * (Math.PI / 180)
             const x1 = 100 + Math.cos(angle1) * 80
             const y1 = 100 + Math.sin(angle1) * 80
 
@@ -92,7 +85,7 @@ export function ChannelingLoader({
             return AI_MODELS.slice(i + 1).map((otherModel, j) => {
               if (!respondedModels.has(otherModel)) return null
 
-              const angle2 = ((i + j + 1) * 72 - 90) * (Math.PI / 180)
+              const angle2 = ((i + j + 1) * angleStep - 90) * (Math.PI / 180)
               const x2 = 100 + Math.cos(angle2) * 80
               const y2 = 100 + Math.sin(angle2) * 80
 

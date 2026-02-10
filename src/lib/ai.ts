@@ -5,6 +5,7 @@
 import type { AIModel, ModelResponse } from './types'
 
 const TIMEOUT_MS = 30000
+export const ANTHROPIC_API_VERSION = '2023-06-01'
 
 interface ProviderConfig {
   model: AIModel
@@ -23,6 +24,9 @@ export const ORACLE_INFO: Record<AIModel, { name: string; archetype: string; col
   'deepseek-reasoner': { name: 'Shade', archetype: 'The Deep', color: '#6366f1' },
   'grok-4-1-fast-reasoning': { name: 'Nova', archetype: 'The Wild', color: '#ef4444' },
 }
+
+// Ordered list of AI models (derived from ORACLE_INFO)
+export const AI_MODELS = Object.keys(ORACLE_INFO) as AIModel[]
 
 const PROVIDER_CONFIGS: ProviderConfig[] = [
   {
@@ -124,7 +128,7 @@ async function callAnthropic(
     headers: {
       'Content-Type': 'application/json',
       'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
+      'anthropic-version': ANTHROPIC_API_VERSION,
     },
     body: JSON.stringify({
       model: modelId,

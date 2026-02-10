@@ -1,13 +1,37 @@
 import { NextResponse } from 'next/server'
 
-import type { ChannelRequest, ChannelResponse, SynthesisMetadata } from '@/lib/types'
+import type { ChannelRequest, ChannelResponse, MessageType, SynthesisMetadata } from '@/lib/types'
 import { callAllChannelingModels, callSynthesisModel, getLongestResponse } from '@/lib/ai'
 import { buildChannelingPrompt, buildSynthesisPrompt } from '@/lib/prompts'
-import { validateAllResponses, validateCoherence, MIN_VALID_RESPONSES } from '@/lib/qa'
+import { analyzeResponses, MIN_VALID_RESPONSES } from '@/lib/qa'
+
+const VALID_MESSAGE_TYPES: MessageType[] = [
+  'beloved',
+  'ancestor',
+  'sage',
+  'cosmos',
+  'crossroads',
+  'calling',
+]
+const MAX_INTENTION_LENGTH = 250
 
 export async function POST(request: Request): Promise<NextResponse<ChannelResponse>> {
   try {
-    const body = (await request.json()) as ChannelRequest
+    let body: ChannelRequest
+    try {
+      body = (await request.json()) as ChannelRequest
+    } catch {
+      return NextResponse.json(
+        {
+          status: 'partial',
+          threads: [],
+          synthesis: 'The request could not be understood.',
+          failedModels: [],
+        },
+        { status: 400 }
+      )
+    }
+
     const { messageType, coordinates, intention, personalization } = body
 
     // Validate request
@@ -16,7 +40,43 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
         {
           status: 'partial',
           threads: [],
-          synthesis: 'Missing required fields',
+          synthesis: 'Missing required fields.',
+          failedModels: [],
+        },
+        { status: 400 }
+      )
+    }
+
+    if (!VALID_MESSAGE_TYPES.includes(messageType)) {
+      return NextResponse.json(
+        {
+          status: 'partial',
+          threads: [],
+          synthesis: 'Invalid message type.',
+          failedModels: [],
+        },
+        { status: 400 }
+      )
+    }
+
+    if (typeof intention !== 'string' || intention.length > MAX_INTENTION_LENGTH) {
+      return NextResponse.json(
+        {
+          status: 'partial',
+          threads: [],
+          synthesis: 'Intention must be 250 characters or fewer.',
+          failedModels: [],
+        },
+        { status: 400 }
+      )
+    }
+
+    if (!coordinates.raw || typeof coordinates.raw !== 'string') {
+      return NextResponse.json(
+        {
+          status: 'partial',
+          threads: [],
+          synthesis: 'Invalid coordinates.',
           failedModels: [],
         },
         { status: 400 }
@@ -34,9 +94,8 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
     // Call all channeling models in parallel
     const responses = await callAllChannelingModels(channelingPrompt)
 
-    // Validate all responses (filters refusals, off-topic, AI meta-commentary)
-    // Returns: validated (for synthesis), processed (for display with cleanup/mystical messages)
-    const { validated, processed, validationResults } = await validateAllResponses(
+    // Analyze all responses in a single Sonnet call (validation + editing + coherence)
+    const { validated, processed, validationResults, coherenceResult } = await analyzeResponses(
       responses,
       messageType,
       intention
@@ -59,9 +118,10 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       if (validResponses.length === 0) {
         return NextResponse.json({
           status: 'partial',
-          threads: processed, // Use processed for display (has mystical messages)
+          threads: processed,
           synthesis: "The oracles couldn't connect. Please try again.",
           validationResults,
+          coherenceResult,
           failedModels,
         })
       }
@@ -70,9 +130,10 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       const fallbackSynthesis = getLongestResponse(validResponses)
       return NextResponse.json({
         status: 'partial',
-        threads: processed, // Use processed for display
+        threads: processed,
         synthesis: fallbackSynthesis,
         validationResults,
+        coherenceResult,
         failedModels,
       })
     }
@@ -102,17 +163,9 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       synthesis = getLongestResponse(validResponses)
     }
 
-    // Validate coherence across all responses
-    const coherenceResult = await validateCoherence(validResponses, messageType, intention)
-
-    // Log warning if coherence is below threshold
-    if (!coherenceResult.isCoherent) {
-      console.warn(`Coherence below 75%: ${coherenceResult.coherenceScore}%`)
-    }
-
     return NextResponse.json({
       status: failedModels.length === 0 ? 'complete' : 'partial',
-      threads: processed, // Use processed for display (cleaned up, mystical messages)
+      threads: processed,
       synthesis,
       synthesisMetadata,
       validationResults,
