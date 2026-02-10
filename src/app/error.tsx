@@ -18,6 +18,7 @@ export default function Error({ error, reset }: ErrorProps): React.ReactElement 
         <div className="card p-8">
           <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
             <svg
+              aria-hidden="true"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"

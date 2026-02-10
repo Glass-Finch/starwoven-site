@@ -1126,12 +1126,11 @@ export function selectQuestions(messageType: MessageType): Question[] {
 
 /**
  * Generate coordinate string from answers
- * Format: xxxx-xxxx (all numbers)
+ * Format: xxxx-xxxx (deterministic hash of all answers)
  */
 export function generateCoordinateString(
   answers: { questionId: string; answer: string }[]
 ): string {
-  // Create deterministic but pseudo-random coordinates based on answers
   let hash = 0
   const answerStr = answers.map((a) => `${a.questionId}:${a.answer}`).join('|')
 
@@ -1146,6 +1145,25 @@ export function generateCoordinateString(
   const second = String(Math.floor(absHash / 10000) % 10000).padStart(4, '0')
 
   return `${first}-${second}`
+}
+
+/**
+ * Generate per-answer coordinate segments for display.
+ * Each answer maps to its 1-indexed option number (purely numeric).
+ *
+ * NOTE: These are placeholder values (option positions 1-4).
+ * Meaningful thematic number mappings are tracked in GH#76.
+ */
+export function generateAnswerSegments(
+  answers: { questionId: string; answer: string }[],
+  questions: Question[]
+): string[] {
+  return answers.map((a) => {
+    const question = questions.find((q) => q.id === a.questionId)
+    // indexOf returns -1 if answer not found; Math.max(0, -1) defaults to 0, yielding "1"
+    const optionIndex = question?.options?.indexOf(a.answer) ?? 0
+    return String(Math.max(0, optionIndex) + 1)
+  })
 }
 
 export { themedQuestions, groundingQuestions, weirdQuestions }

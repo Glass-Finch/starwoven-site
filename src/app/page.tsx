@@ -6,6 +6,7 @@ import { Starfield } from '@/components/Starfield'
 import { MessageTypeSelector } from '@/components/MessageTypeSelector'
 import { PersonalizationForm } from '@/components/PersonalizationForm'
 import { QuestionFlow } from '@/components/QuestionFlow'
+import { CustomCoordinateInput } from '@/components/CustomCoordinateInput'
 import { IntentionInput } from '@/components/IntentionInput'
 import { ChannelingLoader } from '@/components/ChannelingLoader'
 import { WovenMessage } from '@/components/WovenMessage'
@@ -13,6 +14,7 @@ import { useJourneyStore } from '@/store'
 import { selectQuestions, generateCoordinateString } from '@/lib/questions'
 import { getMessageTypeConfig } from '@/lib/message-types'
 import { classifyError, ERROR_MESSAGES, ERROR_TIPS } from '@/lib/errors'
+import { DISCLAIMER_FULL } from '@/lib/constants'
 import type { MessageType, Answer, CoordinateSet, ChannelResponse } from '@/lib/types'
 
 export default function Home(): React.ReactElement {
@@ -27,6 +29,8 @@ export default function Home(): React.ReactElement {
     modelResponses,
     synthesis,
     error,
+    moderationResult,
+    useCustomCoordinates,
     initSession,
     setMessageType,
     setPersonalization,
@@ -37,6 +41,8 @@ export default function Home(): React.ReactElement {
     setSynthesis,
     addModelResponse,
     setError,
+    setModerationResult,
+    setUseCustomCoordinates,
     reset,
   } = useJourneyStore()
 
@@ -64,6 +70,16 @@ export default function Home(): React.ReactElement {
       raw: coordinateString,
       questions,
       answers: completedAnswers,
+    }
+    setCoordinates(coordinateSet)
+  }
+
+  // Handle custom coordinate submission
+  const handleCustomCoordinateSubmit = (raw: string) => {
+    const coordinateSet: CoordinateSet = {
+      raw,
+      questions: [],
+      answers: [],
     }
     setCoordinates(coordinateSet)
   }
@@ -96,6 +112,18 @@ export default function Home(): React.ReactElement {
 
       const data: ChannelResponse = await response.json()
 
+      // Handle moderation rejection
+      if (data.status === 'moderated') {
+        setModerationResult(data.moderationResult ?? null)
+        setError(data.synthesis)
+        return
+      }
+
+      // Carry through self-harm crisis resources (reading still proceeds)
+      if (data.moderationResult?.category === 'self_harm') {
+        setModerationResult(data.moderationResult)
+      }
+
       // Add all responses to the store
       for (const thread of data.threads) {
         addModelResponse(thread)
@@ -116,6 +144,7 @@ export default function Home(): React.ReactElement {
     addModelResponse,
     setSynthesis,
     setError,
+    setModerationResult,
   ])
 
   // Handle intention submission
@@ -159,6 +188,10 @@ export default function Home(): React.ReactElement {
             </div>
 
             <MessageTypeSelector onSelect={handleMessageTypeSelect} />
+
+            <p className="text-gray-muted/60 text-center text-sm mt-8 max-w-md mx-auto">
+              {DISCLAIMER_FULL}
+            </p>
           </div>
         )}
 
@@ -172,12 +205,34 @@ export default function Home(): React.ReactElement {
         )}
 
         {/* Coordinate questions step */}
-        {currentStep === 'coordinates' && questions.length > 0 && (
-          <QuestionFlow questions={questions} onComplete={handleQuestionsComplete} />
+        {currentStep === 'coordinates' && (
+          <>
+            {useCustomCoordinates ? (
+              <CustomCoordinateInput
+                onSubmit={handleCustomCoordinateSubmit}
+                onCancel={() => setUseCustomCoordinates(false)}
+              />
+            ) : (
+              <>
+                {questions.length > 0 && (
+                  <QuestionFlow questions={questions} onComplete={handleQuestionsComplete} />
+                )}
+                <div className="mt-6 text-center">
+                  <button
+                    onClick={() => setUseCustomCoordinates(true)}
+                    aria-label="Switch to custom coordinate entry"
+                    className="text-sm text-gray-muted hover:text-cream transition-colors"
+                  >
+                    I have my own coordinates
+                  </button>
+                </div>
+              </>
+            )}
+          </>
         )}
 
         {/* Intention step */}
-        {currentStep === 'intention' && (
+        {currentStep === 'intention' && messageTypeConfig && (
           <IntentionInput onSubmit={handleIntentionSubmit} messageTypeConfig={messageTypeConfig} />
         )}
 
@@ -186,12 +241,26 @@ export default function Home(): React.ReactElement {
           <ChannelingLoader responses={modelResponses} isComplete={!!synthesis} />
         )}
 
-        {/* Error state */}
-        {error && (
+        {/* Moderation rejection */}
+        {error && moderationResult && !moderationResult.allowed && (
+          <div className="w-full max-w-xl mx-auto px-4 text-center">
+            <div className="card p-8 mb-4">
+              <h3 className="font-serif text-xl text-cream mb-3">Unable to proceed</h3>
+              <p className="text-gray-muted mb-8">{moderationResult.message}</p>
+              <button onClick={handleStartNew} className="btn-secondary">
+                Begin anew
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Generic error state */}
+        {error && (!moderationResult || moderationResult.allowed) && (
           <div className="w-full max-w-xl mx-auto px-4 text-center">
             <div className="card p-8 mb-4">
               <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
                 <svg
+                  aria-hidden="true"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -233,12 +302,27 @@ export default function Home(): React.ReactElement {
 
         {/* Message step */}
         {currentStep === 'message' && synthesis && coordinates && (
-          <WovenMessage
-            synthesis={synthesis}
-            threads={modelResponses}
-            coordinates={coordinates}
-            onStartNew={handleStartNew}
-          />
+          <>
+            <WovenMessage
+              synthesis={synthesis}
+              threads={modelResponses}
+              coordinates={coordinates}
+              onStartNew={handleStartNew}
+            />
+            {moderationResult?.crisisResources && (
+              <div className="w-full max-w-xl mx-auto px-4 mt-6">
+                <div
+                  role="alert"
+                  aria-label="Crisis resources"
+                  className="p-4 border border-cream/10 rounded-xl"
+                >
+                  <p className="text-sm text-cream/70 whitespace-pre-line">
+                    {moderationResult.crisisResources}
+                  </p>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>

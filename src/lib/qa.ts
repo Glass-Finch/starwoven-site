@@ -15,6 +15,7 @@ import type {
 } from './types'
 import { buildAnalysisPrompt } from './prompts'
 import { ORACLE_INFO, ANTHROPIC_API_VERSION } from './ai'
+import { ANALYSIS_TIMEOUT_MS, ANALYSIS_MAX_TOKENS } from './constants'
 
 /**
  * Get minimum valid response count for synthesis
@@ -27,8 +28,6 @@ const ANALYSIS_CONFIG = {
   endpoint: 'https://api.anthropic.com/v1/messages',
   modelId: 'claude-sonnet-4-5',
 }
-
-const ANALYSIS_TIMEOUT_MS = 15000 // 15 seconds for combined analysis
 
 // Oracle-specific error messages (understated, in-character)
 const ORACLE_ERROR_MESSAGES: Record<AIModel, { refusal: string; timeout: string }> = {
@@ -262,7 +261,7 @@ export async function analyzeResponses(
       },
       body: JSON.stringify({
         model: ANALYSIS_CONFIG.modelId,
-        max_tokens: 4096,
+        max_tokens: ANALYSIS_MAX_TOKENS,
         messages: [{ role: 'user', content: prompt }],
       }),
       signal: controller.signal,

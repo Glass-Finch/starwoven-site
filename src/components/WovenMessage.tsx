@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 
 import type { ModelResponse, CoordinateSet } from '@/lib/types'
+import { DISCLAIMER_BRIEF } from '@/lib/constants'
 
 import { ThreadsAccordion } from './ThreadsAccordion'
 import { CoordinateReveal } from './CoordinateReveal'
@@ -23,7 +24,6 @@ export function WovenMessage({
   const [displayedText, setDisplayedText] = useState('')
   const [isRevealing, setIsRevealing] = useState(true)
 
-  // Animate text reveal word by word
   useEffect(() => {
     if (!synthesis) return
 
@@ -48,9 +48,8 @@ export function WovenMessage({
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
-      {/* Woven message */}
+      {/* Synthesis */}
       <div className="card relative overflow-hidden mb-8">
-        {/* Subtle glow behind text */}
         <div className="absolute inset-0 bg-gradient-radial from-gold/5 to-transparent pointer-events-none" />
 
         <div className="relative">
@@ -58,24 +57,30 @@ export function WovenMessage({
             {displayedText}
             {isRevealing && <span className="inline-block w-0.5 h-5 bg-gold ml-1 animate-pulse" />}
           </p>
+
+          {!isRevealing && (
+            <div className="flex items-center gap-2 mt-6 pt-4 border-t border-cream/5">
+              <div className="w-1.5 h-1.5 rounded-full bg-gold" />
+              <span className="text-xs text-gray-muted tracking-wide">Starweaver</span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Actions */}
       {!isRevealing && (
         <div className="space-y-4 animate-fadeIn">
-          {/* Expandable sections */}
           <div className="space-y-3">
             <ThreadsAccordion threads={threads} />
             <CoordinateReveal coordinates={coordinates} />
           </div>
 
-          {/* Start new reading */}
           <div className="pt-4 flex justify-center">
             <button onClick={onStartNew} className="btn-secondary">
               Begin anew
             </button>
           </div>
+
+          <p className="text-gray-muted/60 text-center text-sm mt-6">{DISCLAIMER_BRIEF}</p>
         </div>
       )}
     </div>

@@ -9,6 +9,8 @@ import { analyzeResponses, MIN_VALID_RESPONSES } from '@/lib/qa'
 import { saveReadingServerSide } from '@/lib/supabase'
 import { messageTypes } from '@/lib/message-types'
 import { MAX_INTENTION_LENGTH } from '@/lib/constants'
+import { ROUTE_ERRORS } from '@/lib/errors'
+import { moderateIntention } from '@/lib/moderation'
 
 const VALID_MESSAGE_TYPES = messageTypes.map((m) => m.id)
 
@@ -38,7 +40,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
           {
             status: 'error',
             threads: [],
-            synthesis: 'The oracles need a moment of stillness. Please wait before asking again.',
+            synthesis: ROUTE_ERRORS.RATE_LIMITED,
           },
           {
             status: 429,
@@ -55,7 +57,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
         {
           status: 'error',
           threads: [],
-          synthesis: 'The request could not be understood.',
+          synthesis: ROUTE_ERRORS.BAD_REQUEST,
         },
         { status: 400 }
       )
@@ -69,7 +71,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
         {
           status: 'error',
           threads: [],
-          synthesis: 'Missing required fields.',
+          synthesis: ROUTE_ERRORS.MISSING_FIELDS,
         },
         { status: 400 }
       )
@@ -80,7 +82,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
         {
           status: 'error',
           threads: [],
-          synthesis: 'Invalid message type.',
+          synthesis: ROUTE_ERRORS.INVALID_TYPE,
         },
         { status: 400 }
       )
@@ -91,7 +93,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
         {
           status: 'error',
           threads: [],
-          synthesis: `Intention must be ${MAX_INTENTION_LENGTH} characters or fewer.`,
+          synthesis: ROUTE_ERRORS.INTENTION_TOO_LONG,
         },
         { status: 400 }
       )
@@ -102,10 +104,22 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
         {
           status: 'error',
           threads: [],
-          synthesis: 'Invalid coordinates.',
+          synthesis: ROUTE_ERRORS.INVALID_COORDINATES,
         },
         { status: 400 }
       )
+    }
+
+    // Moderation check (fail open if unavailable)
+    const moderationResult = await moderateIntention(intention, messageType)
+
+    if (!moderationResult.allowed) {
+      return NextResponse.json({
+        status: 'moderated' as const,
+        threads: [],
+        synthesis: moderationResult.message || ROUTE_ERRORS.MODERATION_FALLBACK,
+        moderationResult,
+      })
     }
 
     // Build channeling prompt with personalization
@@ -144,7 +158,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
         return NextResponse.json({
           status: 'partial',
           threads: processed,
-          synthesis: "The oracles couldn't connect. Please try again.",
+          synthesis: ROUTE_ERRORS.NO_RESPONSES,
           validationResults,
           coherenceResult,
           failedModels,
@@ -228,6 +242,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       validationResults,
       coherenceResult,
       failedModels: failedModels.length > 0 ? failedModels : undefined,
+      moderationResult: moderationResult.category === 'self_harm' ? moderationResult : undefined,
     })
   } catch (error) {
     console.error('Channel API error:', error)
@@ -235,7 +250,7 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       {
         status: 'error',
         threads: [],
-        synthesis: 'An error occurred while channeling. Please try again.',
+        synthesis: ROUTE_ERRORS.GENERIC,
       },
       { status: 500 }
     )

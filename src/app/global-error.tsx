@@ -8,7 +8,9 @@ interface GlobalErrorProps {
 /**
  * Catches errors in layout.tsx itself (rare).
  * Must include its own <html> and <body> tags since the layout may have failed.
- * Uses inline styles only — CSS may not be available.
+ * Uses inline styles only — CSS/Tailwind may not load in global error boundary.
+ * Colors match globals.css design tokens: #0a0a1a=cosmic-black, #e8e4dc=cream,
+ * #c8a84e=gold, #9a9488=cream-muted, #a08030=gold-dim.
  */
 export default function GlobalError({ reset }: GlobalErrorProps): React.ReactElement {
   return (

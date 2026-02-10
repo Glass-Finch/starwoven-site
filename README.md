@@ -254,6 +254,10 @@ XAI_API_KEY=
 NEXT_PUBLIC_SUPABASE_URL=
 NEXT_PUBLIC_SUPABASE_ANON_KEY=
 SUPABASE_SERVICE_ROLE_KEY=
+
+# Upstash Redis (rate limiting — set up via Vercel Marketplace)
+KV_REST_API_URL=
+KV_REST_API_TOKEN=
 ```
 
 ---
@@ -326,16 +330,9 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 ---
 
-## Future Roadmap (v2+)
+## Roadmap
 
-| Feature                | Status  |
-| ---------------------- | ------- |
-| User accounts          | Planned |
-| Reading history        | Planned |
-| Sharing with OG images | Planned |
-| Question A/B testing   | Planned |
-| Analytics              | Planned |
-| Rate limiting          | Planned |
+See [GitHub Issues](https://github.com/Glass-Finch/starwoven-site/issues) and [User Stories](docs/USER-STORIES.md).
 
 ---
 

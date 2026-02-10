@@ -2,14 +2,16 @@
  * Error classification for user-facing error messages and tips
  */
 
+import { MAX_INTENTION_LENGTH } from './constants'
+
 export type ErrorKind = 'rate_limit' | 'timeout' | 'network' | 'server' | 'unknown'
 
 export function classifyError(error: string): ErrorKind {
-  if (error.includes('429')) return 'rate_limit'
-  if (error.includes('timeout') || error.includes('Timeout')) return 'timeout'
-  if (error.includes('network') || error.includes('Network') || error.includes('fetch'))
-    return 'network'
-  if (error.includes('500') || error.includes('API')) return 'server'
+  const lower = error.toLowerCase()
+  if (lower.includes('429')) return 'rate_limit'
+  if (lower.includes('timeout')) return 'timeout'
+  if (lower.includes('network') || lower.includes('fetch')) return 'network'
+  if (lower.includes('500') || lower.includes('api')) return 'server'
   return 'unknown'
 }
 
@@ -28,3 +30,17 @@ export const ERROR_TIPS: Record<ErrorKind, string | null> = {
   server: 'A more focused question may help.',
   unknown: 'Consider reframing your question.',
 }
+
+// Route-level error messages (in-character, user-facing)
+export const ROUTE_ERRORS = {
+  RATE_LIMITED: ERROR_MESSAGES.rate_limit,
+  BAD_REQUEST: 'The request could not be understood.',
+  MISSING_FIELDS: 'Missing required fields.',
+  INVALID_TYPE: 'Invalid message type.',
+  INVALID_COORDINATES: 'Invalid coordinates.',
+  INTENTION_TOO_LONG: `Intention must be ${MAX_INTENTION_LENGTH} characters or fewer.`,
+  MODERATION_FALLBACK: 'This intention could not be processed.',
+  NO_RESPONSES: "The oracles couldn't connect. Please try again.",
+  CHANNELS_SILENT: 'The channels remain silent at this time. Please try again.',
+  GENERIC: 'An error occurred while channeling. Please try again.',
+} as const
