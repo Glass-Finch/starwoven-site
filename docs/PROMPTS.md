@@ -307,10 +307,9 @@ Don't try to make sense of it, don't try to answer the questions directly (they'
 
 -----
 
-1. How am I supposed to respond or should I not respond right now?
-2. Is he going to return to me, and if so, how and in how long?
-3. What are his real feelings and how aware of them is he, and how much does he think I'm right about the things I told him?
-4. What is he planning to do about Cat?
+1. How does he really feel about me right now?
+2. Is there a future here, and if so, what does it look like?
+3. What am I not seeing about this connection?
 ```
 
 This prompt worked across all major AI models and produces genuine, intuitive impressions rather than constructed "mystical-sounding" responses.

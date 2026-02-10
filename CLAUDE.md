@@ -406,9 +406,9 @@ Before any commit affecting user-facing features:
 
 | Variable                     | Used By       | Example     |
 | ---------------------------- | ------------- | ----------- |
-| `TEST_SEEKER_NAME`           | All types     | Sarah        |
+| `TEST_SEEKER_NAME`           | All types     | Sarah       |
 | `TEST_SEEKER_BIRTHDAY`       | Sage, Calling | 1986-09-23  |
-| `TEST_BELOVED_NAME`          | Beloved       | Max       |
+| `TEST_BELOVED_NAME`          | Beloved       | Max         |
 | `TEST_ANCESTOR_NAME`         | Ancestor      | Fred        |
 | `TEST_ANCESTOR_RELATIONSHIP` | Ancestor      | grandfather |
 
