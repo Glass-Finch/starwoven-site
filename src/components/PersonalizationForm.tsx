@@ -86,13 +86,14 @@ function FieldInput({ field, value, onChange, autoFocus }: FieldInputProps): Rea
 
   return (
     <div className="space-y-2">
-      <label className="block text-sm text-cream-soft">
+      <label htmlFor={field.name} className="block text-sm text-cream-soft">
         {field.label}
         {field.required && <span className="text-gold ml-1">*</span>}
       </label>
 
       {field.type === 'date' ? (
         <input
+          id={field.name}
           type="date"
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -102,6 +103,7 @@ function FieldInput({ field, value, onChange, autoFocus }: FieldInputProps): Rea
         />
       ) : (
         <input
+          id={field.name}
           type="text"
           value={value}
           onChange={(e) => onChange(e.target.value)}

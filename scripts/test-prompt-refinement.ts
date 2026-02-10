@@ -23,46 +23,39 @@ const XAI_API_KEY = process.env.XAI_API_KEY!
 // Custom intention can be passed as 4th argument
 const customIntention = process.argv[5]
 
-const TEST_DATA = {
+const DEFAULT_INTENTIONS: Record<string, string> = {
+  beloved: 'What does he really think about our future together?',
+  ancestor: 'What would you tell me about my path right now?',
+  sage: 'What should I focus on right now?',
+  cosmos: 'What do I need to hear right now?',
+  crossroads: 'Should I take the new job in Seattle or stay close to my family in Portland?',
+  calling: 'What is my purpose?',
+}
+
+const TEST_DATA: Record<string, Record<string, string>> = {
   beloved: {
     yourName: process.env.TEST_SEEKER_NAME || 'Sarah',
     theirName: process.env.TEST_BELOVED_NAME || 'Max',
-    intention: customIntention || 'What does he really think about our future together?',
   },
   ancestor: {
     yourName: process.env.TEST_SEEKER_NAME || 'Sarah',
     theirName: process.env.TEST_ANCESTOR_NAME || 'Fred',
     relationship: process.env.TEST_ANCESTOR_RELATIONSHIP || 'grandfather',
-    intention: 'What would you tell me about my path right now?',
   },
   sage: {
     yourName: process.env.TEST_SEEKER_NAME || 'Sarah',
     birthday: process.env.TEST_SEEKER_BIRTHDAY || '1986-09-23',
-    intention: 'What should I focus on right now?',
   },
-  cosmos: {
-    intention: 'What do I need to hear right now?',
-  },
-  crossroads: {
-    intention: 'Should I make this change in my life?',
-  },
+  cosmos: {},
+  crossroads: {},
   calling: {
     yourName: process.env.TEST_SEEKER_NAME || 'Sarah',
     birthday: process.env.TEST_SEEKER_BIRTHDAY || '1986-09-23',
-    intention: 'What is my purpose?',
   },
 }
 
-import { buildChannelingPrompt, buildCoherencePrompt } from '../src/lib/prompts'
-import type { MessageType } from '../src/lib/types'
-
-interface CoherenceRubric {
-  thematicAlignment: number
-  complementaryPerspectives: number
-  intuitiveResonance: number
-  contextualRelevance: number
-  specificity: number
-}
+import { buildChannelingPrompt, buildAnalysisPrompt } from '../src/lib/prompts'
+import type { MessageType, CoherenceRubric } from '../src/lib/types'
 
 interface TrialResult {
   trial: number
@@ -72,7 +65,8 @@ interface TrialResult {
   genericPhrases: string[]
 }
 
-// Model calling functions
+// API call functions are intentionally duplicated from src/lib/ai.ts.
+// Scripts use simpler implementations without AbortController/timeouts.
 async function callOpenAI(prompt: string): Promise<string> {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
@@ -149,7 +143,7 @@ async function callGrok(prompt: string): Promise<string> {
       Authorization: `Bearer ${XAI_API_KEY}`,
     },
     body: JSON.stringify({
-      model: 'grok-4',
+      model: 'grok-4-1-fast-reasoning',
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 1024,
     }),
@@ -169,7 +163,7 @@ async function callAllOracles(prompt: string): Promise<{ model: string; content:
     })),
     callGemini(prompt).then((content) => ({ model: 'gemini-3.0-pro', content })),
     callDeepSeek(prompt).then((content) => ({ model: 'deepseek-reasoner', content })),
-    callGrok(prompt).then((content) => ({ model: 'grok-4', content })),
+    callGrok(prompt).then((content) => ({ model: 'grok-4-1-fast-reasoning', content })),
   ])
 
   const responses: { model: string; content: string }[] = []
@@ -188,8 +182,8 @@ async function getCoherenceScore(
   intention: string,
   messageType: MessageType
 ): Promise<{ rubric: CoherenceRubric; score: number; themes: string[]; genericPhrases: string[] }> {
-  const prompt = buildCoherencePrompt(responses, intention, messageType)
-  const text = await callAnthropic(prompt, 'claude-3-5-haiku-20241022')
+  const prompt = buildAnalysisPrompt(responses, intention, messageType)
+  const text = await callAnthropic(prompt, 'claude-sonnet-4-5')
 
   try {
     const jsonMatch = text.match(/\{[\s\S]*\}/)
@@ -248,6 +242,7 @@ async function runTrial(messageType: MessageType, trialNum: number): Promise<Ful
   console.log(`\nTrial ${trialNum}...`)
 
   const testData = TEST_DATA[messageType]
+  const intention = customIntention || DEFAULT_INTENTIONS[messageType]
   const coordinates = buildTestCoordinates()
 
   // Build personalization based on message type
@@ -281,7 +276,7 @@ async function runTrial(messageType: MessageType, trialNum: number): Promise<Ful
   const channelingPrompt = buildChannelingPrompt(
     messageType,
     coordinates,
-    testData.intention,
+    intention,
     personalization
   )
 
@@ -303,14 +298,14 @@ async function runTrial(messageType: MessageType, trialNum: number): Promise<Ful
       themes: [],
       genericPhrases: [],
       responses,
-      intention: testData.intention,
+      intention: intention,
     }
   }
 
   // Get coherence score
   const { rubric, score, themes, genericPhrases } = await getCoherenceScore(
     responses,
-    testData.intention,
+    intention,
     messageType
   )
 
@@ -327,7 +322,7 @@ async function runTrial(messageType: MessageType, trialNum: number): Promise<Ful
     themes,
     genericPhrases,
     responses,
-    intention: testData.intention,
+    intention: intention,
   }
 }
 
@@ -343,7 +338,7 @@ function saveResponsesForReview(results: FullTrialResult[], messageType: string,
   }
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-  const filename = `${phase}-${timestamp}.md`
+  const filename = `${messageType}-${phase}-${timestamp}.md`
   const filepath = path.join(outputDir, filename)
 
   let content = `# ${messageType.toUpperCase()} - ${phase.toUpperCase()} TRIALS\n\n`
@@ -511,8 +506,9 @@ async function main() {
   }
 
   const trials = parseInt(numTrials, 10)
+  const usedIntention = customIntention || DEFAULT_INTENTIONS[messageType]
   console.log(`\nTesting ${messageType} - ${phase} phase (${trials} trials)`)
-  console.log(`Test data:`, TEST_DATA[messageType as MessageType])
+  console.log(`Test data:`, { ...TEST_DATA[messageType as MessageType], intention: usedIntention })
 
   const results: FullTrialResult[] = []
 

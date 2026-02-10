@@ -338,6 +338,176 @@ Avoid: rotating mystical phrases, anything that sounds like a loading screen wro
 
 ---
 
+## QA Layer User Stories
+
+The QA layer acts as an **editor**, not a **gatekeeper**. It cleans up responses and ensures quality without blocking valid content.
+
+---
+
+### US1: Complete Reading
+
+**As a user**, when all 5 oracles respond successfully, I want to see a polished experience.
+
+**Acceptance Criteria:**
+
+- Synthesis woven from all 5 responses
+- All 5 oracle threads expandable (cleaned content)
+- No markdown artifacts (##, \*_, _) visible
+- No disclaimers ("for entertainment purposes") visible
+- No AI self-references ("as an AI") visible
+
+---
+
+### US2: Oracle Refusal
+
+**As a user**, when an oracle refuses to engage, I want the experience to feel intentional, not broken.
+
+**Acceptance Criteria:**
+
+- Synthesis woven from remaining valid responses (if 3+)
+- Valid oracle threads show cleaned content
+- Refused oracle shows mystical message (e.g., "Nova refused.")
+- No indication that the refusal was AI-related
+
+---
+
+### US3: AI Self-Reference Cleanup
+
+**As a user**, I don't want to see oracles referring to themselves as AI.
+
+**Acceptance Criteria:**
+
+- AI self-references ("As an AI, I sense...") are removed
+- The meaningful content is preserved
+- Response is still marked valid if content is meaningful
+
+---
+
+### US4: AI as Topic (Preserved)
+
+**As a user**, if I ask about AI, I want oracles to discuss it.
+
+**Acceptance Criteria:**
+
+- AI topic content is PRESERVED (not removed)
+- Only self-references are removed, not AI discussions
+- Response is marked valid
+
+---
+
+### US5: Multiple Oracle Failures
+
+**As a user**, if only 1-2 oracles respond successfully, I want to see something meaningful.
+
+**Acceptance Criteria:**
+
+- Longest valid response shown as "synthesis" (no actual synthesis)
+- Valid oracle threads show content
+- Failed oracle threads show mystical messages
+- Status: "partial"
+
+---
+
+### US6: Oracle Failures with Retry + Tips
+
+**As a user**, when oracles fail, I want to retry with guidance on how to reframe my intention.
+
+**Acceptance Criteria:**
+
+- Retry button displayed (no auto-retry)
+- Subtle tips shown alongside retry option:
+  - "Try a more specific question"
+  - "Rephrase as a single focused intention"
+  - "Ask about feelings rather than facts"
+- Coordinates preserved for retry
+- Error message is understated: "Some oracles couldn't connect."
+
+**Tip Examples (subtle, not preachy):**
+
+| Failure Type      | Tip                                                           |
+| ----------------- | ------------------------------------------------------------- |
+| Multiple refusals | "Try rephrasing your intention with less loaded language"     |
+| All timeouts      | "The oracles are taking longer than usual. Try again?"        |
+| Mixed failures    | "Some oracles couldn't connect. Try a more focused question?" |
+
+---
+
+### US6b: All Oracles Fail
+
+**As a user**, if no oracles respond successfully, I want a clear path forward.
+
+**Acceptance Criteria:**
+
+- Error message: "The oracles couldn't connect."
+- All 5 oracle threads show mystical messages
+- Retry button with reframe tips
+- Option to start over with different message type
+
+---
+
+### US7: Low Coherence Score
+
+**As a user**, even if responses don't cohere well, I still want to see them.
+
+**Acceptance Criteria:**
+
+- Synthesis proceeds normally (low coherence doesn't block)
+- All oracle threads visible
+- Backend logs warning for analytics
+- User experience unchanged
+
+---
+
+## QA Layer Architecture
+
+### Flow
+
+```
+Oracle Responses (5)
+    ↓
+For each response:
+  IF timeout/error → mystical error message
+  ELSE → cleanupResponse() (regex):
+    - Remove markdown (##, **, *)
+    - Remove disclaimers
+    - Remove AI self-references
+    - Normalize whitespace
+    ↓
+ONE Sonnet API call → analyzeResponses():
+  - Semantic refusal detection
+  - Coherence scoring (5-dimension rubric)
+  - Theme identification
+    ↓
+Apply mystical messages to refusals
+    ↓
+Count valid responses (not timeout/error/refusal)
+    ↓
+IF < 3 valid → fallback (longest response)
+ELSE → Synthesis with valid responses
+```
+
+### Mystical Error Messages
+
+| Oracle           | Refusal                  | Timeout                        |
+| ---------------- | ------------------------ | ------------------------------ |
+| Iris (GPT)       | "Iris looked away."      | "Iris didn't respond in time." |
+| Luna (Claude)    | "Luna offered nothing."  | "Luna drifted elsewhere."      |
+| Echo (Gemini)    | "Echo returned silence." | "Echo went quiet."             |
+| Shade (DeepSeek) | "Shade withdrew."        | "Shade stayed in the deep."    |
+| Nova (Grok)      | "Nova refused."          | "Nova burned past."            |
+
+### Response Status Mapping
+
+| Status    | User Sees               | Goes to Synthesis? |
+| --------- | ----------------------- | ------------------ |
+| valid     | Cleaned oracle response | Yes                |
+| refusal   | Mystical message        | No                 |
+| off-topic | Mystical message        | No                 |
+| timeout   | Mystical message        | No                 |
+| error     | Mystical message        | No                 |
+
+---
+
 ## Edge Cases
 
 ### Partial Failure

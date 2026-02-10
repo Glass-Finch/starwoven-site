@@ -1,6 +1,8 @@
 /**
  * AI Response Quality Assurance
- * Validates channeling responses using Claude Haiku before synthesis
+ *
+ * Single-pass analysis using Claude Sonnet: validates responses,
+ * edits/cleans content, and measures coherence in one API call.
  */
 
 import type {
@@ -11,9 +13,22 @@ import type {
   CoherenceResult,
   CoherenceRubric,
 } from './types'
-import { buildCoherencePrompt } from './prompts'
+import { buildAnalysisPrompt } from './prompts'
+import { ORACLE_INFO, ANTHROPIC_API_VERSION } from './ai'
 
-const VALIDATION_TIMEOUT_MS = 5000 // 5 seconds per validation
+/**
+ * Get minimum valid response count for synthesis
+ */
+export const MIN_VALID_RESPONSES = 3
+
+// Analysis model config (Claude Sonnet for validation + coherence + editing)
+const ANALYSIS_CONFIG = {
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  endpoint: 'https://api.anthropic.com/v1/messages',
+  modelId: 'claude-sonnet-4-5',
+}
+
+const ANALYSIS_TIMEOUT_MS = 15000 // 15 seconds for combined analysis
 
 // Oracle-specific error messages (understated, in-character)
 const ORACLE_ERROR_MESSAGES: Record<AIModel, { refusal: string; timeout: string }> = {
@@ -52,16 +67,7 @@ export function getMysticalErrorMessage(
   }
 
   if (errorType === 'error') {
-    // Generic for actual errors
-    const oracleName = model.includes('gpt')
-      ? 'Iris'
-      : model.includes('claude')
-        ? 'Luna'
-        : model.includes('gemini')
-          ? 'Echo'
-          : model.includes('deepseek')
-            ? 'Shade'
-            : 'Nova'
+    const oracleName = ORACLE_INFO[model]?.name || 'this oracle'
     return `Couldn't reach ${oracleName}.`
   }
 
@@ -69,7 +75,8 @@ export function getMysticalErrorMessage(
 }
 
 /**
- * Clean up response content - remove markdown artifacts, disclaimers, normalize whitespace
+ * Clean up response content - regex fallback when Sonnet analysis is unavailable.
+ * Removes markdown artifacts, disclaimers, normalizes whitespace.
  */
 export function cleanupResponse(content: string): string {
   return (
@@ -102,230 +109,8 @@ export function cleanupResponse(content: string): string {
   )
 }
 
-// Validation model config (Claude Haiku for speed)
-const VALIDATION_CONFIG = {
-  apiKey: process.env.ANTHROPIC_API_KEY,
-  endpoint: 'https://api.anthropic.com/v1/messages',
-  modelId: 'claude-3-5-haiku-20241022',
-}
-
 /**
- * Build the validation prompt for a single response
- */
-function buildValidationPrompt(
-  response: string,
-  messageType: MessageType,
-  intention: string
-): string {
-  return `You are validating an AI response for a consciousness exploration app.
-
-Message type: ${messageType}
-User intention: "${intention}"
-Response to validate:
----
-${response}
----
-
-Mark as INVALID only if:
-1. It's a refusal or decline to engage with the prompt
-2. It's entirely off-topic or doesn't relate to the intention
-3. It's an error message or technical failure text
-
-Mark as VALID if:
-- It engages with the prompt (even if unusual, abstract, or includes minor disclaimers)
-- It's relevant to the intention in some way
-
-Note: Minor disclaimers or AI mentions are OK - they get cleaned up separately.
-
-Respond with ONLY this JSON (no other text):
-{"isValid": boolean, "reason": "brief explanation if invalid", "confidence": 0.0-1.0}`
-}
-
-/**
- * Validate a single model response using Claude Haiku
- */
-async function validateSingleResponse(
-  response: ModelResponse,
-  messageType: MessageType,
-  intention: string
-): Promise<ValidationResult> {
-  const startTime = Date.now()
-
-  // Skip validation for failed responses
-  if (response.status !== 'success' || !response.content) {
-    return {
-      model: response.model,
-      isValid: false,
-      reason: response.status === 'timeout' ? 'Response timed out' : 'Response failed',
-      confidence: 1.0,
-      latencyMs: 0,
-    }
-  }
-
-  // Skip validation if API key not configured
-  if (!VALIDATION_CONFIG.apiKey) {
-    // Assume valid if we can't validate
-    return {
-      model: response.model,
-      isValid: true,
-      reason: 'Validation skipped (no API key)',
-      confidence: 0.5,
-      latencyMs: 0,
-    }
-  }
-
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), VALIDATION_TIMEOUT_MS)
-
-  try {
-    const prompt = buildValidationPrompt(response.content, messageType, intention)
-
-    const apiResponse = await fetch(VALIDATION_CONFIG.endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': VALIDATION_CONFIG.apiKey,
-        'anthropic-version': '2023-06-01',
-      },
-      body: JSON.stringify({
-        model: VALIDATION_CONFIG.modelId,
-        max_tokens: 256,
-        messages: [{ role: 'user', content: prompt }],
-      }),
-      signal: controller.signal,
-    })
-
-    if (!apiResponse.ok) {
-      // If validation API fails, assume response is valid
-      return {
-        model: response.model,
-        isValid: true,
-        reason: 'Validation API error',
-        confidence: 0.5,
-        latencyMs: Date.now() - startTime,
-      }
-    }
-
-    const data = await apiResponse.json()
-    const text = data.content?.[0]?.text || ''
-
-    // Parse JSON response
-    try {
-      // Extract JSON from response (handle potential markdown formatting)
-      const jsonMatch = text.match(/\{[\s\S]*\}/)
-      if (!jsonMatch) {
-        throw new Error('No JSON found in response')
-      }
-
-      const result = JSON.parse(jsonMatch[0])
-      return {
-        model: response.model,
-        isValid: Boolean(result.isValid),
-        reason: result.reason || undefined,
-        confidence: typeof result.confidence === 'number' ? result.confidence : 0.5,
-        latencyMs: Date.now() - startTime,
-      }
-    } catch {
-      // If parsing fails, assume valid
-      return {
-        model: response.model,
-        isValid: true,
-        reason: 'Validation parse error',
-        confidence: 0.5,
-        latencyMs: Date.now() - startTime,
-      }
-    }
-  } catch (error) {
-    const isTimeout = error instanceof Error && error.name === 'AbortError'
-    // On error, assume valid to not block good responses
-    return {
-      model: response.model,
-      isValid: true,
-      reason: isTimeout ? 'Validation timeout' : 'Validation error',
-      confidence: 0.5,
-      latencyMs: Date.now() - startTime,
-    }
-  } finally {
-    clearTimeout(timeout)
-  }
-}
-
-/**
- * Validate all model responses in parallel
- * Returns:
- * - validated: only valid responses (with cleanup) for synthesis
- * - processed: all responses with cleanup/mystical messages for display
- * - validationResults: validation metadata
- */
-export async function validateAllResponses(
-  responses: ModelResponse[],
-  messageType: MessageType,
-  intention: string
-): Promise<{
-  validated: ModelResponse[]
-  processed: ModelResponse[]
-  validationResults: ValidationResult[]
-}> {
-  // Run all validations in parallel
-  const validationResults = await Promise.all(
-    responses.map((response) => validateSingleResponse(response, messageType, intention))
-  )
-
-  // Process all responses: cleanup valid ones, add mystical messages to failures
-  const processed = responses.map((response, index) => {
-    const isValid = validationResults[index].isValid
-
-    if (isValid && response.content) {
-      // Apply cleanup to valid responses
-      return {
-        ...response,
-        content: cleanupResponse(response.content),
-      }
-    } else if (response.status === 'error' || response.status === 'timeout') {
-      // Replace error content with mystical message
-      const errorType = response.status === 'timeout' ? 'timeout' : 'error'
-      return {
-        ...response,
-        content: getMysticalErrorMessage(response.model, errorType),
-      }
-    } else if (!isValid) {
-      // Refusal or invalid response - use mystical refusal message
-      return {
-        ...response,
-        content: getMysticalErrorMessage(response.model, 'refusal'),
-      }
-    }
-
-    return response
-  })
-
-  // Filter to only valid responses for synthesis
-  const validated = processed.filter((_, index) => validationResults[index].isValid)
-
-  // Log validation failures for debugging
-  const failures = validationResults.filter((r) => !r.isValid)
-  if (failures.length > 0) {
-    console.log(
-      'Validation failures:',
-      failures.map((f) => `${f.model}: ${f.reason}`)
-    )
-  }
-
-  return { validated, processed, validationResults }
-}
-
-/**
- * Get minimum valid response count for synthesis
- */
-export const MIN_VALID_RESPONSES = 3
-
-/**
- * Coherence validation timeout (longer since it analyzes all responses)
- */
-const COHERENCE_TIMEOUT_MS = 10000 // 10 seconds
-
-/**
- * Default rubric scores (used when validation fails/skipped)
+ * Default rubric scores (used when analysis fails/skipped)
  */
 const DEFAULT_RUBRIC: CoherenceRubric = {
   thematicAlignment: 75,
@@ -339,7 +124,7 @@ const DEFAULT_RUBRIC: CoherenceRubric = {
  * Calculate weighted coherence score from rubric dimensions
  * Weights: thematic 25%, complementary 20%, resonance 20%, relevance 15%, specificity 20%
  */
-function calculateCoherenceScore(rubric: CoherenceRubric): number {
+export function calculateCoherenceScore(rubric: CoherenceRubric): number {
   const weights = {
     thematicAlignment: 0.25,
     complementaryPerspectives: 0.2,
@@ -359,153 +144,267 @@ function calculateCoherenceScore(rubric: CoherenceRubric): number {
 }
 
 /**
- * Validate thematic coherence across all oracle responses
- * Uses Claude Haiku to analyze overlap, outliers, and specificity
+ * Build fallback results when Sonnet analysis is unavailable.
+ * Uses regex cleanup for content, assumes all successful responses are valid,
+ * and returns default coherence scores.
  */
-export async function validateCoherence(
+function buildFallbackResults(
   responses: ModelResponse[],
-  messageType: MessageType,
-  intention: string
-): Promise<CoherenceResult> {
-  const startTime = Date.now()
+  fallbackReason: string
+): {
+  validated: ModelResponse[]
+  processed: ModelResponse[]
+  validationResults: ValidationResult[]
+  coherenceResult: CoherenceResult
+} {
+  const validationResults: ValidationResult[] = responses.map((r) => ({
+    model: r.model,
+    isValid: r.status === 'success' && Boolean(r.content),
+    reason: r.status !== 'success' ? `Response ${r.status}` : fallbackReason,
+    confidence: r.status === 'success' ? 0.5 : 1.0,
+    latencyMs: 0,
+  }))
 
-  // Filter to successful responses with content
-  const validResponses = responses.filter((r) => r.status === 'success' && r.content)
-
-  // Need at least 3 responses to measure coherence
-  if (validResponses.length < 3) {
-    return {
-      coherenceScore: 0,
-      rubric: { ...DEFAULT_RUBRIC, thematicAlignment: 0, complementaryPerspectives: 0 },
-      confidence: 0,
-      themeOverlap: [],
-      outliers: [],
-      isCoherent: false,
-      reasoning: 'Insufficient responses for coherence analysis',
-      genericPhrases: [],
+  const processed = responses.map((response, index) => {
+    if (validationResults[index].isValid && response.content) {
+      return { ...response, content: cleanupResponse(response.content) }
+    } else if (response.status === 'timeout') {
+      return { ...response, content: getMysticalErrorMessage(response.model, 'timeout') }
+    } else if (response.status === 'error') {
+      return { ...response, content: getMysticalErrorMessage(response.model, 'error') }
     }
-  }
+    return response
+  })
 
-  // Skip if API key not configured
-  if (!VALIDATION_CONFIG.apiKey) {
-    return {
+  const validated = processed.filter((_, i) => validationResults[i].isValid)
+
+  return {
+    validated,
+    processed,
+    validationResults,
+    coherenceResult: {
       coherenceScore: 75,
       rubric: DEFAULT_RUBRIC,
       confidence: 0.5,
       themeOverlap: [],
       outliers: [],
       isCoherent: true,
-      reasoning: 'Coherence validation skipped (no API key)',
+      reasoning: fallbackReason,
       genericPhrases: [],
-    }
+    },
+  }
+}
+
+/**
+ * Analyze all oracle responses in a single Sonnet API call.
+ *
+ * Combines three concerns that were previously separate:
+ * 1. Validation: Is each response a genuine engagement or a refusal/error?
+ * 2. Editing: Clean up valid responses (remove markdown, disclaimers, AI refs)
+ * 3. Coherence: Measure thematic alignment, complementary perspectives, specificity
+ *
+ * Returns:
+ * - validated: only valid responses (with edited content) for synthesis
+ * - processed: all responses with edited content or mystical messages for display
+ * - validationResults: per-response validation metadata
+ * - coherenceResult: cross-response coherence analysis
+ */
+export async function analyzeResponses(
+  responses: ModelResponse[],
+  messageType: MessageType,
+  intention: string
+): Promise<{
+  validated: ModelResponse[]
+  processed: ModelResponse[]
+  validationResults: ValidationResult[]
+  coherenceResult: CoherenceResult
+}> {
+  // Separate successful responses (need analysis) from failed ones (don't)
+  const successful = responses.filter((r) => r.status === 'success' && r.content)
+  const failed = responses.filter((r) => r.status !== 'success' || !r.content)
+
+  // Pre-build validation results for failed responses
+  const failedValidations: ValidationResult[] = failed.map((r) => ({
+    model: r.model,
+    isValid: false,
+    reason: r.status === 'timeout' ? 'Response timed out' : 'Response failed',
+    confidence: 1.0,
+    latencyMs: 0,
+  }))
+
+  // If fewer than 3 successful responses, skip Sonnet call entirely
+  if (successful.length < MIN_VALID_RESPONSES) {
+    return buildFallbackResults(responses, 'Insufficient responses for analysis')
   }
 
+  // Skip if API key not configured
+  if (!ANALYSIS_CONFIG.apiKey) {
+    return buildFallbackResults(responses, 'Analysis skipped (no API key)')
+  }
+
+  const startTime = Date.now()
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), COHERENCE_TIMEOUT_MS)
+  const timeout = setTimeout(() => controller.abort(), ANALYSIS_TIMEOUT_MS)
 
   try {
-    const prompt = buildCoherencePrompt(
-      validResponses.map((r) => ({ model: r.model, content: r.content! })),
+    const prompt = buildAnalysisPrompt(
+      successful.map((r) => ({ model: r.model, content: r.content })),
       intention,
       messageType
     )
 
-    const apiResponse = await fetch(VALIDATION_CONFIG.endpoint, {
+    const apiResponse = await fetch(ANALYSIS_CONFIG.endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': VALIDATION_CONFIG.apiKey,
-        'anthropic-version': '2023-06-01',
+        'x-api-key': ANALYSIS_CONFIG.apiKey,
+        'anthropic-version': ANTHROPIC_API_VERSION,
       },
       body: JSON.stringify({
-        model: VALIDATION_CONFIG.modelId,
-        max_tokens: 1024,
+        model: ANALYSIS_CONFIG.modelId,
+        max_tokens: 4096,
         messages: [{ role: 'user', content: prompt }],
       }),
       signal: controller.signal,
     })
 
     if (!apiResponse.ok) {
-      console.warn('Coherence API error:', apiResponse.status)
-      return {
-        coherenceScore: 75,
-        rubric: DEFAULT_RUBRIC,
-        confidence: 0.5,
-        themeOverlap: [],
-        outliers: [],
-        isCoherent: true,
-        reasoning: 'Coherence API error, assuming passing',
-        genericPhrases: [],
-      }
+      console.warn('Analysis API error:', apiResponse.status)
+      return buildFallbackResults(responses, 'Analysis API error, using regex cleanup')
     }
 
     const data = await apiResponse.json()
     const text = data.content?.[0]?.text || ''
+    const latencyMs = Date.now() - startTime
 
     // Parse JSON response
-    try {
-      const jsonMatch = text.match(/\{[\s\S]*\}/)
-      if (!jsonMatch) {
-        throw new Error('No JSON found in coherence response')
-      }
-
-      const result = JSON.parse(jsonMatch[0])
-
-      // Extract rubric scores with defaults
-      const rubric: CoherenceRubric = {
-        thematicAlignment: result.rubric?.thematicAlignment ?? 75,
-        complementaryPerspectives: result.rubric?.complementaryPerspectives ?? 75,
-        intuitiveResonance: result.rubric?.intuitiveResonance ?? 75,
-        contextualRelevance: result.rubric?.contextualRelevance ?? 75,
-        specificity: result.rubric?.specificity ?? 75,
-      }
-
-      const coherenceScore = calculateCoherenceScore(rubric)
-
-      console.log(
-        `Coherence: ${coherenceScore}% [Theme:${rubric.thematicAlignment} Comp:${rubric.complementaryPerspectives} ` +
-          `Res:${rubric.intuitiveResonance} Ctx:${rubric.contextualRelevance} Spec:${rubric.specificity}], ` +
-          `Themes: [${(result.themeOverlap || []).join(', ')}], ` +
-          `Outliers: ${(result.outliers || []).length}, ` +
-          `Latency: ${Date.now() - startTime}ms`
-      )
-
-      return {
-        coherenceScore,
-        rubric,
-        confidence: typeof result.confidence === 'number' ? result.confidence : 0.5,
-        themeOverlap: result.themeOverlap || [],
-        outliers: result.outliers || [],
-        isCoherent: coherenceScore >= 75,
-        reasoning: result.reasoning || '',
-        genericPhrases: result.genericPhrases || [],
-      }
-    } catch (parseError) {
-      console.warn('Coherence parse error:', parseError)
-      return {
-        coherenceScore: 75,
-        rubric: DEFAULT_RUBRIC,
-        confidence: 0.5,
-        themeOverlap: [],
-        outliers: [],
-        isCoherent: true,
-        reasoning: 'Coherence parse error, assuming passing',
-        genericPhrases: [],
-      }
+    const jsonMatch = text.match(/\{[\s\S]*\}/)
+    if (!jsonMatch) {
+      console.warn('No JSON found in analysis response')
+      return buildFallbackResults(responses, 'Analysis parse error, using regex cleanup')
     }
+
+    const result = JSON.parse(jsonMatch[0])
+
+    // Build validation results for successful responses from Sonnet's analysis
+    const analysisResponses: Array<{
+      index: number
+      isValid: boolean
+      reason: string
+      confidence: number
+      editedContent: string
+    }> = result.responses || []
+
+    const successfulValidations: ValidationResult[] = successful.map((r, i) => {
+      const analysis = analysisResponses.find((a) => a.index === i)
+      return {
+        model: r.model,
+        isValid: analysis ? Boolean(analysis.isValid) : true,
+        reason: analysis?.reason || undefined,
+        confidence: analysis?.confidence ?? 0.5,
+        latencyMs,
+      }
+    })
+
+    // Combine all validation results (maintain original response order)
+    const validationResults: ValidationResult[] = responses.map((r) => {
+      const failedResult = failedValidations.find((fv) => fv.model === r.model)
+      if (failedResult) return failedResult
+      const successResult = successfulValidations.find((sv) => sv.model === r.model)
+      if (successResult) return successResult
+      return {
+        model: r.model,
+        isValid: false,
+        reason: 'Not found in analysis',
+        confidence: 0,
+        latencyMs,
+      }
+    })
+
+    // Build processed responses (edited content for valid, mystical messages for invalid)
+    const processed = responses.map((response) => {
+      const validation = validationResults.find((v) => v.model === response.model)
+
+      if (validation?.isValid && response.status === 'success' && response.content) {
+        // Find the edited content from Sonnet
+        const successIndex = successful.findIndex((s) => s.model === response.model)
+        const analysis = analysisResponses.find((a) => a.index === successIndex)
+        const editedContent = analysis?.editedContent
+
+        return {
+          ...response,
+          content: editedContent || cleanupResponse(response.content),
+        }
+      } else if (response.status === 'timeout') {
+        return { ...response, content: getMysticalErrorMessage(response.model, 'timeout') }
+      } else if (response.status === 'error') {
+        return { ...response, content: getMysticalErrorMessage(response.model, 'error') }
+      } else if (!validation?.isValid) {
+        return { ...response, content: getMysticalErrorMessage(response.model, 'refusal') }
+      }
+
+      return response
+    })
+
+    // Filter to valid responses for synthesis
+    const validated = processed.filter((r) => {
+      const validation = validationResults.find((v) => v.model === r.model)
+      return validation?.isValid
+    })
+
+    // Extract coherence rubric
+    const rubric: CoherenceRubric = {
+      thematicAlignment: result.rubric?.thematicAlignment ?? 75,
+      complementaryPerspectives: result.rubric?.complementaryPerspectives ?? 75,
+      intuitiveResonance: result.rubric?.intuitiveResonance ?? 75,
+      contextualRelevance: result.rubric?.contextualRelevance ?? 75,
+      specificity: result.rubric?.specificity ?? 75,
+    }
+
+    const coherenceScore = calculateCoherenceScore(rubric)
+
+    console.warn(
+      `Analysis: ${coherenceScore}% [Theme:${rubric.thematicAlignment} Comp:${rubric.complementaryPerspectives} ` +
+        `Res:${rubric.intuitiveResonance} Ctx:${rubric.contextualRelevance} Spec:${rubric.specificity}], ` +
+        `Themes: [${(result.themeOverlap || []).join(', ')}], ` +
+        `Outliers: ${(result.outliers || []).length}, ` +
+        `Valid: ${validated.length}/${responses.length}, ` +
+        `Latency: ${latencyMs}ms`
+    )
+
+    const coherenceResult: CoherenceResult = {
+      coherenceScore,
+      rubric,
+      confidence: typeof result.coherenceConfidence === 'number' ? result.coherenceConfidence : 0.5,
+      themeOverlap: result.themeOverlap || [],
+      outliers: result.outliers || [],
+      isCoherent: coherenceScore >= 75,
+      reasoning: result.reasoning || '',
+      genericPhrases: result.genericPhrases || [],
+    }
+
+    // Log validation failures
+    const failures = validationResults.filter((r) => !r.isValid)
+    if (failures.length > 0) {
+      console.warn(
+        'Validation failures:',
+        failures.map((f) => `${f.model}: ${f.reason}`)
+      )
+    }
+
+    // Log coherence warning
+    if (!coherenceResult.isCoherent) {
+      console.warn(`Coherence below 75%: ${coherenceScore}%`)
+    }
+
+    return { validated, processed, validationResults, coherenceResult }
   } catch (error) {
     const isTimeout = error instanceof Error && error.name === 'AbortError'
-    console.warn('Coherence validation error:', isTimeout ? 'timeout' : error)
-    return {
-      coherenceScore: 75,
-      rubric: DEFAULT_RUBRIC,
-      confidence: 0.5,
-      themeOverlap: [],
-      outliers: [],
-      isCoherent: true,
-      reasoning: isTimeout ? 'Coherence validation timeout' : 'Coherence validation error',
-      genericPhrases: [],
-    }
+    console.warn('Analysis error:', isTimeout ? 'timeout' : error)
+    return buildFallbackResults(
+      responses,
+      isTimeout ? 'Analysis timeout, using regex cleanup' : 'Analysis error, using regex cleanup'
+    )
   } finally {
     clearTimeout(timeout)
   }

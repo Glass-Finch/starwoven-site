@@ -192,7 +192,7 @@ export default function Home(): React.ReactElement {
         )}
 
         {/* Channeling step */}
-        {currentStep === 'channeling' && (
+        {currentStep === 'channeling' && !error && (
           <ChannelingLoader responses={modelResponses} isComplete={!!synthesis} />
         )}
 
