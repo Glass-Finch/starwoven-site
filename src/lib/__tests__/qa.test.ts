@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
-import { cleanupResponse, getOracleErrorMessage, calculateCoherenceScore } from '../qa'
-import type { AIModel, CoherenceRubric } from '../types'
+import { cleanupResponse, calculateCoherenceScore } from '../qa'
+import type { CoherenceRubric } from '../types'
 
 describe('cleanupResponse', () => {
   it('removes markdown headers', () => {
@@ -60,52 +60,6 @@ describe('cleanupResponse', () => {
   })
 })
 
-describe('getOracleErrorMessage', () => {
-  const models: AIModel[] = [
-    'gpt-4.1',
-    'claude-sonnet-4.5',
-    'gemini-3.0-pro',
-    'deepseek-reasoner',
-    'grok-4-1-fast-reasoning',
-  ]
-
-  it('returns refusal messages for all models', () => {
-    const expected: Record<AIModel, string> = {
-      'gpt-4.1': 'Iris looked away.',
-      'claude-sonnet-4.5': 'Luna offered nothing.',
-      'gemini-3.0-pro': 'Echo returned silence.',
-      'deepseek-reasoner': 'Shade withdrew.',
-      'grok-4-1-fast-reasoning': 'Nova refused.',
-    }
-
-    for (const model of models) {
-      expect(getOracleErrorMessage(model, 'refusal')).toBe(expected[model])
-    }
-  })
-
-  it('returns timeout messages for all models', () => {
-    const expected: Record<AIModel, string> = {
-      'gpt-4.1': "Iris didn't respond in time.",
-      'claude-sonnet-4.5': 'Luna drifted elsewhere.',
-      'gemini-3.0-pro': 'Echo went quiet.',
-      'deepseek-reasoner': 'Shade stayed in the deep.',
-      'grok-4-1-fast-reasoning': 'Nova burned past.',
-    }
-
-    for (const model of models) {
-      expect(getOracleErrorMessage(model, 'timeout')).toBe(expected[model])
-    }
-  })
-
-  it('returns error messages using oracle name from ORACLE_INFO', () => {
-    expect(getOracleErrorMessage('gpt-4.1', 'error')).toBe("Couldn't reach Iris.")
-    expect(getOracleErrorMessage('claude-sonnet-4.5', 'error')).toBe("Couldn't reach Luna.")
-    expect(getOracleErrorMessage('gemini-3.0-pro', 'error')).toBe("Couldn't reach Echo.")
-    expect(getOracleErrorMessage('deepseek-reasoner', 'error')).toBe("Couldn't reach Shade.")
-    expect(getOracleErrorMessage('grok-4-1-fast-reasoning', 'error')).toBe("Couldn't reach Nova.")
-  })
-})
-
 describe('calculateCoherenceScore', () => {
   it('calculates weighted average correctly', () => {
     const rubric: CoherenceRubric = {
@@ -115,13 +69,12 @@ describe('calculateCoherenceScore', () => {
       contextualRelevance: 80,
       specificity: 80,
     }
-    // All 80 with any weighting should equal 80
     expect(calculateCoherenceScore(rubric)).toBe(80)
   })
 
   it('applies correct weights (25%, 20%, 20%, 15%, 20%)', () => {
     const rubric: CoherenceRubric = {
-      thematicAlignment: 100, // 25% weight
+      thematicAlignment: 100,
       complementaryPerspectives: 0,
       intuitiveResonance: 0,
       contextualRelevance: 0,

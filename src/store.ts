@@ -12,6 +12,7 @@ import type {
   Answer,
   CoordinateSet,
   ModelResponse,
+  ModerationResult,
 } from '@/lib/types'
 import { getMessageTypeConfig } from '@/lib/message-types'
 
@@ -31,12 +32,13 @@ interface JourneyStore {
   modelResponses: ModelResponse[]
   synthesis: string | null
   error: string | null
+  moderationResult: ModerationResult | null
+  useCustomCoordinates: boolean
 
   // Actions
   initSession: () => void
   setMessageType: (type: MessageType) => void
   setPersonalization: (data: Record<string, string>) => void
-  setPersonalizationField: (field: string, value: string) => void
   setQuestions: (questions: Question[]) => void
   addAnswer: (answer: Answer) => void
   setCoordinates: (coordinates: CoordinateSet) => void
@@ -46,6 +48,8 @@ interface JourneyStore {
   setSynthesis: (synthesis: string) => void
   setError: (error: string | null) => void
   setStep: (step: JourneyStep) => void
+  setModerationResult: (result: ModerationResult | null) => void
+  setUseCustomCoordinates: (use: boolean) => void
   reset: () => void
 }
 
@@ -62,6 +66,8 @@ const initialState = {
   modelResponses: [],
   synthesis: null,
   error: null,
+  moderationResult: null,
+  useCustomCoordinates: false,
 }
 
 export const useJourneyStore = create<JourneyStore>()(
@@ -99,15 +105,6 @@ export const useJourneyStore = create<JourneyStore>()(
         })
       },
 
-      setPersonalizationField: (field, value) => {
-        set((state) => ({
-          personalization: {
-            ...state.personalization,
-            [field]: value,
-          },
-        }))
-      },
-
       setQuestions: (questions) => {
         set({ questions })
       },
@@ -136,6 +133,7 @@ export const useJourneyStore = create<JourneyStore>()(
           modelResponses: [],
           synthesis: null,
           error: null,
+          moderationResult: null,
         })
       },
 
@@ -162,6 +160,14 @@ export const useJourneyStore = create<JourneyStore>()(
 
       setStep: (step) => {
         set({ currentStep: step })
+      },
+
+      setModerationResult: (result) => {
+        set({ moderationResult: result })
+      },
+
+      setUseCustomCoordinates: (use) => {
+        set({ useCustomCoordinates: use })
       },
 
       reset: () => {

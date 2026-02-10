@@ -3,8 +3,13 @@
  */
 
 import type { AIModel, ModelResponse } from './types'
-
-const TIMEOUT_MS = 30000
+import {
+  CHANNELING_TIMEOUT_MS,
+  SYNTHESIS_TIMEOUT_MS,
+  CHANNELING_MAX_TOKENS,
+  SYNTHESIS_MAX_TOKENS,
+} from './constants'
+import { ROUTE_ERRORS } from './errors'
 export const ANTHROPIC_API_VERSION = '2023-06-01'
 
 interface ProviderConfig {
@@ -16,13 +21,36 @@ interface ProviderConfig {
   modelId: string
 }
 
-// Oracle display names, archetypes, and colors - single source of truth
-export const ORACLE_INFO: Record<AIModel, { name: string; archetype: string; color: string }> = {
-  'gpt-4.1': { name: 'Iris', archetype: 'The Oracle', color: '#10a37f' },
-  'claude-sonnet-4.5': { name: 'Luna', archetype: 'The Muse', color: '#d97706' },
-  'gemini-3.0-pro': { name: 'Echo', archetype: 'The Mirror', color: '#4285f4' },
-  'deepseek-reasoner': { name: 'Shade', archetype: 'The Deep', color: '#6366f1' },
-  'grok-4-1-fast-reasoning': { name: 'Nova', archetype: 'The Wild', color: '#ef4444' },
+// Oracle display names, archetypes, colors, and short model names - single source of truth
+export const ORACLE_INFO: Record<
+  AIModel,
+  { name: string; archetype: string; color: string; shortModel: string }
+> = {
+  'gpt-4.1': { name: 'Iris', archetype: 'The Oracle', color: '#10a37f', shortModel: 'GPT-4.1' },
+  'claude-sonnet-4.5': {
+    name: 'Luna',
+    archetype: 'The Muse',
+    color: '#d97706',
+    shortModel: 'Claude Sonnet',
+  },
+  'gemini-3.0-pro': {
+    name: 'Echo',
+    archetype: 'The Mirror',
+    color: '#4285f4',
+    shortModel: 'Gemini Pro',
+  },
+  'deepseek-reasoner': {
+    name: 'Shade',
+    archetype: 'The Deep',
+    color: '#6366f1',
+    shortModel: 'DeepSeek',
+  },
+  'grok-4-1-fast-reasoning': {
+    name: 'Nova',
+    archetype: 'The Wild',
+    color: '#ef4444',
+    shortModel: 'Grok',
+  },
 }
 
 // Ordered list of AI models (derived from ORACLE_INFO)
@@ -87,7 +115,8 @@ async function callOpenAICompatible(
   apiKey: string,
   modelId: string,
   prompt: string,
-  signal: AbortSignal
+  signal: AbortSignal,
+  maxTokens: number = CHANNELING_MAX_TOKENS
 ): Promise<string> {
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -98,7 +127,7 @@ async function callOpenAICompatible(
     body: JSON.stringify({
       model: modelId,
       messages: [{ role: 'user', content: prompt }],
-      max_tokens: 1024,
+      max_tokens: maxTokens,
       temperature: 0.8,
     }),
     signal,
@@ -121,7 +150,8 @@ async function callAnthropic(
   apiKey: string,
   modelId: string,
   prompt: string,
-  signal: AbortSignal
+  signal: AbortSignal,
+  maxTokens: number = CHANNELING_MAX_TOKENS
 ): Promise<string> {
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -132,7 +162,7 @@ async function callAnthropic(
     },
     body: JSON.stringify({
       model: modelId,
-      max_tokens: 1024,
+      max_tokens: maxTokens,
       messages: [{ role: 'user', content: prompt }],
     }),
     signal,
@@ -154,7 +184,8 @@ async function callGoogleAI(
   endpoint: string,
   apiKey: string,
   prompt: string,
-  signal: AbortSignal
+  signal: AbortSignal,
+  maxTokens: number = CHANNELING_MAX_TOKENS
 ): Promise<string> {
   const url = `${endpoint}?key=${apiKey}`
 
@@ -166,7 +197,7 @@ async function callGoogleAI(
     body: JSON.stringify({
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
-        maxOutputTokens: 4096, // Increased from 1024 to prevent truncation
+        maxOutputTokens: maxTokens,
         temperature: 0.8,
       },
     }),
@@ -207,7 +238,7 @@ async function callChannelingModel(config: ProviderConfig, prompt: string): Prom
   }
 
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS)
+  const timeout = setTimeout(() => controller.abort(), CHANNELING_TIMEOUT_MS)
 
   try {
     let content: string
@@ -275,7 +306,7 @@ export async function callSynthesisModel(prompt: string): Promise<string> {
   }
 
   const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 60000) // 60s for synthesis
+  const timeout = setTimeout(() => controller.abort(), SYNTHESIS_TIMEOUT_MS)
 
   try {
     const content = await callAnthropic(
@@ -283,7 +314,8 @@ export async function callSynthesisModel(prompt: string): Promise<string> {
       SYNTHESIS_CONFIG.apiKey,
       SYNTHESIS_CONFIG.modelId,
       prompt,
-      controller.signal
+      controller.signal,
+      SYNTHESIS_MAX_TOKENS
     )
     return content
   } finally {
@@ -297,7 +329,7 @@ export async function callSynthesisModel(prompt: string): Promise<string> {
 export function getLongestResponse(responses: ModelResponse[]): string {
   const successful = responses.filter((r) => r.status === 'success' && r.content)
   if (successful.length === 0) {
-    return 'The channels remain silent at this time. Please try again.'
+    return ROUTE_ERRORS.CHANNELS_SILENT
   }
   return successful.reduce((a, b) => (a.content.length > b.content.length ? a : b)).content
 }
