@@ -196,15 +196,34 @@ export interface ChannelRequest {
   messageType: MessageType
   coordinates: CoordinateSet
   intention: string
-  personalization: PersonalizationInputs
+  personalization?: PersonalizationInputs
+  sessionId: string
+}
+
+// Moderation
+export type ModerationCategory =
+  | 'pii'
+  | 'threats'
+  | 'csam'
+  | 'prompt_injection'
+  | 'unintelligible'
+  | 'self_harm'
+
+export interface ModerationResult {
+  allowed: boolean
+  category?: ModerationCategory
+  message?: string
+  crisisResources?: string
+  latencyMs: number
 }
 
 export interface ChannelResponse {
-  status: 'complete' | 'partial'
+  status: 'complete' | 'partial' | 'error' | 'moderated'
   threads: ModelResponse[]
   synthesis: string
   synthesisMetadata?: SynthesisMetadata
   validationResults?: ValidationResult[]
   coherenceResult?: CoherenceResult
   failedModels?: AIModel[]
+  moderationResult?: ModerationResult
 }

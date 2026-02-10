@@ -4,6 +4,8 @@
 
 **NEVER COMMIT WITHOUT EXPLICIT USER APPROVAL.** Always ask before committing any changes.
 
+**ASK FIRST RATHER THAN FIX LATER.** When in doubt about intent, approach, or scope, ask a clarifying question rather than making assumptions. It is always easier to ask than to undo.
+
 ---
 
 ## Project Overview
@@ -38,13 +40,23 @@ npm test             # Unit + smoke tests (vitest)
 | AI providers  | `src/lib/ai.ts`                |
 | Prompts       | `src/lib/prompts.ts`           |
 | QA layer      | `src/lib/qa.ts`                |
+| Moderation    | `src/lib/moderation.ts`        |
 | Questions     | `src/lib/questions.ts`         |
 | Message types | `src/lib/message-types.ts`     |
 | Types         | `src/lib/types.ts`             |
+| Constants     | `src/lib/constants.ts`         |
+| Errors        | `src/lib/errors.ts`            |
 | Store         | `src/store.ts`                 |
 | Components    | `src/components/`              |
 
 ## Code Standards
+
+### Keep It Lean
+
+- **No dead code.** If code is unused, delete it. Never mark something deprecated and leave it around.
+- **No bloat.** Remove unnecessary abstractions, redundant helpers, and over-engineered patterns whenever you see them.
+- **Comments only where they earn their place.** Explain _why_, not _what_. Don't annotate obvious code. A comment that restates what the next line does is noise.
+- **No static-only tests.** Tests must exercise logic, not verify that constants exist or strings match.
 
 ### Single Source of Truth
 
@@ -106,7 +118,7 @@ Use the short archetypal names as IDs:
 
 - 30s timeout per AI model
 - Minimum 3 successful responses required
-- Mystical error copy (not technical)
+- In-character error copy (not technical)
 - Retry functionality preserves intention
 - Retry button with contextual tips on how to reframe intention
 
@@ -132,13 +144,16 @@ Use the short archetypal names as IDs:
 
 Run with `npm test`. Tests live in `src/**/__tests__/*.test.ts`.
 
-| Test File               | What it covers                                                      |
-| ----------------------- | ------------------------------------------------------------------- |
-| `prompts.test.ts`       | Channeling, synthesis, and analysis prompt builders                 |
-| `qa.test.ts`            | cleanupResponse, getMysticalErrorMessage, calculateCoherenceScore   |
-| `questions.test.ts`     | selectQuestions, generateCoordinateString                           |
-| `message-types.test.ts` | getMessageTypeConfig for all 6 types, field counts, required fields |
-| `route.test.ts`         | API route input validation (smoke tests, no AI calls)               |
+| Test File                       | What it covers                                                      |
+| ------------------------------- | ------------------------------------------------------------------- |
+| `prompts.test.ts`               | Channeling, synthesis, and analysis prompt builders                 |
+| `errors.test.ts`                | classifyError logic (rate_limit, timeout, network, server, unknown) |
+| `moderation.test.ts`            | buildModerationPrompt structure, fail-open behavior                 |
+| `qa.test.ts`                    | cleanupResponse regex transforms, calculateCoherenceScore weights   |
+| `questions.test.ts`             | selectQuestions, generateCoordinateString, generateAnswerSegments   |
+| `message-types.test.ts`         | getMessageTypeConfig lookup, invalid type handling, label pattern   |
+| `route.test.ts`                 | API route input validation (smoke tests, no AI calls)               |
+| `customCoordinateInput.test.ts` | stripToDigits, formatCoordinate pure functions                      |
 
 ### Integration Tests
 
@@ -169,40 +184,55 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on push to main/dev and PRs:
 
 ## Code Review Checklist
 
-### Single Source of Truth
+### Source of Truth Checks
 
 - [ ] No duplicated constants, types, or config across files
-- [ ] New constants added to their canonical source file
+- [ ] New constants added to their canonical source file (`constants.ts`, `types.ts`, etc.)
 - [ ] Oracle names/models/archetypes reference `ORACLE_INFO` in `ai.ts`, never hardcoded
 - [ ] Message type config references `message-types.ts`, never inline
+- [ ] Error messages and user-facing strings reference constants, not inline literals
 
 ### Code Quality
 
 - [ ] No hardcoded strings or config values (use constants/env vars)
-- [ ] No unused variables or imports
+- [ ] No unused variables, imports, or dead code
 - [ ] No inline CSS (use Tailwind classes or globals.css component classes)
-- [ ] No duplicated logic (DRY - reuse existing utilities)
+- [ ] No duplicated logic (DRY — reuse existing utilities)
 - [ ] No magic numbers (extract to named constants)
+- [ ] Re-using existing classes and components where possible
+- [ ] Maintainable and readable — no over-engineering or premature abstraction
+- [ ] No scope creep beyond what the GH issue requires
 
-### Testing
+### Test Coverage
 
 - [ ] Tests cover new pure functions and edge cases
 - [ ] No tests using mocks when real code is available
 - [ ] Tests can actually fail (not always-green assertions)
+- [ ] No tests being skipped or allowed to fail silently
+- [ ] Edge cases accounted for (empty inputs, boundary values, invalid data)
 
 ### Accessibility & UX
 
 - [ ] Labels linked to inputs (`htmlFor`/`id`)
-- [ ] ARIA attributes on interactive elements (`aria-expanded`, etc.)
+- [ ] ARIA attributes on interactive elements (`aria-expanded`, `aria-describedby`, etc.)
 - [ ] Error states don't overlap other UI states
 - [ ] Mobile-first responsive design verified
+- [ ] Min tap target 48x48px, min font size 16px
+- [ ] Validation errors linked to inputs via `aria-describedby`
+
+### Security
+
+- [ ] No API keys or secrets exposed in error messages or client code
+- [ ] User inputs validated at system boundaries (type, length, structure)
+- [ ] JSON parsed from external sources validated before use
+- [ ] No unescaped user input in dangerous contexts
 
 ### Standards
 
 - [ ] No `console.log` in production code (`console.warn`/`error` OK for genuine issues)
-- [ ] API inputs validated (type, length, structure)
 - [ ] Documentation updated if behavior changes (CLAUDE.md, README.md, PROMPTS.md)
 - [ ] Voice/tone follows project guidelines (no emojis, no exclamation points, no New Age cliches)
+- [ ] GH issues, CLAUDE.md, and README.md updated or created as needed
 
 ---
 
@@ -257,11 +287,14 @@ See `docs/USER-STORIES.md` for the full voice guide with register examples.
 
 | Stage      | Calls      | Model           | Purpose                          |
 | ---------- | ---------- | --------------- | -------------------------------- |
+| Moderation | 1          | Claude Haiku    | Screen intention for safety      |
 | Channeling | 5 parallel | Various oracles | Get impressions                  |
 | Analysis   | 1          | Claude Sonnet   | Validation + editing + coherence |
-| Synthesis  | 1          | Claude Opus     | Weave final message              |
+| Synthesis  | 1          | Claude Opus     | Synthesize final message         |
 
-**Total: 7 API calls per successful reading** (5 channeling + 1 analysis + 1 synthesis)
+**Total: 8 API calls per successful reading** (1 moderation + 5 channeling + 1 analysis + 1 synthesis)
+
+Moderation runs before channeling. If it rejects, the 7 downstream calls are skipped (cost savings). Moderation fails open — if unavailable, requests proceed.
 
 The analysis step is a single Sonnet call that validates each response (refusal/off-topic detection), edits valid responses (removes markdown, disclaimers, AI self-references), and scores coherence across all responses. Falls back to regex cleanup if the Sonnet call fails.
 
@@ -303,7 +336,7 @@ Token logging not yet implemented. Currently logging coherence scores to console
 ### Full Journey Test
 
 1. Start dev server: `npm run dev`
-2. Open http://localhost:3000
+2. Open `http://localhost:3000`
 3. Complete full flow:
    - Select a message type
    - Fill personalization form with **real first names** (if applicable)

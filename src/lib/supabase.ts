@@ -32,12 +32,13 @@ export interface ReadingInsert {
 // Environment validation
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
   console.warn('Supabase environment variables not configured')
 }
 
-// Create client (works on both client and server)
+// Client-side Supabase client (uses anon key, respects RLS)
 let supabase: SupabaseClient | null = null
 
 export function getSupabaseClient(): SupabaseClient | null {
@@ -52,13 +53,30 @@ export function getSupabaseClient(): SupabaseClient | null {
   return supabase
 }
 
+// Server-side Supabase client (uses service role key, bypasses RLS)
+let serverSupabase: SupabaseClient | null = null
+
+export function getServerSupabaseClient(): SupabaseClient | null {
+  if (!supabaseUrl || !supabaseServiceRoleKey) {
+    return null
+  }
+
+  if (!serverSupabase) {
+    serverSupabase = createClient(supabaseUrl, supabaseServiceRoleKey)
+  }
+
+  return serverSupabase
+}
+
 /**
- * Save a completed reading to the database
+ * Save a completed reading to the database (server-side, bypasses RLS)
  */
-export async function saveReading(reading: ReadingInsert): Promise<{ id: string } | null> {
-  const client = getSupabaseClient()
+export async function saveReadingServerSide(
+  reading: ReadingInsert
+): Promise<{ id: string } | null> {
+  const client = getServerSupabaseClient()
   if (!client) {
-    console.warn('Supabase not configured, skipping save')
+    console.warn('Server Supabase not configured, skipping save')
     return null
   }
 

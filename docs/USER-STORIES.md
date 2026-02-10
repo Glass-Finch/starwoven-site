@@ -35,11 +35,12 @@ Each message type serves a different user need. The intention prompt and placeho
 - What's really going on between us?
 
 **User Inputs:**
-| Field | Label | Placeholder | Required |
-|-------|-------|-------------|----------|
-| `yourName` | Your name | Your first name... | Yes |
-| `theirName` | Their name | Their name or what you call them... | Yes |
-| `intention` | What do you want to know? | Does this person like me? What do they really feel? Is there a future here? | Yes |
+
+| Field       | Label                     | Placeholder                                                                 | Required |
+| ----------- | ------------------------- | --------------------------------------------------------------------------- | -------- |
+| `yourName`  | Your name                 | Your first name...                                                          | Yes      |
+| `theirName` | Their name                | Their name or what you call them...                                         | Yes      |
+| `intention` | What do you want to know? | Does this person like me? What do they really feel? Is there a future here? | Yes      |
 
 **Example intentions:**
 
@@ -63,12 +64,13 @@ Each message type serves a different user need. The intention prompt and placeho
 - There's something I need to tell them
 
 **User Inputs:**
-| Field | Label | Placeholder | Required |
-|-------|-------|-------------|----------|
-| `yourName` | Your name | Your first name... | Yes |
-| `theirName` | Their name | Their name... | Yes |
-| `relationship` | Your relationship | e.g., grandmother, father, friend... | Yes |
-| `intention` | What do you want to ask or tell them? | Are they okay? Do they forgive me? What would they say to me now? | Yes |
+
+| Field          | Label                                 | Placeholder                                                       | Required |
+| -------------- | ------------------------------------- | ----------------------------------------------------------------- | -------- |
+| `yourName`     | Your name                             | Your first name...                                                | Yes      |
+| `theirName`    | Their name                            | Their name...                                                     | Yes      |
+| `relationship` | Your relationship                     | e.g., grandmother, father, friend...                              | Yes      |
+| `intention`    | What do you want to ask or tell them? | Are they okay? Do they forgive me? What would they say to me now? | Yes      |
 
 **Example intentions:**
 
@@ -90,11 +92,12 @@ Each message type serves a different user need. The intention prompt and placeho
 - What would my wiser self say about this?
 
 **User Inputs:**
-| Field | Label | Placeholder | Required |
-|-------|-------|-------------|----------|
-| `yourName` | Your name | Your first name... | Yes |
-| `birthday` | Your birthday | (date picker) | Yes |
-| `intention` | What do you need advice on? | Should I take this job? Am I on the right path? What should I focus on? | Yes |
+
+| Field       | Label                       | Placeholder                                                             | Required |
+| ----------- | --------------------------- | ----------------------------------------------------------------------- | -------- |
+| `yourName`  | Your name                   | Your first name...                                                      | Yes      |
+| `birthday`  | Your birthday               | (date picker)                                                           | Yes      |
+| `intention` | What do you need advice on? | Should I take this job? Am I on the right path? What should I focus on? | Yes      |
 
 **Example intentions:**
 
@@ -116,9 +119,10 @@ Each message type serves a different user need. The intention prompt and placeho
 - What am I not seeing?
 
 **User Inputs:**
-| Field | Label | Placeholder | Required |
-|-------|-------|-------------|----------|
-| `intention` | What's on your mind? | What do I need to hear right now? What am I not seeing? | Yes |
+
+| Field       | Label                | Placeholder                                             | Required |
+| ----------- | -------------------- | ------------------------------------------------------- | -------- |
+| `intention` | What's on your mind? | What do I need to hear right now? What am I not seeing? | Yes      |
 
 No additional personalization fields — just the intention.
 
@@ -141,9 +145,10 @@ No additional personalization fields — just the intention.
 - Yes or no?
 
 **User Inputs:**
-| Field | Label | Placeholder | Required |
-|-------|-------|-------------|----------|
-| `intention` | What decision do you need help with? | Should I take the job? Should I move? Is it time to end this? | Yes |
+
+| Field       | Label                                | Placeholder                                                   | Required |
+| ----------- | ------------------------------------ | ------------------------------------------------------------- | -------- |
+| `intention` | What decision do you need help with? | Should I take the job? Should I move? Is it time to end this? | Yes      |
 
 No additional personalization fields — the question itself is the focus.
 
@@ -176,11 +181,12 @@ No additional personalization fields — the question itself is the focus.
 - What should I be focusing my life on?
 
 **User Inputs:**
-| Field | Label | Placeholder | Required |
-|-------|-------|-------------|----------|
-| `yourName` | Your name | Your first name... | Yes |
-| `birthday` | Your birthday | (date picker) | Yes |
-| `intention` | What do you want to know about your purpose? | What is my purpose? What am I meant to do? What is my calling? | Yes |
+
+| Field       | Label                                        | Placeholder                                                    | Required |
+| ----------- | -------------------------------------------- | -------------------------------------------------------------- | -------- |
+| `yourName`  | Your name                                    | Your first name...                                             | Yes      |
+| `birthday`  | Your birthday                                | (date picker)                                                  | Yes      |
+| `intention` | What do you want to know about your purpose? | What is my purpose? What am I meant to do? What is my calling? | Yes      |
 
 **Example intentions:**
 
@@ -205,20 +211,34 @@ No additional personalization fields — the question itself is the focus.
 - Tapping advances me immediately
 
 **Final Copy:**
-| Label | Description |
-|-------|-------------|
-| The Beloved | "Ask about a romantic connection" |
-| The Ancestor | "Seek connection with someone who has passed" |
-| The Sage | "Ask your future self for advice" |
-| The Cosmos | "Seek insight on what's on your mind" |
-| The Crossroads | "Get clarity on a yes or no decision" |
-| The Calling | "Explore your purpose" |
+
+| Label          | Description                                   |
+| -------------- | --------------------------------------------- |
+| The Beloved    | "Ask about a romantic connection"             |
+| The Ancestor   | "Seek connection with someone who has passed" |
+| The Sage       | "Ask your future self for advice"             |
+| The Cosmos     | "Seek insight on what's on your mind"         |
+| The Crossroads | "Get clarity on a yes or no decision"         |
+| The Calling    | "Explore your purpose"                        |
+
+---
+
+### 1b. Entertainment Disclaimer
+
+**As a user**, I want to understand that Starwoven is for entertainment and reflection so I have appropriate expectations.
+
+**Acceptance Criteria:**
+
+- Disclaimer visible on landing page but unobtrusive (footer text, not modal)
+- Copy: "For entertainment and personal reflection. Not a substitute for professional advice."
+- No acknowledgment or dismissal required
+- Does not interfere with the experience
 
 ---
 
 ### 2. Answering Coordinate Questions
 
-**As a user**, I want to answer quick intuitive questions so that my reading is anchored to this specific moment.
+**As a user**, I want to answer quick intuitive questions so that my reading is anchored to this specific moment. Each answer generates a number that becomes part of my coordinate — I can see exactly how my responses shaped the final string.
 
 **Acceptance Criteria:**
 
@@ -228,6 +248,9 @@ No additional personalization fields — the question itself is the focus.
 - Questions are a mix of themed (about my situation) and grounding (about now)
 - I never feel like there's a "right" answer
 - Questions should NEVER be trivia or factual
+- Each answer generates a numeric segment that contributes to the final coordinate
+- The coordinate is built transparently from answer segments (not an opaque hash)
+- Numbers should feel thematic per question type, not arbitrary (see Coordinate Numbers below)
 
 **Question Categories:**
 
@@ -244,6 +267,33 @@ No additional personalization fields — the question itself is the focus.
 - "What time of day is it?" (auto-generatable)
 - "Are you alone?" (too direct/factual)
 
+**Coordinate Numbers:**
+
+Each answer maps to a 2-digit number (10-99). The 5 answers produce a coordinate like `73-28-41-56-89`. The numbers should feel thematic to their question category:
+
+- Element answers (Fire/Water/Earth/Air) → numbers evoking the element's nature
+- Season answers → numbers with seasonal feel
+- Emotional answers → intensity mapped to magnitude
+- Symbolic answers → archetypal number associations
+
+The mapping design is tracked in GH#76. Rationale for each number choice should be documented.
+
+---
+
+### 2b. Custom Coordinates
+
+**As a user**, I want to input my own meaningful numbers as coordinates so that my reading feels personal.
+
+**Acceptance Criteria:**
+
+- Custom coordinate input available via "I have my own coordinates" link below the question flow
+- Coordinates are **numbers only** — no letters, no alphanumeric characters
+- Must be 6-20 digits (dashes and spaces allowed as separators, stripped before validation)
+- If provided, skip question flow and go straight to intention
+- If cancelled, return to normal question flow
+- Validation error shown if digit count is outside 6-20 range
+- On results page, custom coordinates show "Custom coordinates provided." (no Q&A breakdown)
+
 ---
 
 ### 3. Naming the Subject (optional, type-dependent)
@@ -258,14 +308,15 @@ No additional personalization fields — the question itself is the focus.
 - If skipped, the message uses "they" or generic framing
 
 **Type-Specific Name Prompts:**
-| Type | Prompt | Placeholder | Used in Output |
-|------|--------|-------------|----------------|
-| The Beloved | "Who are they?" | "A name, or how you think of them..." | "What [name] carries..." |
-| The Ancestor | "Who are you reaching for?" | "Their name, or your relation..." | "From [name]..." |
-| The Sage | — | — | (no name needed, it's you) |
-| The Cosmos | — | — | (no name needed) |
-| The Crossroads | "What's the decision about?" | "One word or phrase..." | "Regarding [subject]..." |
-| The Calling | — | — | (no name needed) |
+
+| Type           | Prompt                       | Placeholder                           | Used in Output             |
+| -------------- | ---------------------------- | ------------------------------------- | -------------------------- |
+| The Beloved    | "Who are they?"              | "A name, or how you think of them..." | "What [name] carries..."   |
+| The Ancestor   | "Who are you reaching for?"  | "Their name, or your relation..."     | "From [name]..."           |
+| The Sage       | —                            | —                                     | (no name needed, it's you) |
+| The Cosmos     | —                            | —                                     | (no name needed)           |
+| The Crossroads | "What's the decision about?" | "One word or phrase..."               | "Regarding [subject]..."   |
+| The Calling    | —                            | —                                     | (no name needed)           |
 
 ---
 
@@ -282,14 +333,15 @@ No additional personalization fields — the question itself is the focus.
 - Guidance feels inviting, not restrictive
 
 **Type-Specific Prompts:**
-| Type | Prompt | Placeholder |
-|------|--------|-------------|
-| The Beloved | "What remains unspoken?" | "The words that live between you..." |
-| The Ancestor | "What echoes still?" | "What you long to hear, or say..." |
-| The Sage | "What would your future self say?" | "The counsel you need now..." |
-| The Cosmos | "What stirs within you?" | "The question beneath the question..." |
-| The Crossroads | "Which path calls to you?" | "The choice that weighs on you..." |
-| The Calling | "What wants to emerge through you?" | "Your gift to the world..." |
+
+| Type           | Prompt                              | Placeholder                            |
+| -------------- | ----------------------------------- | -------------------------------------- |
+| The Beloved    | "What remains unspoken?"            | "The words that live between you..."   |
+| The Ancestor   | "What echoes still?"                | "What you long to hear, or say..."     |
+| The Sage       | "What would your future self say?"  | "The counsel you need now..."          |
+| The Cosmos     | "What stirs within you?"            | "The question beneath the question..." |
+| The Crossroads | "Which path calls to you?"          | "The choice that weighs on you..."     |
+| The Calling    | "What wants to emerge through you?" | "Your gift to the world..."            |
 
 ---
 
@@ -323,18 +375,23 @@ Avoid: rotating mystical phrases, anything that sounds like a loading screen wro
 - The synthesis appears word-by-word (60ms per word)
 - A cursor blinks during reveal
 - After reveal, I can expand to see individual threads
-- Each thread shows the oracle name (Iris, Luna, etc.)
-- I can see what generated my coordinates
+- Starweaver credited inside the synthesis card as a subtle byline (gold dot + name)
+- Oracle impressions listed as directly expandable rows below the synthesis card (no nested accordion)
+- Each oracle row shows a colored indicator dot + name + model shortname: "Luna (Claude Sonnet)"
+- One tap to expand any oracle's response (no outer "View threads" wrapper)
+- I can see what generated my coordinates (expandable CoordinateReveal section)
+- CoordinateReveal shows each question, my answer, and the numeric segment it produced
 - I can start a new journey easily
 
 **Thread Labels:**
-| Oracle | Archetype | Display Format |
-|--------|-----------|----------------|
-| Iris | The Oracle | "Iris - The Oracle" |
-| Luna | The Muse | "Luna - The Muse" |
-| Echo | The Mirror | "Echo - The Mirror" |
-| Shade | The Deep | "Shade - The Deep" |
-| Nova | The Wild | "Nova - The Wild" |
+
+| Oracle | Archetype  | Display Format         |
+| ------ | ---------- | ---------------------- |
+| Iris   | The Oracle | "Iris (GPT-4.1)"       |
+| Luna   | The Muse   | "Luna (Claude Sonnet)" |
+| Echo   | The Mirror | "Echo (Gemini Pro)"    |
+| Shade  | The Deep   | "Shade (DeepSeek)"     |
+| Nova   | The Wild   | "Nova (Grok)"          |
 
 ---
 
@@ -424,11 +481,27 @@ The QA layer acts as an **editor**, not a **gatekeeper**. It cleans up responses
 
 **Tip Examples (subtle, not preachy):**
 
-| Failure Type      | Tip                                                           |
-| ----------------- | ------------------------------------------------------------- |
-| Multiple refusals | "Try rephrasing your intention with less loaded language"     |
-| All timeouts      | "The oracles are taking longer than usual. Try again?"        |
-| Mixed failures    | "Some oracles couldn't connect. Try a more focused question?" |
+| Failure Type      | Tip                                                                        |
+| ----------------- | -------------------------------------------------------------------------- |
+| Multiple refusals | "Try rephrasing your intention with less loaded language"                  |
+| All timeouts      | "The oracles are taking longer than usual."                                |
+| Mixed failures    | "A more focused question may help."                                        |
+| Network error     | "Check your connection and try again."                                     |
+| Rate limited      | "The oracles need a moment of stillness. Please wait before asking again." |
+| Generic           | "Consider reframing your question."                                        |
+
+---
+
+### US6c: Rate Limited
+
+**As a user**, if I make too many requests, I want to understand why I need to wait.
+
+**Acceptance Criteria:**
+
+- 429 response shows "Too many requests."
+- Tip: "The oracles need a moment of stillness. Please wait before asking again."
+- Retry button still available (coordinates preserved)
+- No technical language (no mention of rate limits, IPs, or quotas)
 
 ---
 
@@ -455,6 +528,74 @@ The QA layer acts as an **editor**, not a **gatekeeper**. It cleans up responses
 - All oracle threads visible
 - Backend logs warning for analytics
 - User experience unchanged
+
+---
+
+### US8: Signal Strength
+
+**As a user**, I want to see how well the oracles aligned before or alongside my reading.
+
+**Acceptance Criteria:**
+
+- Signal strength label shown before or alongside the synthesis text (not buried below)
+- Label based on score range (e.g., "Strong convergence", "Clear signal", "Mixed signal", "Divergent perspectives")
+- Expandable detail showing rubric dimensions and shared themes
+- No technical language ("coherence score" reframed as "signal strength" or "oracle alignment")
+- When alignment is low, the synthesis oracle may acknowledge the disagreement in its weaving (this is acceptable and honest)
+
+---
+
+### US9: Reading Feedback
+
+**As a user**, I want to give quick feedback on whether the reading resonated.
+
+**Acceptance Criteria:**
+
+- Simple binary feedback after reading ("Did this resonate?" with yes/no)
+- Single tap, no form, no explanation required
+- Feedback saved to reading record
+- Brief acknowledgment after feedback ("Noted.")
+- Cannot be changed after submission
+
+---
+
+### US10: Intention Screening
+
+**As a user**, if my intention contains harmful content, I want to be redirected gently without judgment.
+
+**Acceptance Criteria:**
+
+- Intention screened before channeling (saves API costs)
+- Rejection message tells the user why and how to rephrase (category-specific, not generic):
+  - PII: "We're sorry but we can't accept any personally identifiable information. Please try rephrasing with first names only."
+  - Threats: "We can't process intentions that describe harming a specific person. If you're dealing with anger or conflict, please try focusing on what you're going through instead."
+  - Serious illegal activity (actively planning harm, not discussing topics): "We can't condone illegal activity. Please try a different question."
+  - Prompt injection: "Something about this intention didn't come through clearly. Please try rephrasing in your own words."
+  - Unintelligible: "The oracles are unable to understand this intention. Please try rephrasing."
+  - Each message names the specific issue so the user understands what to change
+- Crisis/self-harm content gets a caring response with resources (988, Crisis Text Line) — but the reading still proceeds
+- Normal emotional content (grief, sadness, anger) is never rejected
+- Users asking about trauma they are experiencing (violence, abuse, assault, domestic situations) are NEVER rejected — someone asking about their own suffering is seeking help, not generating harmful content
+- Existential questions ("What's the point?", "Will this pain ever end?") are always allowed — only explicit statements of self-harm intent trigger resource escalation
+- Political questions, questions about authority, power, resistance, or challenging systems are never rejected
+- Questions about mental illness or mental health are never rejected
+- When in doubt, allow. It is far worse to reject someone in pain than to let an edge case through.
+- Moderation failure does not block the request (fail open)
+
+---
+
+### US11: Debug Mode
+
+**As a developer**, I want a debug mode that shows technical details of each reading so I can evaluate and tune the system.
+
+**Acceptance Criteria:**
+
+- Toggled via query param (e.g., `?debug=true`) or dev-only UI control
+- Shows model shortnames in parentheses next to oracle names (e.g., "Luna (claude-sonnet-4.5)")
+- Shows raw coherence score and rubric dimension breakdowns
+- Shows per-oracle latency and validation status
+- Not visible to regular users in production
+- Does not affect the reading experience when disabled
 
 ---
 

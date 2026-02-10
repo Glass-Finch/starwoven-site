@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 
-import { cleanupResponse, getMysticalErrorMessage, calculateCoherenceScore } from '../qa'
-import type { AIModel, CoherenceRubric } from '../types'
+import { cleanupResponse, calculateCoherenceScore } from '../qa'
+import type { CoherenceRubric } from '../types'
 
 describe('cleanupResponse', () => {
   it('removes markdown headers', () => {
@@ -22,6 +22,10 @@ describe('cleanupResponse', () => {
     const withDisclaimer =
       'This is a creative writing exercise for entertainment purposes only. The real content here.'
     expect(cleanupResponse(withDisclaimer)).toBe('The real content here.')
+  })
+
+  it('removes standalone "for entertainment purposes only"', () => {
+    expect(cleanupResponse('Content here. For entertainment purposes only.')).toBe('Content here.')
   })
 
   it('removes "as an AI" disclaimers', () => {
@@ -56,52 +60,6 @@ describe('cleanupResponse', () => {
   })
 })
 
-describe('getMysticalErrorMessage', () => {
-  const models: AIModel[] = [
-    'gpt-4.1',
-    'claude-sonnet-4.5',
-    'gemini-3.0-pro',
-    'deepseek-reasoner',
-    'grok-4-1-fast-reasoning',
-  ]
-
-  it('returns refusal messages for all models', () => {
-    const expected: Record<AIModel, string> = {
-      'gpt-4.1': 'Iris looked away.',
-      'claude-sonnet-4.5': 'Luna offered nothing.',
-      'gemini-3.0-pro': 'Echo returned silence.',
-      'deepseek-reasoner': 'Shade withdrew.',
-      'grok-4-1-fast-reasoning': 'Nova refused.',
-    }
-
-    for (const model of models) {
-      expect(getMysticalErrorMessage(model, 'refusal')).toBe(expected[model])
-    }
-  })
-
-  it('returns timeout messages for all models', () => {
-    const expected: Record<AIModel, string> = {
-      'gpt-4.1': "Iris didn't respond in time.",
-      'claude-sonnet-4.5': 'Luna drifted elsewhere.',
-      'gemini-3.0-pro': 'Echo went quiet.',
-      'deepseek-reasoner': 'Shade stayed in the deep.',
-      'grok-4-1-fast-reasoning': 'Nova burned past.',
-    }
-
-    for (const model of models) {
-      expect(getMysticalErrorMessage(model, 'timeout')).toBe(expected[model])
-    }
-  })
-
-  it('returns error messages using oracle name from ORACLE_INFO', () => {
-    expect(getMysticalErrorMessage('gpt-4.1', 'error')).toBe("Couldn't reach Iris.")
-    expect(getMysticalErrorMessage('claude-sonnet-4.5', 'error')).toBe("Couldn't reach Luna.")
-    expect(getMysticalErrorMessage('gemini-3.0-pro', 'error')).toBe("Couldn't reach Echo.")
-    expect(getMysticalErrorMessage('deepseek-reasoner', 'error')).toBe("Couldn't reach Shade.")
-    expect(getMysticalErrorMessage('grok-4-1-fast-reasoning', 'error')).toBe("Couldn't reach Nova.")
-  })
-})
-
 describe('calculateCoherenceScore', () => {
   it('calculates weighted average correctly', () => {
     const rubric: CoherenceRubric = {
@@ -111,13 +69,12 @@ describe('calculateCoherenceScore', () => {
       contextualRelevance: 80,
       specificity: 80,
     }
-    // All 80 with any weighting should equal 80
     expect(calculateCoherenceScore(rubric)).toBe(80)
   })
 
   it('applies correct weights (25%, 20%, 20%, 15%, 20%)', () => {
     const rubric: CoherenceRubric = {
-      thematicAlignment: 100, // 25% weight
+      thematicAlignment: 100,
       complementaryPerspectives: 0,
       intuitiveResonance: 0,
       contextualRelevance: 0,

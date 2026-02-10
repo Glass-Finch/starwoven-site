@@ -3,8 +3,7 @@
 import { useState, useCallback } from 'react'
 
 import type { MessageTypeConfig } from '@/lib/types'
-
-const MAX_INTENTION_LENGTH = 250
+import { MAX_INTENTION_LENGTH } from '@/lib/constants'
 
 interface IntentionInputProps {
   onSubmit: (intention: string) => void
@@ -53,6 +52,7 @@ export function IntentionInput({
             value={intention}
             onChange={handleChange}
             placeholder={placeholder}
+            aria-label={prompt}
             rows={3}
             maxLength={MAX_INTENTION_LENGTH}
             className="textarea text-center"
