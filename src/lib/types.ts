@@ -197,10 +197,11 @@ export interface ChannelRequest {
   coordinates: CoordinateSet
   intention: string
   personalization: PersonalizationInputs
+  sessionId: string
 }
 
 export interface ChannelResponse {
-  status: 'complete' | 'partial'
+  status: 'complete' | 'partial' | 'error'
   threads: ModelResponse[]
   synthesis: string
   synthesisMetadata?: SynthesisMetadata

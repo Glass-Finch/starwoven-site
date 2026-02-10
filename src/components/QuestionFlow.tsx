@@ -108,6 +108,7 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
               value={textInput}
               onChange={(e) => setTextInput(e.target.value)}
               placeholder="Type your answer..."
+              aria-label={currentQuestion.text}
               className="input text-center"
               autoFocus
               autoComplete="off"

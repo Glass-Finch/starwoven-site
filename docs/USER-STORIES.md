@@ -424,11 +424,27 @@ The QA layer acts as an **editor**, not a **gatekeeper**. It cleans up responses
 
 **Tip Examples (subtle, not preachy):**
 
-| Failure Type      | Tip                                                           |
-| ----------------- | ------------------------------------------------------------- |
-| Multiple refusals | "Try rephrasing your intention with less loaded language"     |
-| All timeouts      | "The oracles are taking longer than usual. Try again?"        |
-| Mixed failures    | "Some oracles couldn't connect. Try a more focused question?" |
+| Failure Type      | Tip                                                                        |
+| ----------------- | -------------------------------------------------------------------------- |
+| Multiple refusals | "Try rephrasing your intention with less loaded language"                  |
+| All timeouts      | "The oracles are taking longer than usual."                                |
+| Mixed failures    | "A more focused question may help."                                        |
+| Network error     | "Check your connection and try again."                                     |
+| Rate limited      | "The oracles need a moment of stillness. Please wait before asking again." |
+| Generic           | "Consider reframing your question."                                        |
+
+---
+
+### US6c: Rate Limited
+
+**As a user**, if I make too many requests, I want to understand why I need to wait.
+
+**Acceptance Criteria:**
+
+- 429 response shows "Too many requests."
+- Tip: "The oracles need a moment of stillness. Please wait before asking again."
+- Retry button still available (coordinates preserved)
+- No technical language (no mention of rate limits, IPs, or quotas)
 
 ---
 

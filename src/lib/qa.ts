@@ -55,9 +55,9 @@ const ORACLE_ERROR_MESSAGES: Record<AIModel, { refusal: string; timeout: string 
 }
 
 /**
- * Get mystical error message for a failed oracle
+ * Get in-character error message for a failed oracle
  */
-export function getMysticalErrorMessage(
+export function getOracleErrorMessage(
   model: AIModel,
   errorType: 'refusal' | 'timeout' | 'error'
 ): string {
@@ -169,9 +169,9 @@ function buildFallbackResults(
     if (validationResults[index].isValid && response.content) {
       return { ...response, content: cleanupResponse(response.content) }
     } else if (response.status === 'timeout') {
-      return { ...response, content: getMysticalErrorMessage(response.model, 'timeout') }
+      return { ...response, content: getOracleErrorMessage(response.model, 'timeout') }
     } else if (response.status === 'error') {
-      return { ...response, content: getMysticalErrorMessage(response.model, 'error') }
+      return { ...response, content: getOracleErrorMessage(response.model, 'error') }
     }
     return response
   })
@@ -205,7 +205,7 @@ function buildFallbackResults(
  *
  * Returns:
  * - validated: only valid responses (with edited content) for synthesis
- * - processed: all responses with edited content or mystical messages for display
+ * - processed: all responses with edited content or oracle error messages for display
  * - validationResults: per-response validation metadata
  * - coherenceResult: cross-response coherence analysis
  */
@@ -321,7 +321,7 @@ export async function analyzeResponses(
       }
     })
 
-    // Build processed responses (edited content for valid, mystical messages for invalid)
+    // Build processed responses (edited content for valid, oracle error messages for invalid)
     const processed = responses.map((response) => {
       const validation = validationResults.find((v) => v.model === response.model)
 
@@ -336,11 +336,11 @@ export async function analyzeResponses(
           content: editedContent || cleanupResponse(response.content),
         }
       } else if (response.status === 'timeout') {
-        return { ...response, content: getMysticalErrorMessage(response.model, 'timeout') }
+        return { ...response, content: getOracleErrorMessage(response.model, 'timeout') }
       } else if (response.status === 'error') {
-        return { ...response, content: getMysticalErrorMessage(response.model, 'error') }
+        return { ...response, content: getOracleErrorMessage(response.model, 'error') }
       } else if (!validation?.isValid) {
-        return { ...response, content: getMysticalErrorMessage(response.model, 'refusal') }
+        return { ...response, content: getOracleErrorMessage(response.model, 'refusal') }
       }
 
       return response

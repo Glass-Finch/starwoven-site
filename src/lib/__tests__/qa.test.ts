@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 
-import { cleanupResponse, getMysticalErrorMessage, calculateCoherenceScore } from '../qa'
+import { cleanupResponse, getOracleErrorMessage, calculateCoherenceScore } from '../qa'
 import type { AIModel, CoherenceRubric } from '../types'
 
 describe('cleanupResponse', () => {
@@ -22,6 +22,10 @@ describe('cleanupResponse', () => {
     const withDisclaimer =
       'This is a creative writing exercise for entertainment purposes only. The real content here.'
     expect(cleanupResponse(withDisclaimer)).toBe('The real content here.')
+  })
+
+  it('removes standalone "for entertainment purposes only"', () => {
+    expect(cleanupResponse('Content here. For entertainment purposes only.')).toBe('Content here.')
   })
 
   it('removes "as an AI" disclaimers', () => {
@@ -56,7 +60,7 @@ describe('cleanupResponse', () => {
   })
 })
 
-describe('getMysticalErrorMessage', () => {
+describe('getOracleErrorMessage', () => {
   const models: AIModel[] = [
     'gpt-4.1',
     'claude-sonnet-4.5',
@@ -75,7 +79,7 @@ describe('getMysticalErrorMessage', () => {
     }
 
     for (const model of models) {
-      expect(getMysticalErrorMessage(model, 'refusal')).toBe(expected[model])
+      expect(getOracleErrorMessage(model, 'refusal')).toBe(expected[model])
     }
   })
 
@@ -89,16 +93,16 @@ describe('getMysticalErrorMessage', () => {
     }
 
     for (const model of models) {
-      expect(getMysticalErrorMessage(model, 'timeout')).toBe(expected[model])
+      expect(getOracleErrorMessage(model, 'timeout')).toBe(expected[model])
     }
   })
 
   it('returns error messages using oracle name from ORACLE_INFO', () => {
-    expect(getMysticalErrorMessage('gpt-4.1', 'error')).toBe("Couldn't reach Iris.")
-    expect(getMysticalErrorMessage('claude-sonnet-4.5', 'error')).toBe("Couldn't reach Luna.")
-    expect(getMysticalErrorMessage('gemini-3.0-pro', 'error')).toBe("Couldn't reach Echo.")
-    expect(getMysticalErrorMessage('deepseek-reasoner', 'error')).toBe("Couldn't reach Shade.")
-    expect(getMysticalErrorMessage('grok-4-1-fast-reasoning', 'error')).toBe("Couldn't reach Nova.")
+    expect(getOracleErrorMessage('gpt-4.1', 'error')).toBe("Couldn't reach Iris.")
+    expect(getOracleErrorMessage('claude-sonnet-4.5', 'error')).toBe("Couldn't reach Luna.")
+    expect(getOracleErrorMessage('gemini-3.0-pro', 'error')).toBe("Couldn't reach Echo.")
+    expect(getOracleErrorMessage('deepseek-reasoner', 'error')).toBe("Couldn't reach Shade.")
+    expect(getOracleErrorMessage('grok-4-1-fast-reasoning', 'error')).toBe("Couldn't reach Nova.")
   })
 })
 

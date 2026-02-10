@@ -4,6 +4,8 @@
 
 **NEVER COMMIT WITHOUT EXPLICIT USER APPROVAL.** Always ask before committing any changes.
 
+**ASK FIRST RATHER THAN FIX LATER.** When in doubt about intent, approach, or scope, ask a clarifying question rather than making assumptions. It is always easier to ask than to undo.
+
 ---
 
 ## Project Overview
@@ -41,6 +43,8 @@ npm test             # Unit + smoke tests (vitest)
 | Questions     | `src/lib/questions.ts`         |
 | Message types | `src/lib/message-types.ts`     |
 | Types         | `src/lib/types.ts`             |
+| Constants     | `src/lib/constants.ts`         |
+| Errors        | `src/lib/errors.ts`            |
 | Store         | `src/store.ts`                 |
 | Components    | `src/components/`              |
 
@@ -106,7 +110,7 @@ Use the short archetypal names as IDs:
 
 - 30s timeout per AI model
 - Minimum 3 successful responses required
-- Mystical error copy (not technical)
+- In-character error copy (not technical)
 - Retry functionality preserves intention
 - Retry button with contextual tips on how to reframe intention
 
@@ -135,7 +139,8 @@ Run with `npm test`. Tests live in `src/**/__tests__/*.test.ts`.
 | Test File               | What it covers                                                      |
 | ----------------------- | ------------------------------------------------------------------- |
 | `prompts.test.ts`       | Channeling, synthesis, and analysis prompt builders                 |
-| `qa.test.ts`            | cleanupResponse, getMysticalErrorMessage, calculateCoherenceScore   |
+| `errors.test.ts`        | classifyError, ERROR_MESSAGES, ERROR_TIPS                           |
+| `qa.test.ts`            | cleanupResponse, getOracleErrorMessage, calculateCoherenceScore     |
 | `questions.test.ts`     | selectQuestions, generateCoordinateString                           |
 | `message-types.test.ts` | getMessageTypeConfig for all 6 types, field counts, required fields |
 | `route.test.ts`         | API route input validation (smoke tests, no AI calls)               |
