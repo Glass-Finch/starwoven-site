@@ -137,3 +137,8 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+.vercel
+.env*.local
+
+# Test script output (contains personal test data)
+test-output/
