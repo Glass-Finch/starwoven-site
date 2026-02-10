@@ -12,7 +12,7 @@ import { WovenMessage } from '@/components/WovenMessage'
 import { useJourneyStore } from '@/store'
 import { selectQuestions, generateCoordinateString } from '@/lib/questions'
 import { getMessageTypeConfig } from '@/lib/message-types'
-import { saveReading } from '@/lib/supabase'
+import { classifyError, ERROR_MESSAGES, ERROR_TIPS } from '@/lib/errors'
 import type { MessageType, Answer, CoordinateSet, ChannelResponse } from '@/lib/types'
 
 export default function Home(): React.ReactElement {
@@ -70,7 +70,7 @@ export default function Home(): React.ReactElement {
 
   // Perform channeling with real API
   const performChanneling = useCallback(async () => {
-    if (!messageType || !coordinates || !sessionId) return
+    if (!messageType || !coordinates || !intention || !sessionId) return
 
     try {
       const response = await fetch('/api/channel', {
@@ -86,6 +86,7 @@ export default function Home(): React.ReactElement {
             type: messageType,
             data: personalization,
           },
+          sessionId,
         }),
       })
 
@@ -102,22 +103,6 @@ export default function Home(): React.ReactElement {
 
       // Set synthesis
       setSynthesis(data.synthesis)
-
-      // Save reading to database (fire and forget)
-      saveReading({
-        session_id: sessionId,
-        message_type: messageType,
-        intention,
-        coordinates,
-        synthesis: data.synthesis,
-        threads: data.threads,
-        metadata: {
-          personalization,
-          synthesis: data.synthesisMetadata,
-          validation: data.validationResults,
-          coherence: data.coherenceResult,
-        },
-      }).catch((err) => console.error('Failed to save reading:', err))
     } catch (err) {
       console.error('Channeling error:', err)
       setError(err instanceof Error ? err.message : 'An error occurred')
@@ -152,6 +137,11 @@ export default function Home(): React.ReactElement {
   }
 
   const messageTypeConfig = messageType ? getMessageTypeConfig(messageType) : undefined
+
+  // Pre-compute error display values
+  const errorKind = error ? classifyError(error) : null
+  const errorMessage = errorKind ? ERROR_MESSAGES[errorKind] : null
+  const errorTip = errorKind ? ERROR_TIPS[errorKind] : null
 
   return (
     <main className="relative min-h-screen flex flex-col items-center justify-center p-6 safe-top safe-bottom">
@@ -200,7 +190,6 @@ export default function Home(): React.ReactElement {
         {error && (
           <div className="w-full max-w-xl mx-auto px-4 text-center">
             <div className="card p-8 mb-4">
-              {/* Mystical error icon */}
               <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
                 <svg
                   viewBox="0 0 24 24"
@@ -218,17 +207,8 @@ export default function Home(): React.ReactElement {
               </div>
 
               <h3 className="font-serif text-xl text-cream mb-3">Something slipped</h3>
-              <p className="text-gray-muted mb-2">
-                {error.includes('timeout') || error.includes('Timeout')
-                  ? 'The connection timed out.'
-                  : error.includes('network') ||
-                      error.includes('Network') ||
-                      error.includes('fetch')
-                    ? "Couldn't reach the oracles. Check your connection."
-                    : error.includes('API') || error.includes('500')
-                      ? "One or more oracles didn't respond."
-                      : 'The transmission was interrupted.'}
-              </p>
+              <p className="text-gray-muted mb-2">{errorMessage}</p>
+              {errorTip && <p className="text-cream-muted text-sm mb-2">{errorTip}</p>}
               <p className="text-gray-muted/60 text-sm mb-8">
                 Your intention and coordinates are preserved.
               </p>

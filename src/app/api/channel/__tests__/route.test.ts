@@ -30,14 +30,14 @@ describe('POST /api/channel — input validation', () => {
     const response = await POST(makeMalformedRequest())
     expect(response.status).toBe(400)
     const data = await response.json()
-    expect(data.status).toBe('partial')
+    expect(data.status).toBe('error')
   })
 
   it('rejects empty body with 400', async () => {
     const response = await POST(makeRequest({}))
     expect(response.status).toBe(400)
     const data = await response.json()
-    expect(data.status).toBe('partial')
+    expect(data.status).toBe('error')
     expect(data.synthesis).toContain('Missing required fields')
   })
 
@@ -46,9 +46,13 @@ describe('POST /api/channel — input validation', () => {
       makeRequest({
         coordinates: { raw: '1234-5678' },
         intention: 'test',
+        sessionId: 'test-session',
       })
     )
     expect(response.status).toBe(400)
+    const data = await response.json()
+    expect(data.status).toBe('error')
+    expect(data.synthesis).toContain('Missing required fields')
   })
 
   it('rejects missing coordinates with 400', async () => {
@@ -56,9 +60,13 @@ describe('POST /api/channel — input validation', () => {
       makeRequest({
         messageType: 'cosmos',
         intention: 'test',
+        sessionId: 'test-session',
       })
     )
     expect(response.status).toBe(400)
+    const data = await response.json()
+    expect(data.status).toBe('error')
+    expect(data.synthesis).toContain('Missing required fields')
   })
 
   it('rejects missing intention with 400', async () => {
@@ -66,9 +74,13 @@ describe('POST /api/channel — input validation', () => {
       makeRequest({
         messageType: 'cosmos',
         coordinates: { raw: '1234-5678' },
+        sessionId: 'test-session',
       })
     )
     expect(response.status).toBe(400)
+    const data = await response.json()
+    expect(data.status).toBe('error')
+    expect(data.synthesis).toContain('Missing required fields')
   })
 
   it('rejects invalid messageType with 400', async () => {
@@ -77,6 +89,7 @@ describe('POST /api/channel — input validation', () => {
         messageType: 'invalid_type',
         coordinates: { raw: '1234-5678' },
         intention: 'test',
+        sessionId: 'test-session',
       })
     )
     expect(response.status).toBe(400)
@@ -90,6 +103,7 @@ describe('POST /api/channel — input validation', () => {
         messageType: 'cosmos',
         coordinates: { raw: '1234-5678' },
         intention: 'x'.repeat(251),
+        sessionId: 'test-session',
       })
     )
     expect(response.status).toBe(400)
@@ -103,6 +117,7 @@ describe('POST /api/channel — input validation', () => {
         messageType: 'cosmos',
         coordinates: {},
         intention: 'test',
+        sessionId: 'test-session',
       })
     )
     expect(response.status).toBe(400)
@@ -116,9 +131,23 @@ describe('POST /api/channel — input validation', () => {
         messageType: 'cosmos',
         coordinates: { raw: 12345 },
         intention: 'test',
+        sessionId: 'test-session',
       })
     )
     expect(response.status).toBe(400)
+  })
+
+  it('rejects missing sessionId with 400', async () => {
+    const response = await POST(
+      makeRequest({
+        messageType: 'cosmos',
+        coordinates: { raw: '1234-5678' },
+        intention: 'test',
+      })
+    )
+    expect(response.status).toBe(400)
+    const data = await response.json()
+    expect(data.synthesis).toContain('Missing required fields')
   })
 
   it('accepts exactly 250 character intention (boundary)', async () => {
@@ -129,6 +158,7 @@ describe('POST /api/channel — input validation', () => {
         messageType: 'cosmos',
         coordinates: { raw: '1234-5678' },
         intention: 'x'.repeat(250),
+        sessionId: 'test-session',
       })
     )
     // Should not be a 400 validation error — it either succeeds or fails at AI layer (500)
