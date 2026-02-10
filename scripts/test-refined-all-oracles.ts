@@ -13,8 +13,8 @@ const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY!
 const XAI_API_KEY = process.env.XAI_API_KEY!
 
 // Test data - use real names from .env or defaults
-const SEEKER_NAME = process.env.TEST_SEEKER_NAME || 'Maki'
-const BELOVED_NAME = process.env.TEST_BELOVED_NAME || 'Frank'
+const SEEKER_NAME = process.env.TEST_SEEKER_NAME || 'Sarah'
+const BELOVED_NAME = process.env.TEST_BELOVED_NAME || 'Max'
 
 // Build prompt using the actual function from prompts.ts
 const coordinates: CoordinateSet = {

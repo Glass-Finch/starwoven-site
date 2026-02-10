@@ -34,22 +34,22 @@ const DEFAULT_INTENTIONS: Record<string, string> = {
 
 const TEST_DATA: Record<string, Record<string, string>> = {
   beloved: {
-    yourName: process.env.TEST_SEEKER_NAME || 'Maki',
-    theirName: process.env.TEST_BELOVED_NAME || 'Frank',
+    yourName: process.env.TEST_SEEKER_NAME || 'Sarah',
+    theirName: process.env.TEST_BELOVED_NAME || 'Max',
   },
   ancestor: {
-    yourName: process.env.TEST_SEEKER_NAME || 'Maki',
+    yourName: process.env.TEST_SEEKER_NAME || 'Sarah',
     theirName: process.env.TEST_ANCESTOR_NAME || 'Fred',
     relationship: process.env.TEST_ANCESTOR_RELATIONSHIP || 'grandfather',
   },
   sage: {
-    yourName: process.env.TEST_SEEKER_NAME || 'Maki',
+    yourName: process.env.TEST_SEEKER_NAME || 'Sarah',
     birthday: process.env.TEST_SEEKER_BIRTHDAY || '1986-09-23',
   },
   cosmos: {},
   crossroads: {},
   calling: {
-    yourName: process.env.TEST_SEEKER_NAME || 'Maki',
+    yourName: process.env.TEST_SEEKER_NAME || 'Sarah',
     birthday: process.env.TEST_SEEKER_BIRTHDAY || '1986-09-23',
   },
 }

@@ -397,7 +397,7 @@ Before any commit affecting user-facing features:
 
 **CRITICAL**: Always test with real people and genuine intentions.
 
-- **Use real names** (first names only): e.g., "Maki", "Frank"
+- **Use real names** (first names only): e.g., "Sarah", "Max"
 - **Never use**: Made-up names, placeholder text, celebrities, or full names
 - **Set your own intention**: The tester must genuinely engage with the question
 - **Why**: AI models detect nonsense inputs and return generic responses. Coherence scoring only works with authentic data.
@@ -406,9 +406,9 @@ Before any commit affecting user-facing features:
 
 | Variable                     | Used By       | Example     |
 | ---------------------------- | ------------- | ----------- |
-| `TEST_SEEKER_NAME`           | All types     | Maki        |
+| `TEST_SEEKER_NAME`           | All types     | Sarah       |
 | `TEST_SEEKER_BIRTHDAY`       | Sage, Calling | 1986-09-23  |
-| `TEST_BELOVED_NAME`          | Beloved       | Frank       |
+| `TEST_BELOVED_NAME`          | Beloved       | Max         |
 | `TEST_ANCESTOR_NAME`         | Ancestor      | Fred        |
 | `TEST_ANCESTOR_RELATIONSHIP` | Ancestor      | grandfather |
 
