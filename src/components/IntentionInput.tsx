@@ -43,7 +43,7 @@ export function IntentionInput({
     <div className="w-full max-w-xl mx-auto px-4">
       <div className="text-center mb-8">
         <h2 className="text-gradient mb-3">Set your intention</h2>
-        <p className="text-gray-muted">{prompt}</p>
+        <p className="text-cream-muted">{prompt}</p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
@@ -59,7 +59,7 @@ export function IntentionInput({
             autoFocus
           />
           <div
-            className={`absolute bottom-3 right-3 text-xs ${charsRemaining < 50 ? 'text-gold' : 'text-gray-muted'}`}
+            className={`absolute bottom-3 right-3 text-xs ${charsRemaining < 50 ? 'text-gold' : 'text-cream-muted'}`}
           >
             {charsRemaining}
           </div>
@@ -74,7 +74,7 @@ export function IntentionInput({
         </button>
       </form>
 
-      <p className="mt-8 text-center text-sm text-gray-muted">
+      <p className="mt-8 text-center text-sm text-cream-muted">
         The more open-ended, the better.
         <br />
         Let the question breathe.

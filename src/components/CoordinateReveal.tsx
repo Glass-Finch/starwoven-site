@@ -30,12 +30,11 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
           <span className="text-sm text-cream">Your coordinates</span>
           <code className="text-xs text-gold bg-gold/10 px-2 py-0.5 rounded">
             {coordinates.raw}
-            {segments.length > 0 && ` (${segments.join('-')})`}
           </code>
         </div>
         <svg
           aria-hidden="true"
-          className={`w-4 h-4 text-gray-muted transition-transform duration-200 ${
+          className={`w-4 h-4 text-cream-muted transition-transform duration-200 ${
             isOpen ? 'rotate-180' : ''
           }`}
           fill="none"
@@ -51,7 +50,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
         <div className="border-t border-cream/10 px-4 py-4 space-y-4">
           {hasQuestions ? (
             <>
-              <p className="text-sm text-gray-muted">
+              <p className="text-sm text-cream-muted">
                 These coordinates were generated from your responses:
               </p>
 
@@ -71,17 +70,24 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
                         )}
                       </div>
                       <p className="text-sm text-cream font-medium">{answer?.answer || '—'}</p>
+                      {(() => {
+                        const optIdx = question.options?.indexOf(answer?.answer ?? '') ?? -1
+                        const meaning = optIdx >= 0 ? question.meanings?.[optIdx] : undefined
+                        return meaning ? (
+                          <p className="text-xs text-cream/40 mt-1">{meaning}</p>
+                        ) : null
+                      })()}
                     </div>
                   )
                 })}
               </div>
 
-              <p className="text-xs text-gray-muted text-center pt-2">
+              <p className="text-xs text-cream-muted text-center pt-2">
                 Your answers shaped these coordinates.
               </p>
             </>
           ) : (
-            <p className="text-sm text-gray-muted text-center">Custom coordinates provided.</p>
+            <p className="text-sm text-cream-muted text-center">Custom coordinates provided.</p>
           )}
         </div>
       )}

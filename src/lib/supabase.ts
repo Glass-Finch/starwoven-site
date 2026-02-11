@@ -5,6 +5,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 import type { MessageType, CoordinateSet, ModelResponse, ReadingMetadata } from './types'
+import type { CostBreakdown } from './cost'
 
 // Types for database records
 export interface ReadingRecord {
@@ -104,6 +105,45 @@ export async function saveReadingServerSide(
   } catch (err) {
     console.error('Error saving reading:', err)
     return null
+  }
+}
+
+/**
+ * Save cost tracking data to dedicated table (server-side, fire and forget)
+ */
+export async function saveCostTracking(
+  breakdown: CostBreakdown,
+  readingId?: string | null
+): Promise<void> {
+  const client = getServerSupabaseClient()
+  if (!client) return
+
+  try {
+    const { error } = await client.from('cost_tracking').insert({
+      reading_id: readingId || null,
+      session_id: breakdown.sessionId,
+      moderation_input_tokens: breakdown.moderation?.inputTokens ?? 0,
+      moderation_output_tokens: breakdown.moderation?.outputTokens ?? 0,
+      moderation_cost_usd: breakdown.moderation?.costUSD ?? 0,
+      channeling_input_tokens: breakdown.channeling.inputTokens,
+      channeling_output_tokens: breakdown.channeling.outputTokens,
+      channeling_cost_usd: breakdown.channeling.costUSD,
+      review_input_tokens: breakdown.review?.inputTokens ?? 0,
+      review_output_tokens: breakdown.review?.outputTokens ?? 0,
+      review_cost_usd: breakdown.review?.costUSD ?? 0,
+      synthesis_input_tokens: breakdown.synthesis?.inputTokens ?? 0,
+      synthesis_output_tokens: breakdown.synthesis?.outputTokens ?? 0,
+      synthesis_cost_usd: breakdown.synthesis?.costUSD ?? 0,
+      total_tokens: breakdown.totalTokens,
+      total_cost_usd: breakdown.estimatedCostUSD,
+      per_model: breakdown.perModel,
+    })
+
+    if (error) {
+      console.error('Error saving cost tracking:', error)
+    }
+  } catch (err) {
+    console.error('Error saving cost tracking:', err)
   }
 }
 

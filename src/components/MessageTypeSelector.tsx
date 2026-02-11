@@ -108,7 +108,7 @@ export function MessageTypeSelector({ onSelect }: MessageTypeSelectorProps): Rea
     <div className="w-full max-w-4xl mx-auto px-4">
       <div className="text-center mb-8 sm:mb-12">
         <h2 className="text-gradient mb-3">Who speaks to you?</h2>
-        <p className="text-gray-muted">Choose the voice that calls</p>
+        <p className="text-cream-muted">Choose the voice that calls</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -124,7 +124,7 @@ export function MessageTypeSelector({ onSelect }: MessageTypeSelectorProps): Rea
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="font-serif text-lg text-cream mb-1">{type.label}</h3>
-                <p className="text-gray-muted text-sm leading-relaxed">{type.description}</p>
+                <p className="text-cream-muted text-sm leading-relaxed">{type.description}</p>
               </div>
             </div>
           </button>

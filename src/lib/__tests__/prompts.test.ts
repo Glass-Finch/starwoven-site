@@ -98,7 +98,7 @@ describe('buildSynthesisPrompt', () => {
   const mockResponses = [
     { model: 'gpt-4.1', content: 'First impression content' },
     { model: 'claude-sonnet-4.5', content: 'Second impression content' },
-    { model: 'gemini-3.0-pro', content: 'Third impression content' },
+    { model: 'gemini-3-pro-preview', content: 'Third impression content' },
   ]
 
   it('includes the intention', () => {
@@ -140,7 +140,7 @@ describe('buildAnalysisPrompt', () => {
   const mockResponses = [
     { model: 'gpt-4.1', content: 'Response one' },
     { model: 'claude-sonnet-4.5', content: 'Response two' },
-    { model: 'gemini-3.0-pro', content: 'Response three' },
+    { model: 'gemini-3-pro-preview', content: 'Response three' },
   ]
 
   it('includes all responses', () => {

@@ -6,11 +6,12 @@ import type { ChannelRequest, ChannelResponse, SynthesisMetadata } from '@/lib/t
 import { callAllChannelingModels, callSynthesisModel, getLongestResponse } from '@/lib/ai'
 import { buildChannelingPrompt, buildSynthesisPrompt } from '@/lib/prompts'
 import { analyzeResponses, MIN_VALID_RESPONSES } from '@/lib/qa'
-import { saveReadingServerSide } from '@/lib/supabase'
+import { saveReadingServerSide, saveCostTracking } from '@/lib/supabase'
 import { messageTypes } from '@/lib/message-types'
 import { MAX_INTENTION_LENGTH } from '@/lib/constants'
 import { ROUTE_ERRORS } from '@/lib/errors'
 import { moderateIntention } from '@/lib/moderation'
+import { logReadingCost } from '@/lib/cost'
 
 const VALID_MESSAGE_TYPES = messageTypes.map((m) => m.id)
 
@@ -133,12 +134,9 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
     // Call all channeling models in parallel
     const responses = await callAllChannelingModels(channelingPrompt)
 
-    // Analyze all responses in a single Sonnet call (validation + editing + coherence)
-    const { validated, processed, validationResults, coherenceResult } = await analyzeResponses(
-      responses,
-      messageType,
-      intention
-    )
+    // Review all responses in a single Sonnet call (validation + editing + coherence)
+    const { validated, processed, validationResults, coherenceResult, reviewTokenUsage } =
+      await analyzeResponses(responses, messageType, intention)
 
     // Get valid successful responses for synthesis
     const validResponses = validated.filter((r) => r.status === 'success' && r.content)
@@ -168,7 +166,15 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
       // 1-2 valid responses: return longest valid response (no synthesis)
       const fallbackSynthesis = getLongestResponse(validResponses)
 
-      // Save partial reading (fire and forget)
+      // Log cost for partial reading
+      const { cost: partialCost, breakdown: partialBreakdown } = logReadingCost({
+        sessionId,
+        moderationTokens: moderationResult.tokenUsage,
+        channelingTokens: responses.map((r) => ({ model: r.model, tokenUsage: r.tokenUsage })),
+        reviewTokens: reviewTokenUsage,
+      })
+
+      // Save partial reading, then cost tracking with reading ID
       saveReadingServerSide({
         session_id: sessionId,
         message_type: messageType,
@@ -180,8 +186,11 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
           personalization: personalization?.data as Record<string, string> | undefined,
           validation: validationResults,
           coherence: coherenceResult,
+          cost: partialCost,
         },
-      }).catch((err) => console.error('Failed to save reading:', err))
+      })
+        .then((result) => saveCostTracking(partialBreakdown, result?.id))
+        .catch((err) => console.error('Failed to save reading/cost:', err))
 
       return NextResponse.json({
         status: 'partial',
@@ -207,18 +216,29 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
     let synthesisMetadata: SynthesisMetadata | undefined
 
     try {
-      synthesis = await callSynthesisModel(synthesisPrompt)
+      const synthesisResult = await callSynthesisModel(synthesisPrompt)
+      synthesis = synthesisResult.content
       synthesisMetadata = {
         prompt: synthesisPrompt,
         threadsUsed: validResponses.map((r) => r.model),
         latencyMs: Date.now() - synthesisStart,
+        tokenUsage: synthesisResult.tokenUsage,
       }
     } catch {
       // Fallback to longest valid response if synthesis fails
       synthesis = getLongestResponse(validResponses)
     }
 
-    // Save reading to database (fire and forget — don't block the response)
+    // Log cost for this reading
+    const { cost: readingCost, breakdown: costBreakdown } = logReadingCost({
+      sessionId,
+      moderationTokens: moderationResult.tokenUsage,
+      channelingTokens: responses.map((r) => ({ model: r.model, tokenUsage: r.tokenUsage })),
+      reviewTokens: reviewTokenUsage,
+      synthesisTokens: synthesisMetadata?.tokenUsage,
+    })
+
+    // Save reading, then cost tracking with reading ID
     saveReadingServerSide({
       session_id: sessionId,
       message_type: messageType,
@@ -231,8 +251,11 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
         synthesis: synthesisMetadata,
         validation: validationResults,
         coherence: coherenceResult,
+        cost: readingCost,
       },
-    }).catch((err) => console.error('Failed to save reading:', err))
+    })
+      .then((result) => saveCostTracking(costBreakdown, result?.id))
+      .catch((err) => console.error('Failed to save reading/cost:', err))
 
     return NextResponse.json({
       status: failedModels.length === 0 ? 'complete' : 'partial',

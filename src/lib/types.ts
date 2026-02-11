@@ -70,6 +70,8 @@ export interface Question {
   text: string
   answerType: 'multiple_choice' | 'short_text'
   options?: string[]
+  values?: number[] // thematic 2-digit numbers per option (01-99), same order as options
+  meanings?: string[] // user-facing factoid per option, same order as options/values
 }
 
 export interface Answer {
@@ -85,11 +87,18 @@ export interface CoordinateSet {
   answers: Answer[]
 }
 
+// Token usage tracking
+export interface TokenUsage {
+  inputTokens: number
+  outputTokens: number
+  totalTokens: number
+}
+
 // AI Model responses
 export type AIModel =
   | 'gpt-4.1'
   | 'claude-sonnet-4.5'
-  | 'gemini-3.0-pro'
+  | 'gemini-3-pro-preview'
   | 'deepseek-reasoner'
   | 'grok-4-1-fast-reasoning'
 
@@ -101,6 +110,7 @@ export interface ModelResponse {
   status: 'success' | 'error' | 'timeout'
   error?: string
   latencyMs?: number
+  tokenUsage?: TokenUsage
 }
 
 // Validation result from QA layer
@@ -146,6 +156,13 @@ export interface SynthesisMetadata {
   prompt: string
   threadsUsed: AIModel[]
   latencyMs: number
+  tokenUsage?: TokenUsage
+}
+
+// Cost tracking for a single reading
+export interface ReadingCost {
+  totalTokens: number
+  estimatedCostUSD: number
 }
 
 // Reading metadata structure
@@ -154,6 +171,7 @@ export interface ReadingMetadata {
   synthesis?: SynthesisMetadata
   validation?: ValidationResult[]
   coherence?: CoherenceResult
+  cost?: ReadingCost
 }
 
 // Reading (saved to Supabase)
@@ -215,6 +233,7 @@ export interface ModerationResult {
   message?: string
   crisisResources?: string
   latencyMs: number
+  tokenUsage?: TokenUsage
 }
 
 export interface ChannelResponse {

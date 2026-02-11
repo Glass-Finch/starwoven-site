@@ -18,5 +18,5 @@ export const MODERATION_MAX_TOKENS = 256
 
 // Disclaimers
 export const DISCLAIMER_FULL =
-  'Starwoven is for entertainment and personal reflection. It is not a substitute for professional advice \u2014 medical, legal, financial, or psychological.'
-export const DISCLAIMER_BRIEF = 'For entertainment and personal reflection only.'
+  'Starwoven uses AI to generate responses for entertainment and personal reflection. It is not a substitute for professional advice \u2014 medical, legal, financial, or psychological.'
+export const DISCLAIMER_BRIEF = 'AI-generated responses for entertainment and reflection only.'

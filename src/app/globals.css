@@ -283,11 +283,6 @@
     background-clip: text;
   }
 
-  /* Muted text */
-  .text-gray-muted {
-    color: var(--cream-muted);
-  }
-
   /* Glow utilities */
   .glow {
     box-shadow: 0 0 60px var(--glow-gold);

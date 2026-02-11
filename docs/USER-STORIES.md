@@ -685,6 +685,47 @@ Avoid: "The cosmic threads have frayed" or similar overwrought language.
 
 ---
 
+## About Pages
+
+### About Summary (`/about`)
+
+**As a visitor**, I want a concise overview of how Starwoven works, so I can understand the experience without getting lost in details.
+
+**Acceptance Criteria:**
+
+- Explains the 5-oracle process and synthesis
+- Lists the oracles with their archetypes and colors
+- Introduces the conceptual basis (Gateway Process, remote viewing) in 3-4 paragraphs
+- Links to the deep-dive page for users who want more
+- Includes data privacy notice and AI disclosure
+- Clean, scannable layout
+
+---
+
+### Gateway Deep-Dive (`/research`)
+
+**As a curious user**, I want to read about the research behind Starwoven — the 1983 CIA Gateway Process report, remote viewing, and the modern science that bridges these concepts — so I can understand the conceptual foundation.
+
+**Acceptance Criteria:**
+
+- Introduces the Gateway Process report: what it is, who wrote it, when, and why
+- Presents the key concepts from the report that parallel Starwoven's architecture
+- Bridges 1983 concepts with 40 years of modern science and technology (physics, neuroscience, consciousness research, ensemble methods in ML, etc.)
+- Remote viewing is a prominent concept throughout
+- All scientific claims are rigorously cited (researchers, papers, years, institutions)
+- Semi-explicit framing: presents structural parallels between the report and Starwoven, lets the reader draw their own conclusions
+- AI is discussed as the medium, not the focus — but theorizing about how/why convergence across independent AI systems produces interesting effects is fair game
+- Audience is curious, interested users — not developers
+- Follows all voice/tone guidelines (no emojis, no exclamation points, no New Age cliches)
+
+---
+
+### Document Transcription
+
+**As a reader**, I want to read the full declassified Gateway Process document inline with exhibit images, and link to the original PDF.
+
+---
+
 ## Voice & Tone
 
 ### Copy Principles

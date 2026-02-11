@@ -36,8 +36,8 @@ export default function Error({ error, reset }: ErrorProps): React.ReactElement 
           <h3 className="font-serif text-xl text-cream mb-3">
             Something slipped between the stars
           </h3>
-          <p className="text-gray-muted mb-2">The connection was interrupted.</p>
-          <p className="text-gray-muted/60 text-sm mb-8">Your intention still holds.</p>
+          <p className="text-cream-muted mb-2">The connection was interrupted.</p>
+          <p className="text-cream-muted/60 text-sm mb-8">Your intention still holds.</p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button onClick={reset} className="btn-primary">

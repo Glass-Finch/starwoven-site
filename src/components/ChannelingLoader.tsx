@@ -114,7 +114,7 @@ export function ChannelingLoader({
             <div
               key={model}
               className={`text-xs px-3 py-1 rounded-full transition-all duration-300 ${
-                hasResponded ? 'text-cream bg-cream/10' : 'text-gray-muted bg-cream/5'
+                hasResponded ? 'text-cream bg-cream/10' : 'text-cream-muted bg-cream/5'
               }`}
             >
               {ORACLE_INFO[model].name}
@@ -128,12 +128,12 @@ export function ChannelingLoader({
 
       {/* Loading message */}
       <div className="text-center">
-        <p className="text-gray-muted animate-breathe">{isComplete ? '' : LOADING_MESSAGE}</p>
+        <p className="text-cream-muted animate-breathe">{isComplete ? '' : LOADING_MESSAGE}</p>
       </div>
 
       {/* Response count */}
       <div className="mt-4 text-center">
-        <span className="text-sm text-gray-muted">
+        <span className="text-sm text-cream-muted">
           {respondedModels.size} of {AI_MODELS.length} channels open
         </span>
       </div>

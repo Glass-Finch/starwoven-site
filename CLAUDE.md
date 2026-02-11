@@ -6,6 +6,8 @@
 
 **ASK FIRST RATHER THAN FIX LATER.** When in doubt about intent, approach, or scope, ask a clarifying question rather than making assumptions. It is always easier to ask than to undo.
 
+**NO TECH DEBT.** If a feature needs persistence, logging, error handling, or integration, implement it now. Do not defer work to "v2," create placeholder TODOs, or spin up new GitHub issues to pass work down the line. If a piece of infrastructure is required for the feature to be complete, it is part of the feature. Build it now.
+
 ---
 
 ## Project Overview
@@ -17,8 +19,10 @@ Starwoven is a consciousness exploration app that sends intentions through 5 AI 
 | Document               | What it covers                                                                                                                                |
 | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | `README.md`            | Project overview, tech stack, design system (colors, typography, animations), env vars, project structure, API architecture, domains, roadmap |
-| `docs/PROMPTS.md`      | Full prompt templates (channeling, synthesis, analysis), personalization context per type, coherence rubric, analysis layer docs              |
+| `docs/PROMPTS.md`      | Full prompt templates (channeling, synthesis, review), personalization context per type, coherence rubric, review layer docs                  |
 | `docs/USER-STORIES.md` | Detailed user stories per message type, voice/tone guide with register examples, QA layer specs                                               |
+| `docs/COMPLIANCE.md`   | AI provider terms audit, per-provider compliance status, data training risks, disclosure requirements                                         |
+| `docs/COSTS.md`        | Per-reading cost estimates, provider pricing table, token budgets, cost-at-scale projections                                                  |
 
 ---
 
@@ -36,6 +40,8 @@ npm test             # Unit + smoke tests (vitest)
 | What          | Where                          |
 | ------------- | ------------------------------ |
 | Main page     | `src/app/page.tsx`             |
+| About page    | `src/app/about/page.tsx`       |
+| Research page | `src/app/research/page.tsx`    |
 | API route     | `src/app/api/channel/route.ts` |
 | AI providers  | `src/lib/ai.ts`                |
 | Prompts       | `src/lib/prompts.ts`           |
@@ -46,6 +52,7 @@ npm test             # Unit + smoke tests (vitest)
 | Types         | `src/lib/types.ts`             |
 | Constants     | `src/lib/constants.ts`         |
 | Errors        | `src/lib/errors.ts`            |
+| Cost tracking | `src/lib/cost.ts`              |
 | Store         | `src/store.ts`                 |
 | Components    | `src/components/`              |
 
@@ -98,6 +105,41 @@ Use the short archetypal names as IDs:
 - Label: "The Beloved" (used in UI)
 - Description: "Ask about a romantic connection" (card subtitle)
 
+## Design System
+
+**Aesthetic**: Underglow-inspired cosmic minimalism. Deep void backgrounds, golden accents, premium feel.
+
+### Colors
+
+```css
+--void: #030308; /* Deepest background */
+--cosmic-black: #070711; /* Primary background */
+--cosmic-deep: #0c0c1a; /* Card backgrounds */
+--cream: #e8e4dc; /* Primary text */
+--cream-soft: #d4d0c8; /* Secondary text */
+--cream-muted: #9a9488; /* Tertiary text */
+--gold: #c8a84e; /* Accent */
+--gold-bright: #ddc06a; /* Hover states */
+```
+
+### Typography
+
+- **Headlines**: Playfair Display (elegant serif, 400 weight)
+- **Body**: Inter (clean sans-serif)
+
+### Visual Effects
+
+- **Underglow**: Radial golden glow beneath interactive elements
+- **Card hover**: Subtle lift with border glow
+- **Button glow**: Golden underglow on primary actions
+
+### Animations
+
+- `float`: 8s gentle vertical drift
+- `breathe`: 6s opacity/scale pulse
+- `twinkle`: 3s star-like opacity variance
+- `pulse-glow`: 4s gold shadow breathing
+
 ## UI/UX Standards
 
 - **iOS-like clean design** - Minimal, elegant, native-feeling
@@ -124,12 +166,33 @@ Use the short archetypal names as IDs:
 
 ## Development Workflow
 
+### Minimize API Costs During Development
+
+Each full reading costs ~$0.24 in API calls. Avoid unnecessary full runs:
+
+- **Coordinate changes**: Verify with unit tests (`npm test`), not full readings. Coordinates are pure functions.
+- **UI changes**: Use the browser dev server — no API calls needed until the channeling step.
+- **Prompt changes**: Use the integration test script (`npx tsx scripts/integration-test.ts`) for targeted provider testing.
+- **Only run full readings** when testing end-to-end flow, API integration, or synthesis quality.
+
+### Run Tests After the Work Is Done
+
+Do not run `lint`, `tsc`, `test`, or `build` after every small edit. Run the full check suite **once, when the task is complete**. This is especially important for integration tests that cost real money. Intermediate checks during iterative text/copy/UI changes are wasteful.
+
 ### Before Committing
 
 1. **Manual Testing Required**: Test all changed functionality in the browser
 2. **Code Review**: Show changes to user for review before committing
 3. **Automated Checks**: Run `npm run lint && npx tsc --noEmit && npm test && npm run build`
 4. **Pre-commit hooks** run lint-staged + tsc --noEmit automatically on commit
+
+### GitHub Issues
+
+Do not create new issues for work that belongs in an existing issue. Edit the existing issue or reopen a closed one. Especially if the work hasn't been committed yet, it's all the same batch — fold it into the current issue. Only create a new issue when the work is genuinely separate and unrelated.
+
+### One-Time Scripts
+
+Put throwaway scripts in `scripts/scratch/` — this directory is gitignored. The committed `scripts/` directory is for reusable tooling only.
 
 ### Commit Process
 
@@ -144,16 +207,17 @@ Use the short archetypal names as IDs:
 
 Run with `npm test`. Tests live in `src/**/__tests__/*.test.ts`.
 
-| Test File                       | What it covers                                                      |
-| ------------------------------- | ------------------------------------------------------------------- |
-| `prompts.test.ts`               | Channeling, synthesis, and analysis prompt builders                 |
-| `errors.test.ts`                | classifyError logic (rate_limit, timeout, network, server, unknown) |
-| `moderation.test.ts`            | buildModerationPrompt structure, fail-open behavior                 |
-| `qa.test.ts`                    | cleanupResponse regex transforms, calculateCoherenceScore weights   |
-| `questions.test.ts`             | selectQuestions, generateCoordinateString, generateAnswerSegments   |
-| `message-types.test.ts`         | getMessageTypeConfig lookup, invalid type handling, label pattern   |
-| `route.test.ts`                 | API route input validation (smoke tests, no AI calls)               |
-| `customCoordinateInput.test.ts` | stripToDigits, formatCoordinate pure functions                      |
+| Test File                       | What it covers                                                        |
+| ------------------------------- | --------------------------------------------------------------------- |
+| `prompts.test.ts`               | Channeling, synthesis, and analysis prompt builders                   |
+| `errors.test.ts`                | classifyError logic (rate_limit, timeout, network, server, unknown)   |
+| `moderation.test.ts`            | buildModerationPrompt structure, fail-open behavior                   |
+| `qa.test.ts`                    | cleanupResponse regex transforms, calculateCoherenceScore weights     |
+| `questions.test.ts`             | selectQuestions, generateCoordinateString, generateAnswerSegments     |
+| `message-types.test.ts`         | getMessageTypeConfig lookup, invalid type handling, label pattern     |
+| `route.test.ts`                 | API route input validation (smoke tests, no AI calls)                 |
+| `customCoordinateInput.test.ts` | stripToDigits, formatCoordinate pure functions                        |
+| `cost.test.ts`                  | logReadingCost aggregation, rounding, per-model breakdown, edge cases |
 
 ### Integration Tests
 
@@ -244,10 +308,22 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on push to main/dev and PRs:
 | -------------- | --------- | ----------------------- | ---------------------- |
 | **Iris**       | OpenAI    | gpt-4.1                 | The Oracle             |
 | **Luna**       | Anthropic | claude-sonnet-4.5       | The Muse               |
-| **Echo**       | Google    | gemini-3.0-pro          | The Mirror             |
+| **Echo**       | Google    | gemini-3-pro-preview    | The Mirror             |
 | **Shade**      | DeepSeek  | deepseek-reasoner       | The Deep               |
 | **Nova**       | xAI       | grok-4-1-fast-reasoning | The Wild               |
 | **Starweaver** | Anthropic | claude-opus-4.6         | The Weaver (synthesis) |
+
+### Latest Model Versions by Provider
+
+When choosing models for new features or scripts, use the latest available versions:
+
+| Provider  | Latest Model ID           | Notes                                                                                                    |
+| --------- | ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| OpenAI    | `gpt-4.1`                 | Use for general tasks                                                                                    |
+| Anthropic | `claude-opus-4.6`         | Most capable; use `claude-sonnet-4.5` for cost-sensitive tasks, `claude-haiku-4.5` for lightweight tasks |
+| Google    | `gemini-3-pro-preview`    | Used consistently as internal key and API model ID                                                       |
+| DeepSeek  | `deepseek-reasoner`       | Reasoning model                                                                                          |
+| xAI       | `grok-4-1-fast-reasoning` | Fast reasoning variant                                                                                   |
 
 ## Message Types
 
@@ -260,6 +336,22 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on push to main/dev and PRs:
 | **The Crossroads** | Get clarity on a yes or no decision         | (none)                              | What decision do you need help with?         |
 | **The Calling**    | Explore your purpose                        | Your name, Birthday                 | What do you want to know about your purpose? |
 
+## Copy Generation
+
+**All user-facing copy is written by Gemini 3 Pro Preview, not Claude.** Claude builds scaffolding, components, and API calls. Gemini writes the words users read.
+
+**Claude must never direct Gemini's creative output.** The Gemini prompt should include project context (voice guide, what the app does, audience) and the user's specs (their direction, their preferences). Claude must not inject its own editorial opinions, tell Gemini what content to keep, suggest phrasing, or steer the creative direction. Pass through the user's intent, not your own.
+
+Workflow:
+
+1. Prepare context: relevant sections of README, USER-STORIES.md, existing pages, voice guide
+2. Write a Gemini API call script (e.g., `scripts/generate-*-copy.ts`) with the user's direction and project context
+3. Call `gemini-3-pro-preview` via the Google Generative AI API
+4. Apply the Gemini output to the page, fixing only mechanical issues (banned words, formatting)
+5. Delete the temp script after use
+
+The API key is `GOOGLE_API_KEY` in `.env`. Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent`
+
 ## Voice & Tone
 
 See `docs/USER-STORIES.md` for the full voice guide with register examples.
@@ -271,11 +363,18 @@ See `docs/USER-STORIES.md` for the full voice guide with register examples.
 - **No exclamation points**: Calm, centered energy.
 - **Avoid New Age cliches**: If it sounds like a yoga studio, rewrite it.
 
+### Writing Style
+
+- No em dashes everywhere. Use commas, periods, or semicolons instead.
+- No staccato sentence fragments. Write flowing, natural prose.
+- No AI-sounding writing patterns (overuse of "Furthermore," "Moreover," "It's worth noting," "Importantly").
+- Copy should read like a human wrote it, not like it was generated.
+
 ### Words to Avoid
 
 - Magic, magical, mystical, spiritual (too on-the-nose)
 - Weave, woven (sounds like hair products)
-- AI, model, algorithm, minds (breaks immersion)
+- AI, model, algorithm, minds (breaks immersion, except in "how it works" context)
 - Journey, path, threshold (overused)
 - Vibration, energy, frequency (New Age cliche)
 - Results, output, response (too transactional)
@@ -289,28 +388,50 @@ See `docs/USER-STORIES.md` for the full voice guide with register examples.
 | ---------- | ---------- | --------------- | -------------------------------- |
 | Moderation | 1          | Claude Haiku    | Screen intention for safety      |
 | Channeling | 5 parallel | Various oracles | Get impressions                  |
-| Analysis   | 1          | Claude Sonnet   | Validation + editing + coherence |
+| Review     | 1          | Claude Sonnet   | Validation + editing + coherence |
 | Synthesis  | 1          | Claude Opus     | Synthesize final message         |
 
-**Total: 8 API calls per successful reading** (1 moderation + 5 channeling + 1 analysis + 1 synthesis)
+**Total: 8 API calls per successful reading** (1 moderation + 5 channeling + 1 review + 1 synthesis)
 
 Moderation runs before channeling. If it rejects, the 7 downstream calls are skipped (cost savings). Moderation fails open — if unavailable, requests proceed.
 
-The analysis step is a single Sonnet call that validates each response (refusal/off-topic detection), edits valid responses (removes markdown, disclaimers, AI self-references), and scores coherence across all responses. Falls back to regex cleanup if the Sonnet call fails.
+The review step is a single Sonnet call that validates each response (refusal/off-topic detection), edits valid responses (removes markdown, disclaimers, AI self-references), and scores coherence across all responses. Falls back to regex cleanup if the Sonnet call fails.
 
-### Cost Logging (v1)
+### Cost Persistence
 
-Token logging not yet implemented. Currently logging coherence scores to console. Future versions will add:
+Token usage is captured from all providers and logged as structured JSON via `console.info` with a `[cost]` prefix. Cost data is persisted to:
 
-- v1 (GH#40): Token usage logging per API call
-- v2: Backend dashboard with admin endpoint
-- v3: User-visible credits for monetization
+1. **Reading metadata** — `cost` field in the readings table `metadata` JSONB column
+2. **Dedicated `cost_tracking` table** — per-stage token counts, per-model breakdown, total cost (see `supabase/migrations/003_cost_tracking.sql`)
+
+Both writes are fire-and-forget from the API route. See `docs/COSTS.md` for pricing and projections.
 
 ## Infrastructure
 
 - **Supabase**: Project ID `czczdlogtjickwarrjkq`
 - **Vercel**: `starwoven-site`
 - **Domains**: See README.md for full list
+
+### Supabase Migrations
+
+Migration files live in `supabase/migrations/`. To run migrations against the remote database:
+
+```bash
+# Link project (one-time, or after fresh clone)
+supabase link --project-ref czczdlogtjickwarrjkq
+
+# Check migration status
+supabase migration list
+
+# Push pending migrations to remote
+supabase db push
+
+# If older migrations were applied manually (via SQL Editor) and aren't tracked,
+# mark them as applied before pushing new ones:
+supabase migration repair --status applied 001 002 003
+```
+
+Requires `SUPABASE_ACCESS_TOKEN` in `.env` (for Management API auth) and the Supabase CLI (`brew install supabase`).
 
 ## Manual Testing Procedures
 

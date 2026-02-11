@@ -6,7 +6,7 @@
  */
 
 import type { ModerationCategory, ModerationResult } from './types'
-import { ANTHROPIC_API_VERSION } from './ai'
+import { ANTHROPIC_API_VERSION, extractAnthropicTokenUsage } from './ai'
 import { MODERATION_TIMEOUT_MS, MODERATION_MAX_TOKENS } from './constants'
 
 // Haiku for moderation: fast (~200ms) and cheap, sufficient for content screening
@@ -111,16 +111,19 @@ export async function moderateIntention(
     const text: string = data.content?.[0]?.text || ''
     const jsonMatch = text.match(/\{[\s\S]*\}/)
 
+    // Extract token usage from Anthropic response
+    const tokenUsage = extractAnthropicTokenUsage(data)
+
     if (!jsonMatch) {
       // Fail open on parse errors
-      return { allowed: true, latencyMs: Date.now() - startTime }
+      return { allowed: true, latencyMs: Date.now() - startTime, tokenUsage }
     }
 
     const result = JSON.parse(jsonMatch[0])
 
     // Validate JSON shape — fail open if model returned unexpected structure
     if (typeof result.allowed !== 'boolean') {
-      return { allowed: true, latencyMs: Date.now() - startTime }
+      return { allowed: true, latencyMs: Date.now() - startTime, tokenUsage }
     }
 
     const validCategories: ModerationCategory[] = [
@@ -143,6 +146,7 @@ export async function moderateIntention(
         category: 'self_harm',
         crisisResources: CRISIS_RESOURCES,
         latencyMs,
+        tokenUsage,
       }
     }
 
@@ -154,10 +158,11 @@ export async function moderateIntention(
           REJECTION_MESSAGES[category as keyof typeof REJECTION_MESSAGES] ??
           'This intention could not be processed.',
         latencyMs,
+        tokenUsage,
       }
     }
 
-    return { allowed: true, latencyMs }
+    return { allowed: true, latencyMs, tokenUsage }
   } catch (error) {
     // Fail open on any error (timeout, network, parse)
     const isTimeout = error instanceof Error && error.name === 'AbortError'
