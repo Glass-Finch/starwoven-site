@@ -5,6 +5,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
 import type { MessageType, CoordinateSet, ModelResponse, ReadingMetadata } from './types'
+import type { CostBreakdown } from './cost'
 
 // Types for database records
 export interface ReadingRecord {
@@ -108,54 +109,90 @@ export async function saveReadingServerSide(
 }
 
 /**
- * Get readings for a session (for future reading history feature)
+ * Save cost tracking data to dedicated table (server-side, fire and forget)
  */
-export async function getSessionReadings(sessionId: string, limit = 10): Promise<ReadingRecord[]> {
+export async function saveCostTracking(
+  breakdown: CostBreakdown,
+  readingId?: string | null
+): Promise<void> {
+  const client = getServerSupabaseClient()
+  if (!client) return
+
+  try {
+    const { error } = await client.from('cost_tracking').insert({
+      reading_id: readingId || null,
+      session_id: breakdown.sessionId,
+      moderation_input_tokens: breakdown.moderation?.inputTokens ?? 0,
+      moderation_output_tokens: breakdown.moderation?.outputTokens ?? 0,
+      moderation_cost_usd: breakdown.moderation?.costUSD ?? 0,
+      channeling_input_tokens: breakdown.channeling.inputTokens,
+      channeling_output_tokens: breakdown.channeling.outputTokens,
+      channeling_cost_usd: breakdown.channeling.costUSD,
+      review_input_tokens: breakdown.review?.inputTokens ?? 0,
+      review_output_tokens: breakdown.review?.outputTokens ?? 0,
+      review_cost_usd: breakdown.review?.costUSD ?? 0,
+      synthesis_input_tokens: breakdown.synthesis?.inputTokens ?? 0,
+      synthesis_output_tokens: breakdown.synthesis?.outputTokens ?? 0,
+      synthesis_cost_usd: breakdown.synthesis?.costUSD ?? 0,
+      total_tokens: breakdown.totalTokens,
+      total_cost_usd: breakdown.estimatedCostUSD,
+      per_model: breakdown.perModel,
+    })
+
+    if (error) {
+      console.error('Error saving cost tracking:', error)
+    }
+  } catch (err) {
+    console.error('Error saving cost tracking:', err)
+  }
+}
+
+// Coordinate mappings types and cache
+export interface CoordinateMapping {
+  questionId: string
+  values: number[]
+  meanings: string[]
+  source: string
+}
+
+let mappingsCache: Map<string, CoordinateMapping> | null = null
+
+/**
+ * Fetch all coordinate mappings from Supabase (client-side, cached in memory).
+ * Returns a Map keyed by question_id. Returns empty map if Supabase is unavailable.
+ */
+export async function fetchCoordinateMappings(): Promise<Map<string, CoordinateMapping>> {
+  if (mappingsCache) return mappingsCache
+
   const client = getSupabaseClient()
   if (!client) {
-    return []
+    return new Map()
   }
 
   try {
     const { data, error } = await client
-      .from('readings')
-      .select('*')
-      .eq('session_id', sessionId)
-      .order('created_at', { ascending: false })
-      .limit(limit)
+      .from('coordinate_mappings')
+      .select('question_id, option_values, option_meanings, source')
 
     if (error) {
-      console.error('Error fetching readings:', error)
-      return []
+      console.error('Error fetching coordinate mappings:', error)
+      return new Map()
     }
 
-    return data as ReadingRecord[]
-  } catch (err) {
-    console.error('Error fetching readings:', err)
-    return []
-  }
-}
-
-/**
- * Get a single reading by ID
- */
-export async function getReading(id: string): Promise<ReadingRecord | null> {
-  const client = getSupabaseClient()
-  if (!client) {
-    return null
-  }
-
-  try {
-    const { data, error } = await client.from('readings').select('*').eq('id', id).single()
-
-    if (error) {
-      console.error('Error fetching reading:', error)
-      return null
+    const map = new Map<string, CoordinateMapping>()
+    for (const row of data) {
+      map.set(row.question_id, {
+        questionId: row.question_id,
+        values: row.option_values as number[],
+        meanings: row.option_meanings as string[],
+        source: row.source as string,
+      })
     }
 
-    return data as ReadingRecord
+    mappingsCache = map
+    return map
   } catch (err) {
-    console.error('Error fetching reading:', err)
-    return null
+    console.error('Error fetching coordinate mappings:', err)
+    return new Map()
   }
 }

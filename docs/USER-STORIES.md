@@ -269,14 +269,22 @@ No additional personalization fields — the question itself is the focus.
 
 **Coordinate Numbers:**
 
-Each answer maps to a 2-digit number (10-99). The 5 answers produce a coordinate like `73-28-41-56-89`. The numbers should feel thematic to their question category:
+Each answer maps to a 2-digit number (10-99). The 5 answers produce a coordinate like `73-28-41-56-89`. The coordinate system is inspired by remote viewing methodology — coordinates anchor the AI oracles' perception.
 
-- Element answers (Fire/Water/Earth/Air) → numbers evoking the element's nature
-- Season answers → numbers with seasonal feel
-- Emotional answers → intensity mapped to magnitude
-- Symbolic answers → archetypal number associations
+Starwoven bridges science, technology, and spirituality. Numbers draw from multiple meaning systems, with each number citing its source:
 
-The mapping design is tracked in GH#76. Rationale for each number choice should be documented.
+- Sacred geometry (Fibonacci, golden ratio, Platonic solids)
+- Periodic table (atomic numbers of symbolically relevant elements)
+- Scientific constants (truncated/derived from physics and math)
+- Color theory (wavelength ranges, color temperature)
+- Astronomy (orbital periods, celestial measurements)
+- Music theory (frequency ratios, harmonic series)
+- Numerology and archetypal number traditions
+- Tarot, I Ching, and other divination systems
+
+Different question categories draw from different systems. An element question might use periodic table atomic numbers. A color question might use wavelength values. Users can see what their coordinate numbers mean in CoordinateReveal.
+
+The mapping design is tracked in GH#76. Per-number rationale with source system citations is documented in `docs/COORDINATE-MAPPINGS.md`.
 
 ---
 
@@ -682,6 +690,47 @@ ELSE → Synthesis with valid responses
 - "Couldn't reach the oracles. Check your connection." (network)
 
 Avoid: "The cosmic threads have frayed" or similar overwrought language.
+
+---
+
+## About Pages
+
+### About Summary (`/about`)
+
+**As a visitor**, I want a concise overview of how Starwoven works, so I can understand the experience without getting lost in details.
+
+**Acceptance Criteria:**
+
+- Explains the 5-oracle process and synthesis
+- Lists the oracles with their archetypes and colors
+- Introduces the conceptual basis (Gateway Process, remote viewing) in 3-4 paragraphs
+- Links to the deep-dive page for users who want more
+- Includes data privacy notice and AI disclosure
+- Clean, scannable layout
+
+---
+
+### Gateway Deep-Dive (`/research`)
+
+**As a curious user**, I want to read about the research behind Starwoven — the 1983 CIA Gateway Process report, remote viewing, and the modern science that bridges these concepts — so I can understand the conceptual foundation.
+
+**Acceptance Criteria:**
+
+- Introduces the Gateway Process report: what it is, who wrote it, when, and why
+- Presents the key concepts from the report that parallel Starwoven's architecture
+- Bridges 1983 concepts with 40 years of modern science and technology (physics, neuroscience, consciousness research, ensemble methods in ML, etc.)
+- Remote viewing is a prominent concept throughout
+- All scientific claims are rigorously cited (researchers, papers, years, institutions)
+- Semi-explicit framing: presents structural parallels between the report and Starwoven, lets the reader draw their own conclusions
+- AI is discussed as the medium, not the focus — but theorizing about how/why convergence across independent AI systems produces interesting effects is fair game
+- Audience is curious, interested users — not developers
+- Follows all voice/tone guidelines (no emojis, no exclamation points, no New Age cliches)
+
+---
+
+### Document Transcription
+
+**As a reader**, I want to read the full declassified Gateway Process document inline with exhibit images, and link to the original PDF.
 
 ---
 

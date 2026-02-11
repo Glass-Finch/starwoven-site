@@ -61,7 +61,7 @@ export function WovenMessage({
           {!isRevealing && (
             <div className="flex items-center gap-2 mt-6 pt-4 border-t border-cream/5">
               <div className="w-1.5 h-1.5 rounded-full bg-gold" />
-              <span className="text-xs text-gray-muted tracking-wide">Starweaver</span>
+              <span className="text-xs text-cream-muted tracking-wide">Starweaver</span>
             </div>
           )}
         </div>
@@ -80,7 +80,7 @@ export function WovenMessage({
             </button>
           </div>
 
-          <p className="text-gray-muted/60 text-center text-sm mt-6">{DISCLAIMER_BRIEF}</p>
+          <p className="text-cream-muted/60 text-center text-sm mt-6">{DISCLAIMER_BRIEF}</p>
         </div>
       )}
     </div>

@@ -17,7 +17,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
 
   return (
     <div>
-      <p className="text-xs text-gray-muted uppercase tracking-widest px-1 mb-2">
+      <p className="text-xs text-cream-muted uppercase tracking-widest px-1 mb-2">
         Oracle impressions
       </p>
 
@@ -43,12 +43,12 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: oracle.color }} />
                   <span className="text-sm text-cream">
                     {oracle.name}
-                    <span className="text-xs text-gray-muted ml-1">({oracle.shortModel})</span>
+                    <span className="text-xs text-cream-muted ml-1">({oracle.shortModel})</span>
                   </span>
                 </div>
                 <svg
                   aria-hidden="true"
-                  className={`w-3 h-3 text-gray-muted transition-transform duration-200 ${
+                  className={`w-3 h-3 text-cream-muted transition-transform duration-200 ${
                     isExpanded ? 'rotate-180' : ''
                   }`}
                   fill="none"
@@ -71,7 +71,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
                       {thread.content}
                     </p>
                     {thread.latencyMs && (
-                      <p className="mt-2 text-xs text-gray-muted">
+                      <p className="mt-2 text-xs text-cream-muted">
                         {(thread.latencyMs / 1000).toFixed(1)}s
                       </p>
                     )}
@@ -84,7 +84,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
 
         {failedThreads.length > 0 && (
           <div className="px-4 py-3 border-t border-cream/10">
-            <p className="text-xs text-gray-muted">
+            <p className="text-xs text-cream-muted">
               Did not respond:{' '}
               {failedThreads.map((t) => ORACLE_INFO[t.model]?.name ?? t.model).join(', ')}
             </p>

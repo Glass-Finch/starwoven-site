@@ -60,7 +60,7 @@ export function CustomCoordinateInput({
     <div className="w-full max-w-xl mx-auto px-4">
       <div className="text-center mb-8">
         <h2 className="text-gradient mb-3">Enter your coordinates</h2>
-        <p className="text-gray-muted">
+        <p className="text-cream-muted">
           Enter {MIN_DIGITS} to {MAX_DIGITS} digits. Dashes and spaces are allowed.
         </p>
       </div>
@@ -98,7 +98,7 @@ export function CustomCoordinateInput({
       <div className="mt-6 text-center">
         <button
           onClick={onCancel}
-          className="text-sm text-gray-muted hover:text-cream transition-colors"
+          className="text-sm text-cream-muted hover:text-cream transition-colors"
         >
           Answer questions instead
         </button>

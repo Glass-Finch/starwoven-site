@@ -1125,12 +1125,21 @@ export function selectQuestions(messageType: MessageType): Question[] {
 }
 
 /**
- * Generate coordinate string from answers
- * Format: xxxx-xxxx (deterministic hash of all answers)
+ * Generate coordinate string from answers.
+ * Format: xx-xx-xx-xx-xx (one 2-digit thematic segment per answer, joined with dashes).
+ * Falls back to hash-based xxxx-xxxx if questions are not provided.
  */
 export function generateCoordinateString(
-  answers: { questionId: string; answer: string }[]
+  answers: { questionId: string; answer: string }[],
+  questions?: Question[]
 ): string {
+  // If questions provided, build from thematic segments
+  if (questions && questions.length > 0) {
+    const segments = generateAnswerSegments(answers, questions)
+    return segments.join('-')
+  }
+
+  // Fallback: hash-based coordinate (for backwards compatibility)
   let hash = 0
   const answerStr = answers.map((a) => `${a.questionId}:${a.answer}`).join('|')
 
@@ -1148,11 +1157,20 @@ export function generateCoordinateString(
 }
 
 /**
+ * Generate the 2-digit coordinate segment for a single answer.
+ * Uses the question's thematic value if available, otherwise falls back to 1-indexed option position.
+ */
+export function generateSingleSegment(question: Question | undefined, answer: string): string {
+  const optionIndex = question?.options?.indexOf(answer) ?? 0
+  const idx = Math.max(0, optionIndex)
+  const value = question?.values?.[idx] ?? idx + 1
+  return String(value).padStart(2, '0')
+}
+
+/**
  * Generate per-answer coordinate segments for display.
- * Each answer maps to its 1-indexed option number (purely numeric).
- *
- * NOTE: These are placeholder values (option positions 1-4).
- * Meaningful thematic number mappings are tracked in GH#76.
+ * Each answer maps to a thematic 2-digit number (01-99) from the question's values array.
+ * Falls back to 1-indexed option position if no thematic values are defined.
  */
 export function generateAnswerSegments(
   answers: { questionId: string; answer: string }[],
@@ -1160,9 +1178,32 @@ export function generateAnswerSegments(
 ): string[] {
   return answers.map((a) => {
     const question = questions.find((q) => q.id === a.questionId)
-    // indexOf returns -1 if answer not found; Math.max(0, -1) defaults to 0, yielding "1"
-    const optionIndex = question?.options?.indexOf(a.answer) ?? 0
-    return String(Math.max(0, optionIndex) + 1)
+    return generateSingleSegment(question, a.answer)
+  })
+}
+
+/**
+ * Enrich questions with coordinate mapping data from Supabase.
+ * Merges values, meanings, and source onto each question's optional fields.
+ */
+export function enrichQuestionsWithMappings(
+  questions: Question[],
+  mappings: Map<string, { values: number[]; meanings: string[]; source: string }>
+): Question[] {
+  return questions.map((q) => {
+    const mapping = mappings.get(q.id)
+    if (!mapping) return q
+    if (mapping.values.length !== (q.options?.length ?? 0)) {
+      console.warn(
+        `Mapping length mismatch for ${q.id}: ${mapping.values.length} values vs ${q.options?.length ?? 0} options`
+      )
+      return q
+    }
+    return {
+      ...q,
+      values: mapping.values,
+      meanings: mapping.meanings.map((m) => `${mapping.source} — ${m}`),
+    }
   })
 }
 

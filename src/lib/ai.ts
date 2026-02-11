@@ -2,12 +2,14 @@
  * AI Provider integrations for channeling
  */
 
-import type { AIModel, ModelResponse } from './types'
+import type { AIModel, ModelResponse, TokenUsage } from './types'
 import {
   CHANNELING_TIMEOUT_MS,
   SYNTHESIS_TIMEOUT_MS,
   CHANNELING_MAX_TOKENS,
   SYNTHESIS_MAX_TOKENS,
+  CHANNELING_TEMPERATURE,
+  SYNTHESIS_TEMPERATURE,
 } from './constants'
 import { ROUTE_ERRORS } from './errors'
 export const ANTHROPIC_API_VERSION = '2023-06-01'
@@ -33,7 +35,7 @@ export const ORACLE_INFO: Record<
     color: '#d97706',
     shortModel: 'Claude Sonnet',
   },
-  'gemini-3.0-pro': {
+  'gemini-3-pro-preview': {
     name: 'Echo',
     archetype: 'The Mirror',
     color: '#4285f4',
@@ -74,9 +76,9 @@ const PROVIDER_CONFIGS: ProviderConfig[] = [
     modelId: 'claude-sonnet-4-5',
   },
   {
-    model: 'gemini-3.0-pro',
-    oracle: ORACLE_INFO['gemini-3.0-pro'].name,
-    archetype: ORACLE_INFO['gemini-3.0-pro'].archetype,
+    model: 'gemini-3-pro-preview',
+    oracle: ORACLE_INFO['gemini-3-pro-preview'].name,
+    archetype: ORACLE_INFO['gemini-3-pro-preview'].archetype,
     apiKey: process.env.GOOGLE_API_KEY,
     endpoint:
       'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-preview:generateContent',
@@ -107,8 +109,27 @@ const SYNTHESIS_CONFIG = {
   modelId: 'claude-opus-4-6',
 }
 
+// Return type for provider call functions
+interface ProviderResult {
+  content: string
+  tokenUsage?: TokenUsage
+}
+
 /**
- * Call OpenAI-compatible API
+ * Extract token usage from Anthropic API response.
+ * Shared across channeling, moderation, and review calls.
+ */
+export function extractAnthropicTokenUsage(data: {
+  usage?: { input_tokens?: number; output_tokens?: number }
+}): TokenUsage | undefined {
+  if (!data.usage) return undefined
+  const inputTokens = data.usage.input_tokens ?? 0
+  const outputTokens = data.usage.output_tokens ?? 0
+  return { inputTokens, outputTokens, totalTokens: inputTokens + outputTokens }
+}
+
+/**
+ * Call OpenAI-compatible API (OpenAI, DeepSeek, xAI)
  */
 async function callOpenAICompatible(
   endpoint: string,
@@ -116,8 +137,9 @@ async function callOpenAICompatible(
   modelId: string,
   prompt: string,
   signal: AbortSignal,
-  maxTokens: number = CHANNELING_MAX_TOKENS
-): Promise<string> {
+  maxTokens: number = CHANNELING_MAX_TOKENS,
+  temperature: number = CHANNELING_TEMPERATURE
+): Promise<ProviderResult> {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -128,7 +150,7 @@ async function callOpenAICompatible(
       model: modelId,
       messages: [{ role: 'user', content: prompt }],
       max_tokens: maxTokens,
-      temperature: 0.8,
+      temperature,
     }),
     signal,
   })
@@ -139,7 +161,18 @@ async function callOpenAICompatible(
   }
 
   const data = await response.json()
-  return data.choices[0]?.message?.content || ''
+  const tokenUsage: TokenUsage | undefined = data.usage
+    ? {
+        inputTokens: data.usage.prompt_tokens ?? 0,
+        outputTokens: data.usage.completion_tokens ?? 0,
+        totalTokens: data.usage.total_tokens ?? 0,
+      }
+    : undefined
+
+  return {
+    content: data.choices[0]?.message?.content || '',
+    tokenUsage,
+  }
 }
 
 /**
@@ -151,8 +184,9 @@ async function callAnthropic(
   modelId: string,
   prompt: string,
   signal: AbortSignal,
-  maxTokens: number = CHANNELING_MAX_TOKENS
-): Promise<string> {
+  maxTokens: number = CHANNELING_MAX_TOKENS,
+  temperature: number = CHANNELING_TEMPERATURE
+): Promise<ProviderResult> {
   const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -163,6 +197,7 @@ async function callAnthropic(
     body: JSON.stringify({
       model: modelId,
       max_tokens: maxTokens,
+      temperature,
       messages: [{ role: 'user', content: prompt }],
     }),
     signal,
@@ -174,7 +209,11 @@ async function callAnthropic(
   }
 
   const data = await response.json()
-  return data.content[0]?.text || ''
+
+  return {
+    content: data.content[0]?.text || '',
+    tokenUsage: extractAnthropicTokenUsage(data),
+  }
 }
 
 /**
@@ -185,8 +224,9 @@ async function callGoogleAI(
   apiKey: string,
   prompt: string,
   signal: AbortSignal,
-  maxTokens: number = CHANNELING_MAX_TOKENS
-): Promise<string> {
+  maxTokens: number = CHANNELING_MAX_TOKENS,
+  temperature: number = CHANNELING_TEMPERATURE
+): Promise<ProviderResult> {
   const url = `${endpoint}?key=${apiKey}`
 
   const response = await fetch(url, {
@@ -198,7 +238,7 @@ async function callGoogleAI(
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         maxOutputTokens: maxTokens,
-        temperature: 0.8,
+        temperature,
       },
     }),
     signal,
@@ -217,7 +257,18 @@ async function callGoogleAI(
     console.warn('Gemini response truncated due to token limit')
   }
 
-  return data.candidates?.[0]?.content?.parts?.[0]?.text || ''
+  const tokenUsage: TokenUsage | undefined = data.usageMetadata
+    ? {
+        inputTokens: data.usageMetadata.promptTokenCount ?? 0,
+        outputTokens: data.usageMetadata.candidatesTokenCount ?? 0,
+        totalTokens: data.usageMetadata.totalTokenCount ?? 0,
+      }
+    : undefined
+
+  return {
+    content: data.candidates?.[0]?.content?.parts?.[0]?.text || '',
+    tokenUsage,
+  }
 }
 
 /**
@@ -241,20 +292,20 @@ async function callChannelingModel(config: ProviderConfig, prompt: string): Prom
   const timeout = setTimeout(() => controller.abort(), CHANNELING_TIMEOUT_MS)
 
   try {
-    let content: string
+    let result: ProviderResult
 
     if (config.model === 'claude-sonnet-4.5') {
-      content = await callAnthropic(
+      result = await callAnthropic(
         config.endpoint,
         config.apiKey,
         config.modelId,
         prompt,
         controller.signal
       )
-    } else if (config.model === 'gemini-3.0-pro') {
-      content = await callGoogleAI(config.endpoint, config.apiKey, prompt, controller.signal)
+    } else if (config.model === 'gemini-3-pro-preview') {
+      result = await callGoogleAI(config.endpoint, config.apiKey, prompt, controller.signal)
     } else {
-      content = await callOpenAICompatible(
+      result = await callOpenAICompatible(
         config.endpoint,
         config.apiKey,
         config.modelId,
@@ -267,9 +318,10 @@ async function callChannelingModel(config: ProviderConfig, prompt: string): Prom
       model: config.model,
       oracle: config.oracle,
       prompt,
-      content,
+      content: result.content,
       status: 'success',
       latencyMs: Date.now() - startTime,
+      tokenUsage: result.tokenUsage,
     }
   } catch (error) {
     const isTimeout = error instanceof Error && error.name === 'AbortError'
@@ -300,7 +352,7 @@ export async function callAllChannelingModels(prompt: string): Promise<ModelResp
 /**
  * Call synthesis model (Claude Opus)
  */
-export async function callSynthesisModel(prompt: string): Promise<string> {
+export async function callSynthesisModel(prompt: string): Promise<ProviderResult> {
   if (!SYNTHESIS_CONFIG.apiKey) {
     throw new Error('Anthropic API key not configured')
   }
@@ -309,15 +361,15 @@ export async function callSynthesisModel(prompt: string): Promise<string> {
   const timeout = setTimeout(() => controller.abort(), SYNTHESIS_TIMEOUT_MS)
 
   try {
-    const content = await callAnthropic(
+    return await callAnthropic(
       SYNTHESIS_CONFIG.endpoint,
       SYNTHESIS_CONFIG.apiKey,
       SYNTHESIS_CONFIG.modelId,
       prompt,
       controller.signal,
-      SYNTHESIS_MAX_TOKENS
+      SYNTHESIS_MAX_TOKENS,
+      SYNTHESIS_TEMPERATURE
     )
-    return content
   } finally {
     clearTimeout(timeout)
   }

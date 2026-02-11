@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useCallback } from 'react'
+import Link from 'next/link'
 
 import { Starfield } from '@/components/Starfield'
 import { MessageTypeSelector } from '@/components/MessageTypeSelector'
@@ -11,7 +12,12 @@ import { IntentionInput } from '@/components/IntentionInput'
 import { ChannelingLoader } from '@/components/ChannelingLoader'
 import { WovenMessage } from '@/components/WovenMessage'
 import { useJourneyStore } from '@/store'
-import { selectQuestions, generateCoordinateString } from '@/lib/questions'
+import {
+  selectQuestions,
+  generateCoordinateString,
+  enrichQuestionsWithMappings,
+} from '@/lib/questions'
+import { fetchCoordinateMappings } from '@/lib/supabase'
 import { getMessageTypeConfig } from '@/lib/message-types'
 import { classifyError, ERROR_MESSAGES, ERROR_TIPS } from '@/lib/errors'
 import { DISCLAIMER_FULL } from '@/lib/constants'
@@ -46,15 +52,27 @@ export default function Home(): React.ReactElement {
     reset,
   } = useJourneyStore()
 
-  // Initialize session on mount
+  // Initialize session and pre-warm coordinate mappings cache on mount
   useEffect(() => {
     initSession()
+    fetchCoordinateMappings().catch(() => {})
   }, [initSession])
 
   // Handle message type selection
-  const handleMessageTypeSelect = (type: MessageType) => {
+  const handleMessageTypeSelect = async (type: MessageType) => {
     const selectedQuestions = selectQuestions(type)
-    setQuestions(selectedQuestions)
+
+    try {
+      const mappings = await fetchCoordinateMappings()
+      const finalQuestions =
+        mappings.size > 0
+          ? enrichQuestionsWithMappings(selectedQuestions, mappings)
+          : selectedQuestions
+      setQuestions(finalQuestions)
+    } catch {
+      setQuestions(selectedQuestions)
+    }
+
     setMessageType(type)
   }
 
@@ -65,7 +83,7 @@ export default function Home(): React.ReactElement {
 
   // Handle question completion
   const handleQuestionsComplete = (completedAnswers: Answer[]) => {
-    const coordinateString = generateCoordinateString(completedAnswers)
+    const coordinateString = generateCoordinateString(completedAnswers, questions)
     const coordinateSet: CoordinateSet = {
       raw: coordinateString,
       questions,
@@ -160,7 +178,7 @@ export default function Home(): React.ReactElement {
     }
   }, [currentStep, modelResponses.length, synthesis, performChanneling])
 
-  // Handle starting a new journey
+  // Handle starting a new reading
   const handleStartNew = () => {
     reset()
   }
@@ -182,15 +200,23 @@ export default function Home(): React.ReactElement {
           <div className="space-y-8">
             <div className="text-center mb-12">
               <h1 className="text-gradient mb-4">Starwoven</h1>
-              <p className="text-gray-muted text-lg max-w-md mx-auto">
+              <p className="text-cream-muted text-lg max-w-md mx-auto">
                 A question, seen from many angles.
               </p>
             </div>
 
             <MessageTypeSelector onSelect={handleMessageTypeSelect} />
 
-            <p className="text-gray-muted/60 text-center text-sm mt-8 max-w-md mx-auto">
+            <p className="text-cream-muted/60 text-center text-sm mt-8 max-w-md mx-auto">
               {DISCLAIMER_FULL}
+            </p>
+            <p className="text-center mt-3">
+              <Link
+                href="/about"
+                className="text-xs text-cream-muted/40 hover:text-cream/60 transition-colors"
+              >
+                Learn how this works
+              </Link>
             </p>
           </div>
         )}
@@ -221,7 +247,7 @@ export default function Home(): React.ReactElement {
                   <button
                     onClick={() => setUseCustomCoordinates(true)}
                     aria-label="Switch to custom coordinate entry"
-                    className="text-sm text-gray-muted hover:text-cream transition-colors"
+                    className="text-sm text-cream-muted hover:text-cream transition-colors"
                   >
                     I have my own coordinates
                   </button>
@@ -246,7 +272,7 @@ export default function Home(): React.ReactElement {
           <div className="w-full max-w-xl mx-auto px-4 text-center">
             <div className="card p-8 mb-4">
               <h3 className="font-serif text-xl text-cream mb-3">Unable to proceed</h3>
-              <p className="text-gray-muted mb-8">{moderationResult.message}</p>
+              <p className="text-cream-muted mb-8">{moderationResult.message}</p>
               <button onClick={handleStartNew} className="btn-secondary">
                 Begin anew
               </button>
@@ -276,9 +302,9 @@ export default function Home(): React.ReactElement {
               </div>
 
               <h3 className="font-serif text-xl text-cream mb-3">Something slipped</h3>
-              <p className="text-gray-muted mb-2">{errorMessage}</p>
+              <p className="text-cream-muted mb-2">{errorMessage}</p>
               {errorTip && <p className="text-cream-muted text-sm mb-2">{errorTip}</p>}
-              <p className="text-gray-muted/60 text-sm mb-8">
+              <p className="text-cream-muted/60 text-sm mb-8">
                 Your intention and coordinates are preserved.
               </p>
 

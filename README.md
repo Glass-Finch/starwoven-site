@@ -1,8 +1,8 @@
 # Starwoven
 
-> A question, seen from many angles.
+> The architecture of intent.
 
-Starwoven is a consciousness exploration app. You set an intention, answer a few grounding questions, and receive a message synthesized from multiple perspectives.
+This application leverages multi-model consensus to explore the parallels between neural network convergence and the protocols of consciousness exploration.
 
 ## The Premise
 
@@ -10,7 +10,7 @@ Sometimes the most useful response isn't a single answer — it's a pattern that
 
 Starwoven doesn't explain what it does. It presents an experience and lets you decide what it means. For some, it's a tool for reflection. For others, something stranger. The interface stays out of the way.
 
-**Aesthetic**: Cosmic minimalism — deep void blacks, warm cream text, gold accents.
+The conceptual basis draws on remote viewing protocols, where multiple independent observers access the same target from different vantage points and convergence across their impressions is treated as signal. See `/research` for the research.
 
 **Audience**: The spiritually curious, the practiced seeker, and the skeptic who's intrigued despite themselves.
 
@@ -46,7 +46,7 @@ Starwoven doesn't explain what it does. It presents an experience and lets you d
 | Luna | Anthropic | Claude Sonnet 4.5 | The Muse |
 | Echo | Google | Gemini 3 Pro | The Mirror |
 | Shade | DeepSeek | DeepSeek Reasoner | The Deep |
-| Nova | xAI | Grok 4 | The Wild |
+| Nova | xAI | Grok 4.1 Fast Reasoning | The Wild |
 
 **Synthesis:**
 | Oracle | Provider | Model | Archetype |
@@ -67,42 +67,11 @@ Starwoven doesn't explain what it does. It presents an experience and lets you d
 
 **As a seeker**, I want to receive a synthesized woven message, with the option to see individual oracle threads.
 
----
+**As a visitor**, I want to understand how Starwoven works and what it's based on, so I can decide if it's for me.
 
-## Design System
+**As a curious user**, I want to read about the research behind Starwoven — the Gateway Process report, remote viewing, and the modern science that connects them — so I can understand the conceptual basis.
 
-**Aesthetic**: Underglow-inspired cosmic minimalism. Deep void backgrounds, golden accents, premium feel.
-
-### Colors
-
-```css
---void: #030308; /* Deepest background */
---cosmic-black: #070711; /* Primary background */
---cosmic-deep: #0c0c1a; /* Card backgrounds */
---cream: #e8e4dc; /* Primary text */
---cream-soft: #d4d0c8; /* Secondary text */
---cream-muted: #9a9488; /* Tertiary text */
---gold: #c8a84e; /* Accent */
---gold-bright: #ddc06a; /* Hover states */
-```
-
-### Typography
-
-- **Headlines**: Playfair Display (elegant serif, 400 weight)
-- **Body**: Inter (clean sans-serif)
-
-### Visual Effects
-
-- **Underglow**: Radial golden glow beneath interactive elements
-- **Card hover**: Subtle lift with border glow
-- **Button glow**: Golden underglow on primary actions
-
-### Animations
-
-- `float`: 8s gentle vertical drift
-- `breathe`: 6s opacity/scale pulse
-- `twinkle`: 3s star-like opacity variance
-- `pulse-glow`: 4s gold shadow breathing
+**As a reader**, I want to read the full declassified Gateway Process document inline, with exhibit images, so I can see the source material for myself.
 
 ---
 
@@ -178,6 +147,10 @@ src/
 │   ├── layout.tsx              # Root layout, fonts, starfield
 │   ├── page.tsx                # Full journey (single-page app)
 │   ├── globals.css             # Tailwind + cosmic animations
+│   ├── about/
+│   │   └── page.tsx            # About summary — how Starwoven works
+│   ├── research/
+│   │   └── page.tsx            # Deep-dive — the research behind Starwoven
 │   └── api/
 │       └── channel/route.ts    # AI orchestration + synthesis
 │
@@ -190,7 +163,8 @@ src/
 │   ├── ChannelingLoader.tsx       # Cosmic loading animation
 │   ├── WovenMessage.tsx           # Final result display
 │   ├── ThreadsAccordion.tsx       # Expandable raw responses
-│   └── CoordinateReveal.tsx       # What generated coordinates
+│   ├── CoordinateReveal.tsx       # What generated coordinates
+│   └── DocumentTranscription.tsx  # Expandable Gateway document transcription
 │
 ├── lib/
 │   ├── ai.ts                      # All AI provider calls
@@ -198,10 +172,20 @@ src/
 │   ├── qa.ts                      # Response validation + coherence
 │   ├── questions.ts               # Static question pool
 │   ├── message-types.ts           # Message type configurations
+│   ├── gateway-transcription.ts   # Full Gateway Process document data
 │   ├── supabase.ts                # Database client
 │   └── types.ts                   # TypeScript interfaces
 │
 └── store.ts                    # Zustand journey state
+
+public/
+├── gateway-process-report.pdf     # Hosted Gateway Process PDF
+└── gateway/
+    ├── exhibit-1-homunculus.png        # The Cortex and the Homunculus
+    ├── exhibit-2-consciousness-grid.png # Consciousness Energy Grid
+    ├── exhibit-3-click-out.png         # Click Out Phenomenon
+    ├── exhibit-4-cosmic-egg.png        # Cosmic Egg and Torus
+    └── exhibit-5-galaxy-position.png   # Galaxy Position in Universe
 
 supabase/
 └── migrations/
@@ -215,7 +199,7 @@ supabase/
 ### Prerequisites
 
 - Node.js 18+
-- npm (recommended) or npm
+- npm
 - API keys for all AI providers
 - Supabase account
 
@@ -327,6 +311,15 @@ KV_REST_API_TOKEN=
   failedModels?: string[]
 }
 ```
+
+### Cost Tracking
+
+Per-reading token usage and cost estimates are captured from all providers and persisted to:
+
+1. **Reading metadata** — `cost` field in the readings table `metadata` JSONB column
+2. **Dedicated `cost_tracking` table** — per-stage token counts, per-model breakdown, total cost
+
+See [docs/COSTS.md](docs/COSTS.md) for pricing and projections.
 
 ---
 

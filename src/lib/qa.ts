@@ -9,13 +9,14 @@ import type {
   AIModel,
   MessageType,
   ModelResponse,
+  TokenUsage,
   ValidationResult,
   CoherenceResult,
   CoherenceRubric,
 } from './types'
 import { buildAnalysisPrompt } from './prompts'
-import { ORACLE_INFO, ANTHROPIC_API_VERSION } from './ai'
-import { ANALYSIS_TIMEOUT_MS, ANALYSIS_MAX_TOKENS } from './constants'
+import { ORACLE_INFO, ANTHROPIC_API_VERSION, extractAnthropicTokenUsage } from './ai'
+import { ANALYSIS_TIMEOUT_MS, ANALYSIS_MAX_TOKENS, REVIEW_TEMPERATURE } from './constants'
 
 /**
  * Get minimum valid response count for synthesis
@@ -39,7 +40,7 @@ const ORACLE_ERROR_MESSAGES: Record<AIModel, { refusal: string; timeout: string 
     refusal: 'Luna offered nothing.',
     timeout: 'Luna drifted elsewhere.',
   },
-  'gemini-3.0-pro': {
+  'gemini-3-pro-preview': {
     refusal: 'Echo returned silence.',
     timeout: 'Echo went quiet.',
   },
@@ -217,6 +218,7 @@ export async function analyzeResponses(
   processed: ModelResponse[]
   validationResults: ValidationResult[]
   coherenceResult: CoherenceResult
+  reviewTokenUsage?: TokenUsage
 }> {
   // Separate successful responses (need analysis) from failed ones (don't)
   const successful = responses.filter((r) => r.status === 'success' && r.content)
@@ -262,6 +264,7 @@ export async function analyzeResponses(
       body: JSON.stringify({
         model: ANALYSIS_CONFIG.modelId,
         max_tokens: ANALYSIS_MAX_TOKENS,
+        temperature: REVIEW_TEMPERATURE,
         messages: [{ role: 'user', content: prompt }],
       }),
       signal: controller.signal,
@@ -275,6 +278,9 @@ export async function analyzeResponses(
     const data = await apiResponse.json()
     const text = data.content?.[0]?.text || ''
     const latencyMs = Date.now() - startTime
+
+    // Extract token usage from Anthropic response
+    const reviewTokenUsage = extractAnthropicTokenUsage(data)
 
     // Parse JSON response
     const jsonMatch = text.match(/\{[\s\S]*\}/)
@@ -396,7 +402,7 @@ export async function analyzeResponses(
       console.warn(`Coherence below 75%: ${coherenceScore}%`)
     }
 
-    return { validated, processed, validationResults, coherenceResult }
+    return { validated, processed, validationResults, coherenceResult, reviewTokenUsage }
   } catch (error) {
     const isTimeout = error instanceof Error && error.name === 'AbortError'
     console.warn('Analysis error:', isTimeout ? 'timeout' : error)

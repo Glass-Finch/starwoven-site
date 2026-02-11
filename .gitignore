@@ -142,3 +142,9 @@ vite.config.ts.timestamp-*
 
 # Test script output (contains personal test data)
 test-output/
+
+# One-time scratch scripts
+scripts/scratch/
+
+# Working files (not for repo)
+6-full-report.pdf

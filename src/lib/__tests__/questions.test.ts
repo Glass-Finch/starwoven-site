@@ -1,6 +1,15 @@
 import { describe, it, expect } from 'vitest'
 
-import { selectQuestions, generateCoordinateString, generateAnswerSegments } from '../questions'
+import {
+  selectQuestions,
+  generateCoordinateString,
+  generateAnswerSegments,
+  generateSingleSegment,
+  enrichQuestionsWithMappings,
+  themedQuestions,
+  groundingQuestions,
+  weirdQuestions,
+} from '../questions'
 import type { MessageType, Answer, Question } from '../types'
 
 describe('selectQuestions', () => {
@@ -138,6 +147,27 @@ describe('generateAnswerSegments', () => {
     },
   ]
 
+  const mockQuestionsWithValues: Question[] = [
+    {
+      id: 'q1',
+      messageType: null,
+      category: 'themed',
+      text: 'Which element?',
+      answerType: 'multiple_choice',
+      options: ['Fire', 'Water', 'Earth', 'Air'],
+      values: [37, 22, 64, 11],
+    },
+    {
+      id: 'q2',
+      messageType: null,
+      category: 'themed',
+      text: 'What color?',
+      answerType: 'multiple_choice',
+      options: ['Red', 'Blue', 'Gold', 'Green'],
+      values: [91, 44, 78, 33],
+    },
+  ]
+
   it('produces one numeric segment per answer', () => {
     const answers = [
       { questionId: 'q1', answer: 'Water' },
@@ -148,8 +178,8 @@ describe('generateAnswerSegments', () => {
     const segments = generateAnswerSegments(answers, mockQuestions)
 
     expect(segments).toHaveLength(3)
-    // Water is 2nd option (index 1) → "2", Red is 1st (index 0) → "1", Excited is 4th (index 3) → "4"
-    expect(segments).toEqual(['2', '1', '4'])
+    // Water is 2nd option (index 1) → "02", Red is 1st (index 0) → "01", Excited is 4th (index 3) → "04"
+    expect(segments).toEqual(['02', '01', '04'])
   })
 
   it('returns purely numeric strings with no letters', () => {
@@ -171,7 +201,7 @@ describe('generateAnswerSegments', () => {
     const segments = generateAnswerSegments(answers, mockQuestions)
 
     expect(segments).toHaveLength(1)
-    expect(segments[0]).toBe('1')
+    expect(segments[0]).toBe('01')
   })
 
   it('handles empty answers array', () => {
@@ -179,7 +209,7 @@ describe('generateAnswerSegments', () => {
     expect(segments).toHaveLength(0)
   })
 
-  it('maps option positions correctly (1-indexed)', () => {
+  it('falls back to 1-indexed position when no values defined', () => {
     const answers = [
       { questionId: 'q1', answer: 'Fire' }, // index 0 → "1"
       { questionId: 'q1', answer: 'Water' }, // index 1 → "2"
@@ -189,6 +219,285 @@ describe('generateAnswerSegments', () => {
 
     const segments = generateAnswerSegments(answers, mockQuestions)
 
-    expect(segments).toEqual(['1', '2', '3', '4'])
+    expect(segments).toEqual(['01', '02', '03', '04'])
+  })
+
+  it('uses thematic values when defined on questions', () => {
+    const answers = [
+      { questionId: 'q1', answer: 'Fire' }, // values[0] → 37
+      { questionId: 'q2', answer: 'Gold' }, // values[2] → 78
+    ]
+
+    const segments = generateAnswerSegments(answers, mockQuestionsWithValues)
+
+    expect(segments).toEqual(['37', '78'])
+  })
+
+  it('is deterministic with thematic values', () => {
+    const answers = [
+      { questionId: 'q1', answer: 'Water' },
+      { questionId: 'q2', answer: 'Blue' },
+    ]
+
+    const seg1 = generateAnswerSegments(answers, mockQuestionsWithValues)
+    const seg2 = generateAnswerSegments(answers, mockQuestionsWithValues)
+
+    expect(seg1).toEqual(seg2)
+    expect(seg1).toEqual(['22', '44'])
+  })
+})
+
+describe('generateAnswerSegments zero-padding', () => {
+  it('pads single-digit values to two characters', () => {
+    const questions: Question[] = [
+      {
+        id: 'q1',
+        messageType: null,
+        category: 'themed',
+        text: 'Test?',
+        answerType: 'multiple_choice',
+        options: ['A', 'B'],
+        values: [3, 7],
+      },
+    ]
+    const answers = [{ questionId: 'q1', answer: 'A' }]
+    const segments = generateAnswerSegments(answers, questions)
+    expect(segments).toEqual(['03'])
+  })
+})
+
+describe('enrichQuestionsWithMappings', () => {
+  it('merges values and meanings from mappings onto questions', () => {
+    const questions: Question[] = [
+      {
+        id: 'cosmic-moon',
+        messageType: null,
+        category: 'themed',
+        text: 'What moon?',
+        answerType: 'multiple_choice',
+        options: ['New', 'Full'],
+      },
+    ]
+
+    const mappings = new Map([
+      [
+        'cosmic-moon',
+        {
+          values: [24, 14],
+          meanings: ['Return (Hexagram 24)', 'Great Possession (Hexagram 14)'],
+          source: 'I Ching',
+        },
+      ],
+    ])
+
+    const enriched = enrichQuestionsWithMappings(questions, mappings)
+
+    expect(enriched[0].values).toEqual([24, 14])
+    expect(enriched[0].meanings).toEqual([
+      'I Ching — Return (Hexagram 24)',
+      'I Ching — Great Possession (Hexagram 14)',
+    ])
+  })
+
+  it('skips mapping when values length does not match options length', () => {
+    const questions: Question[] = [
+      {
+        id: 'mismatched',
+        messageType: null,
+        category: 'themed',
+        text: 'Mismatch?',
+        answerType: 'multiple_choice',
+        options: ['A', 'B', 'C', 'D'],
+      },
+    ]
+
+    const mappings = new Map([
+      [
+        'mismatched',
+        {
+          values: [10, 20, 30], // 3 values vs 4 options
+          meanings: ['X', 'Y', 'Z'],
+          source: 'Test',
+        },
+      ],
+    ])
+
+    const enriched = enrichQuestionsWithMappings(questions, mappings)
+
+    // Should skip the mapping due to length mismatch
+    expect(enriched[0].values).toBeUndefined()
+    expect(enriched[0].meanings).toBeUndefined()
+  })
+
+  it('returns original question when no mapping exists', () => {
+    const questions: Question[] = [
+      {
+        id: 'unmapped',
+        messageType: null,
+        category: 'themed',
+        text: 'No mapping?',
+        answerType: 'multiple_choice',
+        options: ['A', 'B'],
+      },
+    ]
+
+    const enriched = enrichQuestionsWithMappings(questions, new Map())
+
+    expect(enriched[0].values).toBeUndefined()
+    expect(enriched[0].meanings).toBeUndefined()
+  })
+})
+
+describe('generateCoordinateString with questions', () => {
+  const mockQuestions: Question[] = [
+    {
+      id: 'q1',
+      messageType: null,
+      category: 'themed',
+      text: 'Which element?',
+      answerType: 'multiple_choice',
+      options: ['Fire', 'Water', 'Earth', 'Air'],
+      values: [37, 22, 64, 11],
+    },
+    {
+      id: 'q2',
+      messageType: null,
+      category: 'themed',
+      text: 'What season?',
+      answerType: 'multiple_choice',
+      options: ['Spring', 'Summer', 'Autumn', 'Winter'],
+      values: [15, 42, 73, 88],
+    },
+  ]
+
+  it('produces xx-xx format when questions have thematic values', () => {
+    const answers = [
+      { questionId: 'q1', answer: 'Fire', timestamp: 1000 },
+      { questionId: 'q2', answer: 'Winter', timestamp: 2000 },
+    ]
+
+    const result = generateCoordinateString(answers, mockQuestions)
+
+    expect(result).toBe('37-88')
+  })
+
+  it('falls back to hash format when no questions provided', () => {
+    const answers = [
+      { questionId: 'q1', answer: 'Fire', timestamp: 1000 },
+      { questionId: 'q2', answer: 'Yes', timestamp: 2000 },
+    ]
+
+    const result = generateCoordinateString(answers)
+
+    expect(result).toMatch(/^\d{4}-\d{4}$/)
+  })
+
+  it('is deterministic with thematic values', () => {
+    const answers = [
+      { questionId: 'q1', answer: 'Earth', timestamp: 1000 },
+      { questionId: 'q2', answer: 'Summer', timestamp: 2000 },
+    ]
+
+    const r1 = generateCoordinateString(answers, mockQuestions)
+    const r2 = generateCoordinateString(answers, mockQuestions)
+
+    expect(r1).toBe(r2)
+    expect(r1).toBe('64-42')
+  })
+
+  it('falls back to "01" for answers referencing non-existent question IDs', () => {
+    const answers = [
+      { questionId: 'nonexistent', answer: 'Whatever', timestamp: 1000 },
+      { questionId: 'q1', answer: 'Fire', timestamp: 2000 },
+    ]
+
+    const result = generateCoordinateString(answers, mockQuestions)
+
+    // nonexistent → question undefined → falls back to "01"; Fire → values[0] = 37
+    expect(result).toBe('01-37')
+  })
+})
+
+describe('generateSingleSegment', () => {
+  it('returns thematic value when question has values', () => {
+    const question: Question = {
+      id: 'q1',
+      messageType: null,
+      category: 'themed',
+      text: 'Test?',
+      answerType: 'multiple_choice',
+      options: ['A', 'B', 'C'],
+      values: [11, 22, 33],
+    }
+    expect(generateSingleSegment(question, 'B')).toBe('22')
+  })
+
+  it('falls back to 1-indexed position without values', () => {
+    const question: Question = {
+      id: 'q1',
+      messageType: null,
+      category: 'themed',
+      text: 'Test?',
+      answerType: 'multiple_choice',
+      options: ['A', 'B', 'C'],
+    }
+    expect(generateSingleSegment(question, 'C')).toBe('03')
+  })
+
+  it('returns "01" for undefined question', () => {
+    expect(generateSingleSegment(undefined, 'anything')).toBe('01')
+  })
+})
+
+describe('question pool integrity', () => {
+  const allMessageTypes: MessageType[] = [
+    'beloved',
+    'ancestor',
+    'sage',
+    'cosmos',
+    'crossroads',
+    'calling',
+  ]
+
+  it('no duplicate IDs within any single question pool', () => {
+    const pools: { name: string; questions: Question[] }[] = [
+      ...allMessageTypes.map((type) => ({
+        name: `themed:${type}`,
+        questions: themedQuestions[type],
+      })),
+      { name: 'grounding', questions: groundingQuestions },
+      { name: 'weird', questions: weirdQuestions },
+    ]
+
+    for (const pool of pools) {
+      const ids = pool.questions.map((q) => q.id)
+      const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i)
+      expect(duplicates, `duplicates in ${pool.name}`).toEqual([])
+    }
+  })
+
+  it('all questions have 4 options (matching coordinate mapping arrays)', () => {
+    const allQuestions = [
+      ...Object.values(themedQuestions).flat(),
+      ...groundingQuestions,
+      ...weirdQuestions,
+    ]
+
+    for (const q of allQuestions) {
+      expect(q.options).toBeDefined()
+      expect(q.options!.length).toBe(4)
+    }
+  })
+
+  it.each(allMessageTypes)('themed pool for %s has at least 15 questions', (messageType) => {
+    expect(themedQuestions[messageType].length).toBeGreaterThanOrEqual(15)
+  })
+
+  it('grounding pool has at least 12 questions', () => {
+    expect(groundingQuestions.length).toBeGreaterThanOrEqual(12)
+  })
+
+  it('weird pool has at least 6 questions', () => {
+    expect(weirdQuestions.length).toBeGreaterThanOrEqual(6)
   })
 })
