@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef, Fragment } from 'react'
 
 import type { Question, Answer } from '@/lib/types'
+import { generateSingleSegment } from '@/lib/questions'
 
 interface QuestionFlowProps {
   questions: Question[]
@@ -55,10 +56,7 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
       setRevealState('revealing')
 
       // Compute segment for coordinate bar
-      const optionIndex = currentQuestion.options?.indexOf(answer) ?? 0
-      const idx = Math.max(0, optionIndex)
-      const value = currentQuestion.values?.[idx] ?? idx + 1
-      const segment = String(value).padStart(2, '0')
+      const segment = generateSingleSegment(currentQuestion, answer)
       setAccumulatedSegments((prev) => [...prev, segment])
 
       // Build the answer

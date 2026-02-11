@@ -37,24 +37,26 @@ npm test             # Unit + smoke tests (vitest)
 
 ## File Locations
 
-| What          | Where                          |
-| ------------- | ------------------------------ |
-| Main page     | `src/app/page.tsx`             |
-| About page    | `src/app/about/page.tsx`       |
-| Research page | `src/app/research/page.tsx`    |
-| API route     | `src/app/api/channel/route.ts` |
-| AI providers  | `src/lib/ai.ts`                |
-| Prompts       | `src/lib/prompts.ts`           |
-| QA layer      | `src/lib/qa.ts`                |
-| Moderation    | `src/lib/moderation.ts`        |
-| Questions     | `src/lib/questions.ts`         |
-| Message types | `src/lib/message-types.ts`     |
-| Types         | `src/lib/types.ts`             |
-| Constants     | `src/lib/constants.ts`         |
-| Errors        | `src/lib/errors.ts`            |
-| Cost tracking | `src/lib/cost.ts`              |
-| Store         | `src/store.ts`                 |
-| Components    | `src/components/`              |
+| What                | Where                          |
+| ------------------- | ------------------------------ |
+| Main page           | `src/app/page.tsx`             |
+| About page          | `src/app/about/page.tsx`       |
+| Research page       | `src/app/research/page.tsx`    |
+| API route           | `src/app/api/channel/route.ts` |
+| AI providers        | `src/lib/ai.ts`                |
+| Prompts             | `src/lib/prompts.ts`           |
+| QA layer            | `src/lib/qa.ts`                |
+| Moderation          | `src/lib/moderation.ts`        |
+| Questions           | `src/lib/questions.ts`         |
+| Message types       | `src/lib/message-types.ts`     |
+| Types               | `src/lib/types.ts`             |
+| Constants           | `src/lib/constants.ts`         |
+| Errors              | `src/lib/errors.ts`            |
+| Cost tracking       | `src/lib/cost.ts`              |
+| Supabase            | `src/lib/supabase.ts`          |
+| Store               | `src/store.ts`                 |
+| Components          | `src/components/`              |
+| Coordinate mappings | `docs/COORDINATE-MAPPINGS.md`  |
 
 ## Code Standards
 

@@ -7,7 +7,7 @@
 
 import type { ModerationCategory, ModerationResult } from './types'
 import { ANTHROPIC_API_VERSION, extractAnthropicTokenUsage } from './ai'
-import { MODERATION_TIMEOUT_MS, MODERATION_MAX_TOKENS } from './constants'
+import { MODERATION_TIMEOUT_MS, MODERATION_MAX_TOKENS, MODERATION_TEMPERATURE } from './constants'
 
 // Haiku for moderation: fast (~200ms) and cheap, sufficient for content screening
 const MODERATION_MODEL = 'claude-haiku-4-5-20251001'
@@ -96,6 +96,7 @@ export async function moderateIntention(
       body: JSON.stringify({
         model: MODERATION_MODEL,
         max_tokens: MODERATION_MAX_TOKENS,
+        temperature: MODERATION_TEMPERATURE,
         messages: [{ role: 'user', content: prompt }],
       }),
       signal: controller.signal,

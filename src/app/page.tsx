@@ -12,7 +12,12 @@ import { IntentionInput } from '@/components/IntentionInput'
 import { ChannelingLoader } from '@/components/ChannelingLoader'
 import { WovenMessage } from '@/components/WovenMessage'
 import { useJourneyStore } from '@/store'
-import { selectQuestions, generateCoordinateString } from '@/lib/questions'
+import {
+  selectQuestions,
+  generateCoordinateString,
+  enrichQuestionsWithMappings,
+} from '@/lib/questions'
+import { fetchCoordinateMappings } from '@/lib/supabase'
 import { getMessageTypeConfig } from '@/lib/message-types'
 import { classifyError, ERROR_MESSAGES, ERROR_TIPS } from '@/lib/errors'
 import { DISCLAIMER_FULL } from '@/lib/constants'
@@ -47,15 +52,27 @@ export default function Home(): React.ReactElement {
     reset,
   } = useJourneyStore()
 
-  // Initialize session on mount
+  // Initialize session and pre-warm coordinate mappings cache on mount
   useEffect(() => {
     initSession()
+    fetchCoordinateMappings().catch(() => {})
   }, [initSession])
 
   // Handle message type selection
-  const handleMessageTypeSelect = (type: MessageType) => {
+  const handleMessageTypeSelect = async (type: MessageType) => {
     const selectedQuestions = selectQuestions(type)
-    setQuestions(selectedQuestions)
+
+    try {
+      const mappings = await fetchCoordinateMappings()
+      const finalQuestions =
+        mappings.size > 0
+          ? enrichQuestionsWithMappings(selectedQuestions, mappings)
+          : selectedQuestions
+      setQuestions(finalQuestions)
+    } catch {
+      setQuestions(selectedQuestions)
+    }
+
     setMessageType(type)
   }
 
@@ -66,7 +83,7 @@ export default function Home(): React.ReactElement {
 
   // Handle question completion
   const handleQuestionsComplete = (completedAnswers: Answer[]) => {
-    const coordinateString = generateCoordinateString(completedAnswers)
+    const coordinateString = generateCoordinateString(completedAnswers, questions)
     const coordinateSet: CoordinateSet = {
       raw: coordinateString,
       questions,

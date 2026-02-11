@@ -9,6 +9,7 @@ import type { AIModel, TokenUsage, ReadingCost } from './types'
 
 // Pricing per 1M tokens (USD) — verified 2026-02-10
 // Sources: OpenAI, Anthropic, Google, DeepSeek, xAI pricing pages
+// Keys: model IDs for channeling oracles, stage names for internal stages
 const PRICING: Record<string, { input: number; output: number }> = {
   // Channeling oracles
   'gpt-4.1': { input: 2.0, output: 8.0 },
@@ -117,6 +118,7 @@ export function logReadingCost(params: {
     totalCost += cost
   }
 
+  // Round to 4 decimal places
   const estimatedCostUSD = Math.round(totalCost * 10000) / 10000
 
   const breakdown: CostBreakdown = {

@@ -16,7 +16,7 @@ import type {
 } from './types'
 import { buildAnalysisPrompt } from './prompts'
 import { ORACLE_INFO, ANTHROPIC_API_VERSION, extractAnthropicTokenUsage } from './ai'
-import { ANALYSIS_TIMEOUT_MS, ANALYSIS_MAX_TOKENS } from './constants'
+import { ANALYSIS_TIMEOUT_MS, ANALYSIS_MAX_TOKENS, REVIEW_TEMPERATURE } from './constants'
 
 /**
  * Get minimum valid response count for synthesis
@@ -264,6 +264,7 @@ export async function analyzeResponses(
       body: JSON.stringify({
         model: ANALYSIS_CONFIG.modelId,
         max_tokens: ANALYSIS_MAX_TOKENS,
+        temperature: REVIEW_TEMPERATURE,
         messages: [{ role: 'user', content: prompt }],
       }),
       signal: controller.signal,

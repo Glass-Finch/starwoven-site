@@ -10,6 +10,15 @@ export const SYNTHESIS_TIMEOUT_MS = 60_000
 export const ANALYSIS_TIMEOUT_MS = 15_000
 export const MODERATION_TIMEOUT_MS = 3_000
 
+// Temperature for channeling responses (creative output from oracles)
+export const CHANNELING_TEMPERATURE = 0.9
+// Temperature for Opus synthesis (maximum creativity for the final weave)
+export const SYNTHESIS_TEMPERATURE = 1.0
+// Temperature for Sonnet review call (validation + editing + coherence — includes creative editing)
+export const REVIEW_TEMPERATURE = 0.5
+// Temperature for Haiku moderation call (binary classification)
+export const MODERATION_TEMPERATURE = 0.1
+
 // Max tokens for AI model responses
 export const CHANNELING_MAX_TOKENS = 3_000
 export const SYNTHESIS_MAX_TOKENS = 4_000

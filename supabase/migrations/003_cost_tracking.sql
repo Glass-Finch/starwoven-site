@@ -42,12 +42,10 @@ CREATE INDEX IF NOT EXISTS idx_cost_tracking_session
 -- Enable RLS
 ALTER TABLE cost_tracking ENABLE ROW LEVEL SECURITY;
 
--- Policy: service role can insert (server-side only)
-CREATE POLICY "insert_cost_tracking" ON cost_tracking
-  FOR INSERT
-  WITH CHECK (true);
+-- No INSERT policy for anon users — service role bypasses RLS and can still insert.
+-- This prevents anonymous clients from polluting cost data.
 
--- Policy: service role can read all (for admin queries)
+-- Policy: allow reading cost data (non-sensitive aggregate data)
 CREATE POLICY "read_cost_tracking" ON cost_tracking
   FOR SELECT
   USING (true);

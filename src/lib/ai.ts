@@ -8,6 +8,8 @@ import {
   SYNTHESIS_TIMEOUT_MS,
   CHANNELING_MAX_TOKENS,
   SYNTHESIS_MAX_TOKENS,
+  CHANNELING_TEMPERATURE,
+  SYNTHESIS_TEMPERATURE,
 } from './constants'
 import { ROUTE_ERRORS } from './errors'
 export const ANTHROPIC_API_VERSION = '2023-06-01'
@@ -135,7 +137,8 @@ async function callOpenAICompatible(
   modelId: string,
   prompt: string,
   signal: AbortSignal,
-  maxTokens: number = CHANNELING_MAX_TOKENS
+  maxTokens: number = CHANNELING_MAX_TOKENS,
+  temperature: number = CHANNELING_TEMPERATURE
 ): Promise<ProviderResult> {
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -147,7 +150,7 @@ async function callOpenAICompatible(
       model: modelId,
       messages: [{ role: 'user', content: prompt }],
       max_tokens: maxTokens,
-      temperature: 0.8,
+      temperature,
     }),
     signal,
   })
@@ -181,7 +184,8 @@ async function callAnthropic(
   modelId: string,
   prompt: string,
   signal: AbortSignal,
-  maxTokens: number = CHANNELING_MAX_TOKENS
+  maxTokens: number = CHANNELING_MAX_TOKENS,
+  temperature: number = CHANNELING_TEMPERATURE
 ): Promise<ProviderResult> {
   const response = await fetch(endpoint, {
     method: 'POST',
@@ -193,6 +197,7 @@ async function callAnthropic(
     body: JSON.stringify({
       model: modelId,
       max_tokens: maxTokens,
+      temperature,
       messages: [{ role: 'user', content: prompt }],
     }),
     signal,
@@ -219,7 +224,8 @@ async function callGoogleAI(
   apiKey: string,
   prompt: string,
   signal: AbortSignal,
-  maxTokens: number = CHANNELING_MAX_TOKENS
+  maxTokens: number = CHANNELING_MAX_TOKENS,
+  temperature: number = CHANNELING_TEMPERATURE
 ): Promise<ProviderResult> {
   const url = `${endpoint}?key=${apiKey}`
 
@@ -232,7 +238,7 @@ async function callGoogleAI(
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: {
         maxOutputTokens: maxTokens,
-        temperature: 0.8,
+        temperature,
       },
     }),
     signal,
@@ -361,7 +367,8 @@ export async function callSynthesisModel(prompt: string): Promise<ProviderResult
       SYNTHESIS_CONFIG.modelId,
       prompt,
       controller.signal,
-      SYNTHESIS_MAX_TOKENS
+      SYNTHESIS_MAX_TOKENS,
+      SYNTHESIS_TEMPERATURE
     )
   } finally {
     clearTimeout(timeout)

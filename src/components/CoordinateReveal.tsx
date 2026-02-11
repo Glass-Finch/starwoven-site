@@ -57,7 +57,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
               <div className="space-y-3">
                 {coordinates.questions.map((question, index) => {
                   const answer = coordinates.answers.find((a) => a.questionId === question.id)
-                  // Segments are generated in the same order as questions, so index is safe here
+                  // Segments are in answer order, which matches question order (QuestionFlow collects sequentially)
                   const segment = segments[index]
                   return (
                     <div key={question.id} className="p-3 bg-cosmic-deep/50 rounded-lg">

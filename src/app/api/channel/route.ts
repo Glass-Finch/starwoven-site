@@ -115,6 +115,18 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
     const moderationResult = await moderateIntention(intention, messageType)
 
     if (!moderationResult.allowed) {
+      // Log cost even for moderation rejections — the Haiku call still costs money
+      if (moderationResult.tokenUsage) {
+        const { breakdown: modBreakdown } = logReadingCost({
+          sessionId,
+          moderationTokens: moderationResult.tokenUsage,
+          channelingTokens: [],
+        })
+        saveCostTracking(modBreakdown).catch((err) =>
+          console.error('Failed to save moderation cost:', err)
+        )
+      }
+
       return NextResponse.json({
         status: 'moderated' as const,
         threads: [],
@@ -153,6 +165,31 @@ export async function POST(request: Request): Promise<NextResponse<ChannelRespon
     if (validResponses.length < MIN_VALID_RESPONSES) {
       // Fallback behavior based on valid response count
       if (validResponses.length === 0) {
+        // Log cost even when all oracles failed — the API calls still cost money
+        const { cost: failedCost, breakdown: failedBreakdown } = logReadingCost({
+          sessionId,
+          moderationTokens: moderationResult.tokenUsage,
+          channelingTokens: responses.map((r) => ({ model: r.model, tokenUsage: r.tokenUsage })),
+          reviewTokens: reviewTokenUsage,
+        })
+
+        saveReadingServerSide({
+          session_id: sessionId,
+          message_type: messageType,
+          intention,
+          coordinates,
+          synthesis: ROUTE_ERRORS.NO_RESPONSES,
+          threads: processed,
+          metadata: {
+            personalization: personalization?.data as Record<string, string> | undefined,
+            validation: validationResults,
+            coherence: coherenceResult,
+            cost: failedCost,
+          },
+        })
+          .then((result) => saveCostTracking(failedBreakdown, result?.id))
+          .catch((err) => console.error('Failed to save reading/cost:', err))
+
         return NextResponse.json({
           status: 'partial',
           threads: processed,

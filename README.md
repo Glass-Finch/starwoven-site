@@ -312,6 +312,15 @@ KV_REST_API_TOKEN=
 }
 ```
 
+### Cost Tracking
+
+Per-reading token usage and cost estimates are captured from all providers and persisted to:
+
+1. **Reading metadata** — `cost` field in the readings table `metadata` JSONB column
+2. **Dedicated `cost_tracking` table** — per-stage token counts, per-model breakdown, total cost
+
+See [docs/COSTS.md](docs/COSTS.md) for pricing and projections.
+
 ---
 
 ## Roadmap

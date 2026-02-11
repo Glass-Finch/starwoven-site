@@ -517,6 +517,14 @@ export default function ResearchPage(): React.ReactElement {
                 <em>Brain and Perception: Holonomy and Structure in Figural Processing</em>.
                 Lawrence Erlbaum Associates.{' '}
                 <a
+                  href="https://www.routledge.com/Brain-and-Perception-Holonomy-and-Structure-in-Figural-Processing/Pribram/p/book/9780898599954"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                >
+                  routledge.com
+                </a>{' '}
+                <a
                   href="#fn-9"
                   aria-label="Back to reference 9"
                   className="text-gold hover:text-gold-bright text-xs ml-1"
