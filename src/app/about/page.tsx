@@ -22,7 +22,7 @@ export default function AboutPage(): React.ReactElement {
           </Link>
         </div>
 
-        <article className="space-y-10">
+        <article className="content-panel space-y-10">
           <header>
             <h1 className="text-gradient mb-4">How Starwoven Works</h1>
             <p className="text-cream-muted text-lg">Messages from the universe.</p>
@@ -135,7 +135,7 @@ export default function AboutPage(): React.ReactElement {
           </section>
 
           <footer className="pt-6 border-t border-cream/10">
-            <p className="text-sm text-cream-muted/60">{DISCLAIMER_BRIEF}</p>
+            <p className="text-sm text-cream-muted">{DISCLAIMER_BRIEF}</p>
           </footer>
         </article>
       </div>

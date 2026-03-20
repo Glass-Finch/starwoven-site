@@ -269,7 +269,7 @@ No additional personalization fields — the question itself is the focus.
 
 **Coordinate Numbers:**
 
-Each answer maps to a 2-digit number (10-99). The 5 answers produce a coordinate like `73-28-41-56-89`. The coordinate system is inspired by remote viewing methodology — coordinates anchor the AI oracles' perception.
+Each answer maps to a 2-digit number (10-99). The 4 answers produce a coordinate in `xxxx-xxxx` format (e.g., `7328-4156`), grouped into two halves. The coordinate system is inspired by remote viewing methodology; coordinates anchor the AI oracles' perception.
 
 Starwoven bridges science, technology, and spirituality. Numbers draw from multiple meaning systems, with each number citing its source:
 
@@ -355,20 +355,19 @@ The mapping design is tracked in GH#76. Per-number rationale with source system 
 
 ### 5. Watching the Field
 
-**As a user**, I want to see progress while the oracles respond, without theatrical copy that breaks the spell.
+**As a user**, I want to see progress while the oracles respond, with understated feedback that communicates what's happening.
 
 **Acceptance Criteria:**
 
-- Visual progression, not text: the starfield deepens, constellations form, the field "fills in"
 - Oracle indicators light up as each model responds
 - Constellation lines connect between completed responses
+- Contextual loading text communicates progress:
+  - Before any responses: "Listening"
+  - As responses arrive: "3 of 5 channels open"
+  - When synthesizing: "Composing the reading"
+- Gold progress bar shows oracle response status
+- After 30s without completion, a subtle message: "Some channels are taking longer than expected."
 - The experience feels like watching something assemble, not waiting
-
-**Loading Experience Options:**
-
-1. **Silent visual** — No text. Stars multiply, brightness increases, lines form between oracles.
-2. **Minimal status** — Just "3 of 5" or progress indicator. No poetic loading messages.
-3. **Wry single line** — One understated phrase that doesn't rotate: "Listening." or "Gathering."
 
 Avoid: rotating mystical phrases, anything that sounds like a loading screen wrote poetry.
 

@@ -19,7 +19,7 @@ The conceptual basis draws on remote viewing protocols, where multiple independe
 ## The Journey
 
 1. **Choose your channel** — Select from six archetypes: The Beloved, The Ancestor, The Sage, The Cosmos, The Crossroads, The Calling
-2. **Answer the coordinates** — Five rapid-fire questions anchor the reading to this specific moment
+2. **Answer the coordinates** — Four rapid-fire questions anchor the reading to this specific moment
 3. **Set your intention** — A brief, open-ended question (less detail invites more discovery)
 4. **Watch the oracles** — Five models receive your query in parallel; the field fills as they respond
 5. **Receive the message** — A synthesized response with optional access to individual threads
@@ -88,7 +88,7 @@ Six channels, each with a distinct purpose:
 | The Crossroads | Get clarity on a yes or no decision         | (intention only)                    |
 | The Calling    | Explore your purpose                        | Your name, birthday                 |
 
-All journeys include 5 coordinate questions (3 themed + 2 grounding).
+All journeys include 4 coordinate questions (2 themed + 2 grounding).
 
 ---
 
@@ -105,8 +105,8 @@ All journeys include 5 coordinate questions (3 themed + 2 grounding).
 
 ### Coordinate Questions (all multiple choice)
 
-- **5 rapid-fire questions** generate unique coordinates
-- **3 themed** (specific to message type) + **2 grounding** (present-moment awareness)
+- **4 rapid-fire questions** generate unique coordinates (format: `xxxx-xxxx`)
+- **2 themed** (specific to message type) + **2 grounding** (present-moment awareness)
 - **15% chance** one grounding swaps for a "weird" question
 - Auto-advance on selection for seamless flow
 
@@ -159,12 +159,12 @@ src/
 │   ├── MessageTypeSelector.tsx    # 6 preset cards
 │   ├── PersonalizationForm.tsx    # Dynamic per-type input form
 │   ├── QuestionFlow.tsx           # Rapid-fire questions
+│   ├── CustomCoordinateInput.tsx  # Manual coordinate entry
 │   ├── IntentionInput.tsx         # User's question
 │   ├── ChannelingLoader.tsx       # Cosmic loading animation
 │   ├── WovenMessage.tsx           # Final result display
 │   ├── ThreadsAccordion.tsx       # Expandable raw responses
-│   ├── CoordinateReveal.tsx       # What generated coordinates
-│   └── DocumentTranscription.tsx  # Expandable Gateway document transcription
+│   └── CoordinateReveal.tsx       # What generated coordinates
 │
 ├── lib/
 │   ├── ai.ts                      # All AI provider calls
@@ -172,24 +172,25 @@ src/
 │   ├── qa.ts                      # Response validation + coherence
 │   ├── questions.ts               # Static question pool
 │   ├── message-types.ts           # Message type configurations
-│   ├── gateway-transcription.ts   # Full Gateway Process document data
+│   ├── moderation.ts              # Intention screening
+│   ├── cost.ts                    # Cost tracking + estimates
+│   ├── errors.ts                  # Error classification
+│   ├── markdown.ts                # Lightweight markdown-to-React parser
+│   ├── constants.ts               # Shared constants
 │   ├── supabase.ts                # Database client
 │   └── types.ts                   # TypeScript interfaces
 │
 └── store.ts                    # Zustand journey state
 
 public/
-├── gateway-process-report.pdf     # Hosted Gateway Process PDF
-└── gateway/
-    ├── exhibit-1-homunculus.png        # The Cortex and the Homunculus
-    ├── exhibit-2-consciousness-grid.png # Consciousness Energy Grid
-    ├── exhibit-3-click-out.png         # Click Out Phenomenon
-    ├── exhibit-4-cosmic-egg.png        # Cosmic Egg and Torus
-    └── exhibit-5-galaxy-position.png   # Galaxy Position in Universe
+└── gateway-process-report.pdf     # Hosted Gateway Process PDF
 
 supabase/
 └── migrations/
-    └── 001_readings.sql        # Database schema
+    ├── 001_readings.sql        # Database schema
+    ├── 002_tighten_rls.sql     # Row-level security
+    ├── 003_cost_tracking.sql   # Cost tracking table
+    └── 004_coordinate_mappings.sql # Number-to-meaning mappings
 ```
 
 ---
@@ -218,10 +219,10 @@ cp .env.example .env.local
 # Edit .env.local with your API keys
 
 # Run database migrations
-npm supabase db push
+npx supabase db push
 
 # Start development server
-npm dev
+npm run dev
 ```
 
 ### Environment Variables

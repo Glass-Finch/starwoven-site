@@ -207,59 +207,72 @@ export default function Home(): React.ReactElement {
 
             <MessageTypeSelector onSelect={handleMessageTypeSelect} />
 
-            <p className="text-cream-muted/60 text-center text-sm mt-8 max-w-md mx-auto">
-              {DISCLAIMER_FULL}
-            </p>
-            <p className="text-center mt-3">
-              <Link
-                href="/about"
-                className="text-xs text-cream-muted/40 hover:text-cream/60 transition-colors"
-              >
-                Learn how this works
-              </Link>
-            </p>
+            <div className="max-w-md mx-auto text-center">
+              <p className="text-cream-muted text-center text-sm mt-8">{DISCLAIMER_FULL}</p>
+              <p className="text-center mt-3">
+                <Link
+                  href="/about"
+                  className="text-xs text-cream-muted hover:text-cream-soft transition-colors"
+                >
+                  Learn how this works
+                </Link>
+              </p>
+            </div>
           </div>
         )}
 
         {/* Personalization step */}
         {currentStep === 'personalization' && messageTypeConfig && (
-          <PersonalizationForm
-            messageTypeConfig={messageTypeConfig}
-            onSubmit={handlePersonalizationSubmit}
-            initialValues={personalization}
-          />
+          <div className="w-full max-w-xl mx-auto">
+            <div className="content-panel">
+              <PersonalizationForm
+                messageTypeConfig={messageTypeConfig}
+                onSubmit={handlePersonalizationSubmit}
+                initialValues={personalization}
+              />
+            </div>
+          </div>
         )}
 
         {/* Coordinate questions step */}
         {currentStep === 'coordinates' && (
-          <>
-            {useCustomCoordinates ? (
-              <CustomCoordinateInput
-                onSubmit={handleCustomCoordinateSubmit}
-                onCancel={() => setUseCustomCoordinates(false)}
-              />
-            ) : (
-              <>
-                {questions.length > 0 && (
-                  <QuestionFlow questions={questions} onComplete={handleQuestionsComplete} />
-                )}
-                <div className="mt-6 text-center">
-                  <button
-                    onClick={() => setUseCustomCoordinates(true)}
-                    aria-label="Switch to custom coordinate entry"
-                    className="text-sm text-cream-muted hover:text-cream transition-colors"
-                  >
-                    I have my own coordinates
-                  </button>
-                </div>
-              </>
-            )}
-          </>
+          <div className="w-full max-w-xl mx-auto">
+            <div className="content-panel">
+              {useCustomCoordinates ? (
+                <CustomCoordinateInput
+                  onSubmit={handleCustomCoordinateSubmit}
+                  onCancel={() => setUseCustomCoordinates(false)}
+                />
+              ) : (
+                <>
+                  {questions.length > 0 && (
+                    <QuestionFlow questions={questions} onComplete={handleQuestionsComplete} />
+                  )}
+                  <div className="mt-6 text-center">
+                    <button
+                      onClick={() => setUseCustomCoordinates(true)}
+                      aria-label="Switch to custom coordinate entry"
+                      className="text-sm text-cream-muted hover:text-cream transition-colors"
+                    >
+                      I have my own coordinates
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         )}
 
         {/* Intention step */}
         {currentStep === 'intention' && messageTypeConfig && (
-          <IntentionInput onSubmit={handleIntentionSubmit} messageTypeConfig={messageTypeConfig} />
+          <div className="w-full max-w-xl mx-auto">
+            <div className="content-panel">
+              <IntentionInput
+                onSubmit={handleIntentionSubmit}
+                messageTypeConfig={messageTypeConfig}
+              />
+            </div>
+          </div>
         )}
 
         {/* Channeling step */}
@@ -304,7 +317,7 @@ export default function Home(): React.ReactElement {
               <h3 className="font-serif text-xl text-cream mb-3">Something slipped</h3>
               <p className="text-cream-muted mb-2">{errorMessage}</p>
               {errorTip && <p className="text-cream-muted text-sm mb-2">{errorTip}</p>}
-              <p className="text-cream-muted/60 text-sm mb-8">
+              <p className="text-cream-muted text-sm mb-8">
                 Your intention and coordinates are preserved.
               </p>
 
@@ -342,7 +355,7 @@ export default function Home(): React.ReactElement {
                   aria-label="Crisis resources"
                   className="p-4 border border-cream/10 rounded-xl"
                 >
-                  <p className="text-sm text-cream/70 whitespace-pre-line">
+                  <p className="text-sm text-cream-soft whitespace-pre-line">
                     {moderationResult.crisisResources}
                   </p>
                 </div>

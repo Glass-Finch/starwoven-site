@@ -1,17 +1,15 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 
 import type { ModelResponse } from '@/lib/types'
 import { ORACLE_INFO, AI_MODELS } from '@/lib/ai'
+import { STALE_INDICATOR_MS } from '@/lib/constants'
 
 interface ChannelingLoaderProps {
   responses: ModelResponse[]
   isComplete: boolean
 }
-
-// Single understated message - no rotating poetry
-const LOADING_MESSAGE = 'Listening'
 
 export function ChannelingLoader({
   responses,
@@ -21,6 +19,28 @@ export function ChannelingLoader({
   const respondedModels = useMemo(() => {
     return new Set(responses.filter((r) => r.status === 'success').map((r) => r.model))
   }, [responses])
+
+  // Stale timer: show warning after 30s without completion
+  const [isStale, setIsStale] = useState(false)
+  const staleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (isComplete) {
+      if (staleTimerRef.current) clearTimeout(staleTimerRef.current)
+      return
+    }
+    staleTimerRef.current = setTimeout(() => setIsStale(true), STALE_INDICATOR_MS)
+    return () => {
+      if (staleTimerRef.current) clearTimeout(staleTimerRef.current)
+    }
+  }, [isComplete])
+
+  // Contextual loading message
+  const loadingMessage = useMemo(() => {
+    if (isComplete) return 'Composing the reading'
+    if (respondedModels.size === 0) return 'Listening'
+    return `${respondedModels.size} of ${AI_MODELS.length} channels open`
+  }, [isComplete, respondedModels.size])
 
   const angleStep = 360 / AI_MODELS.length
 
@@ -126,17 +146,33 @@ export function ChannelingLoader({
         })}
       </div>
 
-      {/* Loading message */}
-      <div className="text-center">
-        <p className="text-cream-muted animate-breathe">{isComplete ? '' : LOADING_MESSAGE}</p>
+      {/* Progress bar */}
+      <div className="max-w-xs mx-auto mb-6">
+        <div
+          role="progressbar"
+          aria-valuenow={respondedModels.size}
+          aria-valuemax={AI_MODELS.length}
+          aria-label="Oracle response progress"
+          className="h-0.5 bg-cream/10 rounded-full overflow-hidden"
+        >
+          <div
+            className="h-full bg-gradient-to-r from-gold/60 to-gold transition-all duration-700 ease-out"
+            style={{ width: `${(respondedModels.size / AI_MODELS.length) * 100}%` }}
+          />
+        </div>
       </div>
 
-      {/* Response count */}
-      <div className="mt-4 text-center">
-        <span className="text-sm text-cream-muted">
-          {respondedModels.size} of {AI_MODELS.length} channels open
-        </span>
+      {/* Loading message */}
+      <div className="text-center">
+        <p className="text-cream-soft text-sm">{loadingMessage}</p>
       </div>
+
+      {/* Stale indicator */}
+      {isStale && !isComplete && (
+        <div className="mt-4 text-center animate-fadeIn">
+          <p className="text-sm text-cream-muted">Some channels are taking longer than expected.</p>
+        </div>
+      )}
     </div>
   )
 }

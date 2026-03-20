@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import type { ModelResponse, CoordinateSet } from '@/lib/types'
 import { DISCLAIMER_BRIEF } from '@/lib/constants'
+import { stripMarkdown, renderMarkdown, renderInlineMarkdown } from '@/lib/markdown'
 
 import { ThreadsAccordion } from './ThreadsAccordion'
 import { CoordinateReveal } from './CoordinateReveal'
@@ -15,28 +16,50 @@ interface WovenMessageProps {
   onStartNew: () => void
 }
 
+/** Split text into paragraphs, then words within each paragraph */
+function buildParagraphWords(text: string): string[][] {
+  return text
+    .split(/\n\n+/)
+    .map((p) => p.trim())
+    .filter(Boolean)
+    .map((p) => p.split(/\s+/))
+}
+
 export function WovenMessage({
   synthesis,
   threads,
   coordinates,
   onStartNew,
 }: WovenMessageProps): React.ReactElement {
-  const [displayedText, setDisplayedText] = useState('')
+  const [wordCount, setWordCount] = useState(0)
   const [isRevealing, setIsRevealing] = useState(true)
+
+  const stripped = useMemo(() => stripMarkdown(synthesis), [synthesis])
+  const originalParagraphs = useMemo(
+    () =>
+      synthesis
+        .split(/\n\n+/)
+        .map((p) => p.trim())
+        .filter(Boolean),
+    [synthesis]
+  )
+  const paragraphWords = useMemo(() => buildParagraphWords(stripped), [stripped])
+  const totalWords = useMemo(
+    () => paragraphWords.reduce((sum, p) => sum + p.length, 0),
+    [paragraphWords]
+  )
 
   useEffect(() => {
     if (!synthesis) return
 
-    const words = synthesis.split(' ')
-    let currentIndex = 0
-
-    setDisplayedText('')
+    setWordCount(0)
     setIsRevealing(true)
 
+    let current = 0
     const interval = setInterval(() => {
-      if (currentIndex < words.length) {
-        setDisplayedText((prev) => (prev ? `${prev} ${words[currentIndex]}` : words[currentIndex]))
-        currentIndex++
+      current++
+      if (current <= totalWords) {
+        setWordCount(current)
       } else {
         clearInterval(interval)
         setIsRevealing(false)
@@ -44,7 +67,47 @@ export function WovenMessage({
     }, 60)
 
     return () => clearInterval(interval)
-  }, [synthesis])
+  }, [synthesis, totalWords])
+
+  // Build revealed text: complete paragraphs + partial current paragraph
+  const revealedContent = useMemo(() => {
+    if (!isRevealing) return null
+
+    let remaining = wordCount
+    const parts: React.ReactNode[] = []
+
+    for (let i = 0; i < paragraphWords.length; i++) {
+      const pWords = paragraphWords[i]
+      if (remaining <= 0) break
+
+      if (remaining >= pWords.length) {
+        // Full paragraph: render with inline markdown formatting
+        parts.push(
+          <p
+            key={i}
+            className="mb-4 last:mb-0 font-serif text-lg sm:text-xl leading-relaxed text-cream"
+          >
+            {originalParagraphs[i] ? renderInlineMarkdown(originalParagraphs[i]) : pWords.join(' ')}
+          </p>
+        )
+        remaining -= pWords.length
+      } else {
+        // Partial paragraph (currently revealing)
+        parts.push(
+          <p
+            key={i}
+            className="mb-4 last:mb-0 font-serif text-lg sm:text-xl leading-relaxed text-cream"
+          >
+            {pWords.slice(0, remaining).join(' ')}
+            <span className="inline-block w-0.5 h-5 bg-gold ml-1 animate-pulse" />
+          </p>
+        )
+        remaining = 0
+      }
+    }
+
+    return parts
+  }, [isRevealing, wordCount, paragraphWords, originalParagraphs])
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
@@ -53,10 +116,9 @@ export function WovenMessage({
         <div className="absolute inset-0 bg-gradient-radial from-gold/5 to-transparent pointer-events-none" />
 
         <div className="relative">
-          <p className="font-serif text-lg sm:text-xl leading-relaxed text-cream">
-            {displayedText}
-            {isRevealing && <span className="inline-block w-0.5 h-5 bg-gold ml-1 animate-pulse" />}
-          </p>
+          {isRevealing
+            ? revealedContent
+            : renderMarkdown(synthesis, 'font-serif text-lg sm:text-xl leading-relaxed text-cream')}
 
           {!isRevealing && (
             <div className="flex items-center gap-2 mt-6 pt-4 border-t border-cream/5">
@@ -80,7 +142,7 @@ export function WovenMessage({
             </button>
           </div>
 
-          <p className="text-cream-muted/60 text-center text-sm mt-6">{DISCLAIMER_BRIEF}</p>
+          <p className="text-cream-muted text-center text-sm mt-6">{DISCLAIMER_BRIEF}</p>
         </div>
       )}
     </div>

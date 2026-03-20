@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import type { ModelResponse, AIModel } from '@/lib/types'
 import { ORACLE_INFO } from '@/lib/ai'
+import { renderMarkdown } from '@/lib/markdown'
 
 interface ThreadsAccordionProps {
   threads: ModelResponse[]
@@ -67,9 +68,7 @@ export function ThreadsAccordion({ threads }: ThreadsAccordionProps): React.Reac
               {isExpanded && (
                 <div className="px-4 pb-4">
                   <div className="p-3 bg-cosmic-deep/50 rounded-lg">
-                    <p className="text-sm text-cream/80 leading-relaxed whitespace-pre-wrap">
-                      {thread.content}
-                    </p>
+                    {renderMarkdown(thread.content, 'text-sm text-cream-soft leading-relaxed')}
                     {thread.latencyMs && (
                       <p className="mt-2 text-xs text-cream-muted">
                         {(thread.latencyMs / 1000).toFixed(1)}s

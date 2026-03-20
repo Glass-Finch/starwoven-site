@@ -68,7 +68,7 @@ export interface Question {
   messageType: MessageType | null
   category: 'themed' | 'grounding' | 'weird'
   text: string
-  answerType: 'multiple_choice' | 'short_text'
+  answerType: 'multiple_choice'
   options?: string[]
   values?: number[] // thematic 2-digit numbers per option (01-99), same order as options
   meanings?: string[] // user-facing factoid per option, same order as options/values
@@ -195,19 +195,6 @@ export type JourneyStep =
   | 'intention'
   | 'channeling'
   | 'message'
-
-export interface JourneyState {
-  currentStep: JourneyStep
-  messageType: MessageType | null
-  questions: Question[]
-  answers: Answer[]
-  coordinates: CoordinateSet | null
-  intention: string
-  isChanneling: boolean
-  modelResponses: ModelResponse[]
-  synthesis: string | null
-  error: string | null
-}
 
 // API types
 export interface ChannelRequest {

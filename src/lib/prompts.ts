@@ -73,18 +73,7 @@ function buildPersonalizationContext(personalization?: PersonalizationInputs): s
       return context + '\n'
     }
 
-    case 'sage': {
-      const { yourName, birthday } = data as { yourName: string; birthday: string }
-      if (!yourName && !birthday) return ''
-      let context = '\nContext for this reading:'
-      if (yourName) context += `\n- The person asking is ${yourName}`
-      if (birthday) {
-        const age = calculateAge(birthday)
-        context += `\n- They were born on ${formatBirthday(birthday)}${age ? ` (currently ${age})` : ''}`
-      }
-      return context + '\n'
-    }
-
+    case 'sage':
     case 'calling': {
       const { yourName, birthday } = data as { yourName: string; birthday: string }
       if (!yourName && !birthday) return ''
@@ -345,5 +334,3 @@ Respond with ONLY this JSON (no other text):
   "reasoning": "<2-3 sentence explanation>"
 }`
 }
-
-export { MESSAGE_SOURCES }

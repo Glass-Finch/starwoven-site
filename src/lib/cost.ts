@@ -57,18 +57,18 @@ export function logReadingCost(params: {
   let totalTokens = 0
   let totalCost = 0
 
-  // Moderation
-  let moderationBreakdown: CostBreakdown['moderation'] = null
-  if (params.moderationTokens) {
-    const cost = estimateCostUSD(params.moderationTokens, 'moderation')
-    moderationBreakdown = {
-      inputTokens: params.moderationTokens.inputTokens,
-      outputTokens: params.moderationTokens.outputTokens,
-      costUSD: cost,
-    }
-    totalTokens += params.moderationTokens.totalTokens
+  function trackStage(
+    tokens: TokenUsage | undefined,
+    pricingKey: string
+  ): { inputTokens: number; outputTokens: number; costUSD: number } | null {
+    if (!tokens) return null
+    const cost = estimateCostUSD(tokens, pricingKey)
+    totalTokens += tokens.totalTokens
     totalCost += cost
+    return { inputTokens: tokens.inputTokens, outputTokens: tokens.outputTokens, costUSD: cost }
   }
+
+  const moderationBreakdown = trackStage(params.moderationTokens, 'moderation')
 
   // Channeling (5 oracles)
   let channelingInputTokens = 0
@@ -77,46 +77,17 @@ export function logReadingCost(params: {
   const perModel: CostBreakdown['perModel'] = {}
 
   for (const { model, tokenUsage } of params.channelingTokens) {
-    if (tokenUsage) {
-      const cost = estimateCostUSD(tokenUsage, model)
-      perModel[model] = {
-        inputTokens: tokenUsage.inputTokens,
-        outputTokens: tokenUsage.outputTokens,
-        costUSD: cost,
-      }
-      channelingInputTokens += tokenUsage.inputTokens
-      channelingOutputTokens += tokenUsage.outputTokens
-      channelingCost += cost
-      totalTokens += tokenUsage.totalTokens
-      totalCost += cost
+    const tracked = trackStage(tokenUsage, model)
+    if (tracked) {
+      perModel[model] = tracked
+      channelingInputTokens += tracked.inputTokens
+      channelingOutputTokens += tracked.outputTokens
+      channelingCost += tracked.costUSD
     }
   }
 
-  // Review
-  let reviewBreakdown: CostBreakdown['review'] = null
-  if (params.reviewTokens) {
-    const cost = estimateCostUSD(params.reviewTokens, 'review')
-    reviewBreakdown = {
-      inputTokens: params.reviewTokens.inputTokens,
-      outputTokens: params.reviewTokens.outputTokens,
-      costUSD: cost,
-    }
-    totalTokens += params.reviewTokens.totalTokens
-    totalCost += cost
-  }
-
-  // Synthesis
-  let synthesisBreakdown: CostBreakdown['synthesis'] = null
-  if (params.synthesisTokens) {
-    const cost = estimateCostUSD(params.synthesisTokens, 'synthesis')
-    synthesisBreakdown = {
-      inputTokens: params.synthesisTokens.inputTokens,
-      outputTokens: params.synthesisTokens.outputTokens,
-      costUSD: cost,
-    }
-    totalTokens += params.synthesisTokens.totalTokens
-    totalCost += cost
-  }
+  const reviewBreakdown = trackStage(params.reviewTokens, 'review')
+  const synthesisBreakdown = trackStage(params.synthesisTokens, 'synthesis')
 
   // Round to 4 decimal places
   const estimatedCostUSD = Math.round(totalCost * 10000) / 10000

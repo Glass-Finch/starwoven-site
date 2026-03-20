@@ -36,14 +36,14 @@
   body {
     background: var(--void);
     color: var(--cream);
-    font-family: var(--font-inter), system-ui, sans-serif;
+    font-family: var(--font-body), 'DM Sans', system-ui, sans-serif;
     min-height: 100vh;
     min-height: 100dvh;
   }
 
   /* Typography */
   h1 {
-    font-family: var(--font-playfair), Georgia, serif;
+    font-family: var(--font-heading), 'Cormorant Garamond', Georgia, serif;
     font-size: clamp(2rem, 6vw, 3.5rem);
     font-weight: 400;
     line-height: 1.1;
@@ -51,22 +51,22 @@
   }
 
   h2 {
-    font-family: var(--font-playfair), Georgia, serif;
+    font-family: var(--font-heading), 'Cormorant Garamond', Georgia, serif;
     font-size: clamp(1.5rem, 4vw, 2.25rem);
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.2;
     letter-spacing: -0.01em;
   }
 
   h3 {
-    font-family: var(--font-playfair), Georgia, serif;
+    font-family: var(--font-heading), 'Cormorant Garamond', Georgia, serif;
     font-size: clamp(1.25rem, 3vw, 1.5rem);
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.3;
   }
 
   p {
-    font-size: clamp(0.95rem, 2vw, 1.0625rem);
+    font-size: clamp(1rem, 2vw, 1.0625rem);
     line-height: 1.7;
     color: var(--cream-soft);
   }
@@ -235,6 +235,22 @@
     box-shadow:
       0 0 0 1px rgba(200, 168, 78, 0.1),
       0 0 30px var(--glow-gold-soft);
+  }
+
+  /* Content panel - translucent backdrop behind text content */
+  .content-panel {
+    background: rgba(3, 3, 8, 0.85); /* var(--void) at 85% opacity */
+    border: 1px solid rgba(232, 228, 220, 0.06); /* var(--cream) at 6% opacity */
+    border-radius: 24px;
+    padding: 2rem 1.5rem;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  @media (min-width: 640px) {
+    .content-panel {
+      padding: 3rem 2.5rem;
+    }
   }
 
   /* Textarea */

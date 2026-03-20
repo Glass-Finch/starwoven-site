@@ -3,7 +3,7 @@
  *
  * Design principles:
  * - All multiple choice for fast tap-to-select input
- * - 15-20 themed questions per type, randomly select 3 (random + pointed)
+ * - 15-20 themed questions per type, randomly select 2
  * - Mix of poetic and direct questions
  * - Categories: cosmic, sensory, emotional, color, symbolic
  * - Grounding questions anchor to present moment
@@ -1096,13 +1096,13 @@ function shuffle<T>(array: T[]): T[] {
 }
 
 /**
- * Select questions for a journey (3 themed + 2 grounding)
+ * Select questions for a journey (2 themed + 2 grounding)
  * Questions are randomly selected from larger pools for variety
  */
 export function selectQuestions(messageType: MessageType): Question[] {
-  // Randomly select 3 from themed questions (15-19 per type)
+  // Randomly select 2 from themed questions (15-19 per type)
   const shuffledThemed = shuffle(themedQuestions[messageType])
-  const selectedThemed = shuffledThemed.slice(0, 3)
+  const selectedThemed = shuffledThemed.slice(0, 2)
 
   // Randomly select 2 from grounding questions
   const shuffledGrounding = shuffle(groundingQuestions)
@@ -1114,19 +1114,13 @@ export function selectQuestions(messageType: MessageType): Question[] {
     selectedGrounding[1] = shuffledWeird[0]
   }
 
-  // Interleave: themed, grounding, themed, grounding, themed
-  return [
-    selectedThemed[0],
-    selectedGrounding[0],
-    selectedThemed[1],
-    selectedGrounding[1],
-    selectedThemed[2],
-  ]
+  // Interleave: themed, grounding, themed, grounding
+  return [selectedThemed[0], selectedGrounding[0], selectedThemed[1], selectedGrounding[1]]
 }
 
 /**
  * Generate coordinate string from answers.
- * Format: xx-xx-xx-xx-xx (one 2-digit thematic segment per answer, joined with dashes).
+ * Format: xxxx-xxxx (4 answers, 2 digits each, grouped into two halves).
  * Falls back to hash-based xxxx-xxxx if questions are not provided.
  */
 export function generateCoordinateString(
@@ -1136,7 +1130,10 @@ export function generateCoordinateString(
   // If questions provided, build from thematic segments
   if (questions && questions.length > 0) {
     const segments = generateAnswerSegments(answers, questions)
-    return segments.join('-')
+    const mid = Math.ceil(segments.length / 2)
+    const first = segments.slice(0, mid).join('')
+    const second = segments.slice(mid).join('')
+    return `${first}-${second}`
   }
 
   // Fallback: hash-based coordinate (for backwards compatibility)
@@ -1202,7 +1199,7 @@ export function enrichQuestionsWithMappings(
     return {
       ...q,
       values: mapping.values,
-      meanings: mapping.meanings.map((m) => `${mapping.source} — ${m}`),
+      meanings: mapping.meanings,
     }
   })
 }

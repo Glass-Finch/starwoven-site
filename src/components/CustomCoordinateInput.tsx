@@ -57,7 +57,7 @@ export function CustomCoordinateInput({
   )
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4">
+    <div className="w-full">
       <div className="text-center mb-8">
         <h2 className="text-gradient mb-3">Enter your coordinates</h2>
         <p className="text-cream-muted">

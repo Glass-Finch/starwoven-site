@@ -26,8 +26,8 @@ const config: Config = {
         },
       },
       fontFamily: {
-        serif: ['var(--font-playfair)', 'Playfair Display', 'Georgia', 'serif'],
-        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        serif: ['var(--font-heading)', 'Cormorant Garamond', 'Georgia', 'serif'],
+        sans: ['var(--font-body)', 'DM Sans', 'system-ui', 'sans-serif'],
       },
       animation: {
         float: 'float 8s ease-in-out infinite',

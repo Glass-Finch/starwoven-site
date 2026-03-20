@@ -80,7 +80,7 @@ Each AI model is represented as an oracle with its own archetype:
 | -------------- | ------------------------- | ---------- | ------------------------------- |
 | **Iris**       | `gpt-4.1`                 | The Oracle | Clarity, structured wisdom      |
 | **Luna**       | `claude-sonnet-4.5`       | The Muse   | Nuance, poetic depth            |
-| **Echo**       | `gemini-3.0-pro`          | The Mirror | Patterns, reflection            |
+| **Echo**       | `gemini-3-pro-preview`    | The Mirror | Patterns, reflection            |
 | **Shade**      | `deepseek-reasoner`       | The Deep   | Hidden knowledge, the abyss     |
 | **Nova**       | `grok-4-1-fast-reasoning` | The Wild   | Unconventional, untamed insight |
 | **Starweaver** | `claude-opus-4.6`         | The Weaver | Synthesis, the unified thread   |

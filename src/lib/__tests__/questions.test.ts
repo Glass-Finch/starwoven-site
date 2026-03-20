@@ -22,9 +22,9 @@ describe('selectQuestions', () => {
     'calling',
   ]
 
-  it.each(messageTypes)('returns 5 questions for %s message type', (messageType) => {
+  it.each(messageTypes)('returns 4 questions for %s message type', (messageType) => {
     const questions = selectQuestions(messageType)
-    expect(questions).toHaveLength(5)
+    expect(questions).toHaveLength(4)
   })
 
   it.each(messageTypes)('returns questions with valid structure for %s', (messageType) => {
@@ -293,10 +293,7 @@ describe('enrichQuestionsWithMappings', () => {
     const enriched = enrichQuestionsWithMappings(questions, mappings)
 
     expect(enriched[0].values).toEqual([24, 14])
-    expect(enriched[0].meanings).toEqual([
-      'I Ching — Return (Hexagram 24)',
-      'I Ching — Great Possession (Hexagram 14)',
-    ])
+    expect(enriched[0].meanings).toEqual(['Return (Hexagram 24)', 'Great Possession (Hexagram 14)'])
   })
 
   it('skips mapping when values length does not match options length', () => {
@@ -370,7 +367,7 @@ describe('generateCoordinateString with questions', () => {
     },
   ]
 
-  it('produces xx-xx format when questions have thematic values', () => {
+  it('produces xxxx-xxxx format when questions have thematic values', () => {
     const answers = [
       { questionId: 'q1', answer: 'Fire', timestamp: 1000 },
       { questionId: 'q2', answer: 'Winter', timestamp: 2000 },
@@ -378,7 +375,43 @@ describe('generateCoordinateString with questions', () => {
 
     const result = generateCoordinateString(answers, mockQuestions)
 
+    // 2 answers: first half = "37", second half = "88"
     expect(result).toBe('37-88')
+  })
+
+  it('produces xxxx-xxxx format with 4 answers (production format)', () => {
+    const fourQuestions = [
+      ...mockQuestions,
+      {
+        id: 'q3',
+        messageType: null as MessageType | null,
+        category: 'grounding' as const,
+        text: 'What color?',
+        answerType: 'multiple_choice' as const,
+        options: ['Red', 'Blue', 'Green', 'Gold'],
+        values: [19, 44, 56, 72],
+      },
+      {
+        id: 'q4',
+        messageType: null as MessageType | null,
+        category: 'grounding' as const,
+        text: 'What sound?',
+        answerType: 'multiple_choice' as const,
+        options: ['Thunder', 'Rain', 'Silence', 'Bells'],
+        values: [33, 50, 10, 88],
+      },
+    ]
+    const answers = [
+      { questionId: 'q1', answer: 'Fire', timestamp: 1000 },
+      { questionId: 'q2', answer: 'Summer', timestamp: 2000 },
+      { questionId: 'q3', answer: 'Gold', timestamp: 3000 },
+      { questionId: 'q4', answer: 'Silence', timestamp: 4000 },
+    ]
+
+    const result = generateCoordinateString(answers, fourQuestions)
+
+    // 4 answers: first half = "3742", second half = "7210"
+    expect(result).toBe('3742-7210')
   })
 
   it('falls back to hash format when no questions provided', () => {

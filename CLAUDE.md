@@ -53,6 +53,7 @@ npm test             # Unit + smoke tests (vitest)
 | Constants           | `src/lib/constants.ts`         |
 | Errors              | `src/lib/errors.ts`            |
 | Cost tracking       | `src/lib/cost.ts`              |
+| Markdown            | `src/lib/markdown.ts`          |
 | Supabase            | `src/lib/supabase.ts`          |
 | Store               | `src/store.ts`                 |
 | Components          | `src/components/`              |
@@ -126,8 +127,8 @@ Use the short archetypal names as IDs:
 
 ### Typography
 
-- **Headlines**: Playfair Display (elegant serif, 400 weight)
-- **Body**: Inter (clean sans-serif)
+- **Headlines**: Cormorant Garamond (high-contrast literary serif, weights 400/500/600)
+- **Body**: DM Sans (clean geometric sans-serif)
 
 ### Visual Effects
 
@@ -367,7 +368,7 @@ See `docs/USER-STORIES.md` for the full voice guide with register examples.
 
 ### Writing Style
 
-- No em dashes everywhere. Use commas, periods, or semicolons instead.
+- **No em dashes** in any copy, code comments, or documentation. Use commas, periods, semicolons, or colons instead.
 - No staccato sentence fragments. Write flowing, natural prose.
 - No AI-sounding writing patterns (overuse of "Furthermore," "Moreover," "It's worth noting," "Importantly").
 - Copy should read like a human wrote it, not like it was generated.

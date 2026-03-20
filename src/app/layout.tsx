@@ -1,17 +1,18 @@
 import type { Metadata, Viewport } from 'next'
-import { Playfair_Display, Inter } from 'next/font/google'
+import { Cormorant_Garamond, DM_Sans } from 'next/font/google'
 import './globals.css'
 
-const playfair = Playfair_Display({
+const heading = Cormorant_Garamond({
   subsets: ['latin'],
+  weight: ['400', '500', '600'],
   display: 'swap',
-  variable: '--font-serif',
+  variable: '--font-heading',
 })
 
-const inter = Inter({
+const body = DM_Sans({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-sans',
+  variable: '--font-body',
 })
 
 export const metadata: Metadata = {
@@ -49,7 +50,7 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps): React.ReactElement {
   return (
-    <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
+    <html lang="en" className={`${heading.variable} ${body.variable}`}>
       <body className="min-h-screen bg-cosmic-black text-cream antialiased">{children}</body>
     </html>
   )

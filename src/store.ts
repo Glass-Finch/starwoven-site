@@ -9,7 +9,6 @@ import type {
   JourneyStep,
   MessageType,
   Question,
-  Answer,
   CoordinateSet,
   ModelResponse,
   ModerationResult,
@@ -25,7 +24,6 @@ interface JourneyStore {
   messageType: MessageType | null
   personalization: Record<string, string>
   questions: Question[]
-  answers: Answer[]
   coordinates: CoordinateSet | null
   intention: string
   isChanneling: boolean
@@ -40,14 +38,12 @@ interface JourneyStore {
   setMessageType: (type: MessageType) => void
   setPersonalization: (data: Record<string, string>) => void
   setQuestions: (questions: Question[]) => void
-  addAnswer: (answer: Answer) => void
   setCoordinates: (coordinates: CoordinateSet) => void
   setIntention: (intention: string) => void
   startChanneling: () => void
   addModelResponse: (response: ModelResponse) => void
   setSynthesis: (synthesis: string) => void
   setError: (error: string | null) => void
-  setStep: (step: JourneyStep) => void
   setModerationResult: (result: ModerationResult | null) => void
   setUseCustomCoordinates: (use: boolean) => void
   reset: () => void
@@ -59,7 +55,6 @@ const initialState = {
   messageType: null,
   personalization: {},
   questions: [],
-  answers: [],
   coordinates: null,
   intention: '',
   isChanneling: false,
@@ -89,7 +84,6 @@ export const useJourneyStore = create<JourneyStore>()(
           messageType: type,
           currentStep: hasInputFields ? 'personalization' : 'coordinates',
           personalization: {},
-          answers: [],
           coordinates: null,
           intention: '',
           modelResponses: [],
@@ -107,12 +101,6 @@ export const useJourneyStore = create<JourneyStore>()(
 
       setQuestions: (questions) => {
         set({ questions })
-      },
-
-      addAnswer: (answer) => {
-        set((state) => ({
-          answers: [...state.answers, answer],
-        }))
       },
 
       setCoordinates: (coordinates) => {
@@ -156,10 +144,6 @@ export const useJourneyStore = create<JourneyStore>()(
           error,
           isChanneling: false,
         })
-      },
-
-      setStep: (step) => {
-        set({ currentStep: step })
       },
 
       setModerationResult: (result) => {
