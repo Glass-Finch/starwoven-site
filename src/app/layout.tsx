@@ -16,6 +16,7 @@ const body = DM_Sans({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://starwoven.app'),
   title: 'Starwoven',
   description: 'A question, seen from many angles.',
   keywords: ['consciousness', 'oracles', 'readings', 'starwoven'],
