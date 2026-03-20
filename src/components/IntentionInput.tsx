@@ -59,7 +59,7 @@ export function IntentionInput({
             autoFocus
           />
           <div
-            className={`absolute bottom-3 right-3 text-xs ${charsRemaining < 50 ? 'text-gold' : 'text-cream-muted'}`}
+            className={`absolute bottom-3 right-3 text-xs ${charsRemaining < 50 ? 'text-silver' : 'text-cream-muted'}`}
           >
             {charsRemaining}
           </div>

@@ -12,6 +12,9 @@ interface Star {
   layer: number
 }
 
+/** A constellation is a chain of star indices connected by lines */
+type Constellation = number[]
+
 interface StarfieldProps {
   className?: string
 }
@@ -22,15 +25,82 @@ const STAR_COUNTS = {
   desktop: 200,
 }
 
+const CONSTELLATION_COUNTS = {
+  mobile: 3,
+  tablet: 5,
+  desktop: 8,
+}
+
+/** Max distance (px) between stars to form a constellation edge */
+const MAX_CONSTELLATION_DIST = 180
+
 const LAYERS = [
   { speed: 0.1, sizeRange: [0.5, 1] },
   { speed: 0.2, sizeRange: [1, 1.5] },
   { speed: 0.3, sizeRange: [1.5, 2.5] },
 ]
 
+/** Build small constellations by chaining nearby bright stars */
+function buildConstellations(stars: Star[], count: number): Constellation[] {
+  // Use only the brightest stars (layer 2) as constellation anchors
+  const brightIndices = stars
+    .map((s, i) => ({ star: s, index: i }))
+    .filter(({ star }) => star.layer === 2)
+    .map(({ index }) => index)
+
+  if (brightIndices.length < 2) return []
+
+  const used = new Set<number>()
+  const constellations: Constellation[] = []
+
+  // Shuffle so constellations vary on each resize
+  const shuffled = [...brightIndices].sort(() => Math.random() - 0.5)
+
+  for (const seedIdx of shuffled) {
+    if (constellations.length >= count) break
+    if (used.has(seedIdx)) continue
+
+    // Grow a chain from this seed star
+    const chain: number[] = [seedIdx]
+    used.add(seedIdx)
+
+    const chainLength = 2 + Math.floor(Math.random() * 3) // 2-4 stars per constellation
+    for (let step = 0; step < chainLength - 1; step++) {
+      const last = stars[chain[chain.length - 1]]
+
+      // Find nearest unused bright star within range
+      let bestIdx = -1
+      let bestDist = MAX_CONSTELLATION_DIST
+
+      for (const candidateIdx of brightIndices) {
+        if (used.has(candidateIdx)) continue
+        const c = stars[candidateIdx]
+        const dx = c.x - last.x
+        const dy = c.y - last.y
+        const dist = Math.sqrt(dx * dx + dy * dy)
+        if (dist < bestDist) {
+          bestDist = dist
+          bestIdx = candidateIdx
+        }
+      }
+
+      if (bestIdx === -1) break
+      chain.push(bestIdx)
+      used.add(bestIdx)
+    }
+
+    if (chain.length >= 2) {
+      constellations.push(chain)
+    }
+  }
+
+  return constellations
+}
+
 export function Starfield({ className = '' }: StarfieldProps): React.ReactElement {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const starsRef = useRef<Star[]>([])
+  const constellationsRef = useRef<Constellation[]>([])
   const animationRef = useRef<number>(0)
   const lastTimeRef = useRef<number>(0)
 
@@ -40,6 +110,14 @@ export function Starfield({ className = '' }: StarfieldProps): React.ReactElemen
     if (width < 640) return STAR_COUNTS.mobile
     if (width < 1024) return STAR_COUNTS.tablet
     return STAR_COUNTS.desktop
+  }, [])
+
+  const getConstellationCount = useCallback((): number => {
+    if (typeof window === 'undefined') return CONSTELLATION_COUNTS.mobile
+    const width = window.innerWidth
+    if (width < 640) return CONSTELLATION_COUNTS.mobile
+    if (width < 1024) return CONSTELLATION_COUNTS.tablet
+    return CONSTELLATION_COUNTS.desktop
   }, [])
 
   const createStars = useCallback(
@@ -74,8 +152,27 @@ export function Starfield({ className = '' }: StarfieldProps): React.ReactElemen
     // Clear canvas
     ctx.clearRect(0, 0, width, height)
 
+    // Draw constellation lines (behind stars)
+    const stars = starsRef.current
+    constellationsRef.current.forEach((chain) => {
+      for (let i = 0; i < chain.length - 1; i++) {
+        const a = stars[chain[i]]
+        const b = stars[chain[i + 1]]
+        // Gentle pulse tied to both stars' twinkle phases
+        const pulse = 0.5 + 0.5 * Math.sin(time * 0.0005 + (a.twinklePhase + b.twinklePhase) * 0.5)
+        const lineOpacity = 0.06 + pulse * 0.04 // range 0.06-0.10, very subtle
+
+        ctx.beginPath()
+        ctx.moveTo(a.x, a.y)
+        ctx.lineTo(b.x, b.y)
+        ctx.strokeStyle = `rgba(184, 180, 200, ${lineOpacity})`
+        ctx.lineWidth = 0.5
+        ctx.stroke()
+      }
+    })
+
     // Draw stars
-    starsRef.current.forEach((star) => {
+    stars.forEach((star) => {
       // Calculate twinkle
       const twinkle = Math.sin(time * 0.001 * star.twinkleSpeed + star.twinklePhase)
       const opacity = star.opacity * (0.5 + twinkle * 0.5)
@@ -98,8 +195,8 @@ export function Starfield({ className = '' }: StarfieldProps): React.ReactElemen
           star.y,
           star.radius * 2
         )
-        gradient.addColorStop(0, `rgba(200, 168, 78, ${opacity * 0.3})`)
-        gradient.addColorStop(1, 'rgba(200, 168, 78, 0)')
+        gradient.addColorStop(0, `rgba(184, 180, 200, ${opacity * 0.3})`)
+        gradient.addColorStop(1, 'rgba(184, 180, 200, 0)')
         ctx.fillStyle = gradient
         ctx.fill()
       }
@@ -145,7 +242,8 @@ export function Starfield({ className = '' }: StarfieldProps): React.ReactElemen
     }
 
     starsRef.current = createStars(width, height)
-  }, [createStars])
+    constellationsRef.current = buildConstellations(starsRef.current, getConstellationCount())
+  }, [createStars, getConstellationCount])
 
   useEffect(() => {
     handleResize()

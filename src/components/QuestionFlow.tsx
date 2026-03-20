@@ -117,7 +117,7 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
                 <span className="text-cream-muted text-sm font-mono select-none mx-0.5">-</span>
               )}
               {accumulatedSegments[i] ? (
-                <code className="text-gold text-sm font-mono animate-fadeIn">
+                <code className="text-silver text-sm font-mono animate-fadeIn">
                   {accumulatedSegments[i]}
                 </code>
               ) : (
@@ -132,7 +132,7 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
       <div className="mb-8 sm:mb-12">
         <div className="h-1 bg-cream/10 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gold transition-all duration-500 ease-out"
+            className="h-full bg-silver transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -180,17 +180,17 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
                       ${
                         isRevealing
                           ? isSelected
-                            ? 'border-gold/40 bg-gold/5'
+                            ? 'border-silver/40 bg-silver/5'
                             : 'border-cream/5 opacity-20'
-                          : 'border-cream/10 text-cream hover:border-gold/40 hover:bg-gold/5 active:scale-[0.98]'
+                          : 'border-cream/10 text-cream hover:border-silver/40 hover:bg-silver/5 active:scale-[0.98]'
                       }`}
                   >
                     <div className="flex items-center justify-between">
-                      <span className={isSelected && isRevealing ? 'text-gold' : 'text-cream'}>
+                      <span className={isSelected && isRevealing ? 'text-silver' : 'text-cream'}>
                         {option}
                       </span>
                       {isSelected && isRevealing && (
-                        <code className="text-gold bg-gold/10 px-2 py-0.5 rounded text-sm animate-fadeIn">
+                        <code className="text-silver bg-silver/10 px-2 py-0.5 rounded text-sm animate-fadeIn">
                           {accumulatedSegments[accumulatedSegments.length - 1]}
                         </code>
                       )}

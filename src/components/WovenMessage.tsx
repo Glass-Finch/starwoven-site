@@ -113,7 +113,7 @@ export function WovenMessage({
     <div className="w-full max-w-2xl mx-auto px-4">
       {/* Synthesis */}
       <div className="card relative overflow-hidden mb-8">
-        <div className="absolute inset-0 bg-gradient-radial from-gold/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-radial from-silver/5 to-transparent pointer-events-none" />
 
         <div className="relative">
           {isRevealing
@@ -122,7 +122,7 @@ export function WovenMessage({
 
           {!isRevealing && (
             <div className="flex items-center gap-2 mt-6 pt-4 border-t border-cream/5">
-              <div className="w-1.5 h-1.5 rounded-full bg-gold" />
+              <div className="w-1.5 h-1.5 rounded-full bg-silver" />
               <span className="text-xs text-cream-muted tracking-wide">Starweaver</span>
             </div>
           )}

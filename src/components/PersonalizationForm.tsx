@@ -80,7 +80,7 @@ function FieldInput({ field, value, onChange, autoFocus }: FieldInputProps): Rea
     w-full px-4 py-3
     bg-cosmic-deep border border-cream/10 rounded-lg
     text-cream placeholder:text-cream-muted
-    focus:outline-none focus:border-gold/50 focus:ring-1 focus:ring-gold/20
+    focus:outline-none focus:border-silver/50 focus:ring-1 focus:ring-silver/20
     transition-all duration-200
   `
 
@@ -88,7 +88,7 @@ function FieldInput({ field, value, onChange, autoFocus }: FieldInputProps): Rea
     <div className="space-y-2">
       <label htmlFor={field.name} className="block text-sm text-cream-soft">
         {field.label}
-        {field.required && <span className="text-gold ml-1">*</span>}
+        {field.required && <span className="text-silver ml-1">*</span>}
       </label>
 
       {field.type === 'date' ? (

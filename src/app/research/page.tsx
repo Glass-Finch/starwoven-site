@@ -82,7 +82,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-1"
                   id="fn-1"
                   aria-label="Reference 1: Stargate Project"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [1]
                 </a>
@@ -104,7 +104,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-2"
                   id="fn-2"
                   aria-label="Reference 2: Utts assessment of psychic functioning"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [2]
                 </a>
@@ -120,7 +120,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-3"
                   id="fn-3"
                   aria-label="Reference 3: Ganzfeld meta-analysis"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [3]
                 </a>
@@ -136,7 +136,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-4"
                   id="fn-4"
                   aria-label="Reference 4: Princeton PEAR lab"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [4]
                 </a>
@@ -171,7 +171,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-5"
                   id="fn-5"
                   aria-label="Reference 5: Condorcet Jury Theorem"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [5]
                 </a>
@@ -237,7 +237,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-6"
                   id="fn-6"
                   aria-label="Reference 6: Integrated Information Theory"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [6]
                 </a>
@@ -266,7 +266,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-7"
                   id="fn-7"
                   aria-label="Reference 7: Gateway Process report"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [7]
                 </a>
@@ -281,7 +281,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-8"
                   id="fn-8"
                   aria-label="Reference 8: Bohm, Wholeness and the Implicate Order"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [8]
                 </a>
@@ -292,7 +292,7 @@ export default function ResearchPage(): React.ReactElement {
                   href="#ref-9"
                   id="fn-9"
                   aria-label="Reference 9: Pribram, Brain and Perception"
-                  className="text-gold hover:text-gold-bright text-xs ml-0.5"
+                  className="text-silver hover:text-cream text-xs ml-0.5"
                 >
                   [9]
                 </a>
@@ -341,7 +341,7 @@ export default function ResearchPage(): React.ReactElement {
                 href={GATEWAY_DOCUMENT.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-gold hover:text-gold-bright transition-colors"
+                className="text-sm text-silver hover:text-cream transition-colors"
               >
                 View the PDF
               </a>
@@ -367,14 +367,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://irp.fas.org/program/collect/stargate.htm"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   irp.fas.org
                 </a>{' '}
                 <a
                   href="#fn-1"
                   aria-label="Back to reference 1"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>
@@ -386,14 +386,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://ics.uci.edu/~jutts/air.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   ics.uci.edu
                 </a>{' '}
                 <a
                   href="#fn-2"
                   aria-label="Back to reference 2"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>
@@ -406,14 +406,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://pubmed.ncbi.nlm.nih.gov/20565164/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   pubmed.ncbi.nlm.nih.gov
                 </a>{' '}
                 <a
                   href="#fn-3"
                   aria-label="Back to reference 3"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>
@@ -425,14 +425,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://www.princeton.edu/~pear/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   princeton.edu/~pear
                 </a>{' '}
                 <a
                   href="#fn-4"
                   aria-label="Back to reference 4"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>
@@ -444,14 +444,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://plato.stanford.edu/entries/jury-theorems/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   plato.stanford.edu
                 </a>{' '}
                 <a
                   href="#fn-5"
                   aria-label="Back to reference 5"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>
@@ -463,14 +463,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://pmc.ncbi.nlm.nih.gov/articles/PMC543470/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   pmc.ncbi.nlm.nih.gov
                 </a>{' '}
                 <a
                   href="#fn-6"
                   aria-label="Back to reference 6"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>
@@ -482,14 +482,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://www.cia.gov/readingroom/docs/CIA-RDP96-00788R001700210016-5.pdf"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   cia.gov/readingroom
                 </a>{' '}
                 <a
                   href="#fn-7"
                   aria-label="Back to reference 7"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>
@@ -500,14 +500,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://archive.org/details/wholenessimplica0000bohm"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   archive.org
                 </a>{' '}
                 <a
                   href="#fn-8"
                   aria-label="Back to reference 8"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>
@@ -520,14 +520,14 @@ export default function ResearchPage(): React.ReactElement {
                   href="https://www.routledge.com/Brain-and-Perception-Holonomy-and-Structure-in-Figural-Processing/Pribram/p/book/9780898599954"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-gold hover:text-gold-bright transition-colors break-all"
+                  className="text-silver hover:text-cream transition-colors break-all"
                 >
                   routledge.com
                 </a>{' '}
                 <a
                   href="#fn-9"
                   aria-label="Back to reference 9"
-                  className="text-gold hover:text-gold-bright text-xs ml-1"
+                  className="text-silver hover:text-cream text-xs ml-1"
                 >
                   &#8617;
                 </a>

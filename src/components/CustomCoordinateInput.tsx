@@ -80,7 +80,7 @@ export function CustomCoordinateInput({
             autoComplete="off"
           />
           {validationError && (
-            <p id="coord-error" className="text-sm text-gold mt-2 text-center">
+            <p id="coord-error" className="text-sm text-silver mt-2 text-center">
               {validationError}
             </p>
           )}
