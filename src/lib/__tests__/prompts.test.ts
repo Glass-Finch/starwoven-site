@@ -4,7 +4,7 @@ import { buildChannelingPrompt, buildSynthesisPrompt, buildAnalysisPrompt } from
 import type { MessageType, CoordinateSet, PersonalizationInputs } from '../types'
 
 const mockCoordinates: CoordinateSet = {
-  raw: '4821-7293-1547-6038',
+  raw: '4821-7293',
   questions: [],
   answers: [],
 }
@@ -17,7 +17,7 @@ describe('buildChannelingPrompt', () => {
 
   it('includes the coordinate string', () => {
     const prompt = buildChannelingPrompt('cosmos', mockCoordinates, 'test intention')
-    expect(prompt).toContain('4821-7293-1547-6038')
+    expect(prompt).toContain('4821-7293')
   })
 
   it('includes creative exercise framing', () => {

@@ -51,7 +51,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
           {hasQuestions ? (
             <>
               <p className="text-sm text-cream-muted">
-                These coordinates were generated from your responses:
+                Your coordinates are a random target location, not a reading to interpret.
               </p>
 
               <div className="space-y-3">
@@ -62,7 +62,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
                   return (
                     <div key={question.id} className="p-3 bg-cosmic-deep/50 rounded-lg">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-sm text-cream/60">{question.text}</p>
+                        <p className="text-sm text-cream-soft">{question.text}</p>
                         {segment && (
                           <code className="text-xs text-gold bg-gold/10 px-1.5 py-0.5 rounded shrink-0 ml-2">
                             {segment}
@@ -74,7 +74,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
                         const optIdx = question.options?.indexOf(answer?.answer ?? '') ?? -1
                         const meaning = optIdx >= 0 ? question.meanings?.[optIdx] : undefined
                         return meaning ? (
-                          <p className="text-xs text-cream/40 mt-1">{meaning}</p>
+                          <p className="text-sm text-cream-muted mt-1">{meaning}</p>
                         ) : null
                       })()}
                     </div>
@@ -83,7 +83,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
               </div>
 
               <p className="text-xs text-cream-muted text-center pt-2">
-                Your answers shaped these coordinates.
+                Coordinates anchor the reading, like map references in remote viewing.
               </p>
             </>
           ) : (

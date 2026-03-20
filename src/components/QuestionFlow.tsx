@@ -13,7 +13,6 @@ interface QuestionFlowProps {
 export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): React.ReactElement {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [answers, setAnswers] = useState<Answer[]>([])
-  const [textInput, setTextInput] = useState('')
   const [isTransitioning, setIsTransitioning] = useState(false)
 
   // Reveal state
@@ -68,10 +67,9 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
       const updatedAnswers = [...answers, newAnswer]
       setAnswers(updatedAnswers)
       answersRef.current = updatedAnswers
-      setTextInput('')
 
-      // Auto-advance after reveal hold
-      revealTimerRef.current = setTimeout(() => advanceToNext(updatedAnswers), 1200)
+      // Auto-advance after reveal hold (2.5s to allow reading meanings)
+      revealTimerRef.current = setTimeout(() => advanceToNext(updatedAnswers), 2500)
     },
     [currentQuestion, answers, revealState, advanceToNext]
   )
@@ -83,22 +81,11 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
     }
   }, [revealState, advanceToNext])
 
-  const handleTextSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault()
-      if (textInput.trim()) {
-        handleAnswer(textInput.trim())
-      }
-    },
-    [textInput, handleAnswer]
-  )
-
   // Reset state when questions change
   useEffect(() => {
     setCurrentIndex(0)
     setAnswers([])
     answersRef.current = []
-    setTextInput('')
     setRevealState('asking')
     setSelectedAnswer(null)
     setAccumulatedSegments([])
@@ -120,19 +107,21 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
   const hasValues = questions.some((q) => q.values && q.values.length > 0)
 
   return (
-    <div className="w-full max-w-xl mx-auto px-4">
-      {/* Coordinate bar — only shown when values are available */}
+    <div className="w-full">
+      {/* Coordinate bar: xxxx-xxxx format, grouped in two halves */}
       {hasValues && (
-        <div className="flex items-center justify-center gap-2 mb-4 h-8">
+        <div className="flex items-center justify-center gap-1 mb-4 h-8">
           {questions.map((_, i) => (
             <Fragment key={i}>
-              {i > 0 && <span className="text-cream/20 text-xs select-none">&middot;</span>}
+              {i === Math.ceil(questions.length / 2) && (
+                <span className="text-cream-muted text-sm font-mono select-none mx-0.5">-</span>
+              )}
               {accumulatedSegments[i] ? (
                 <code className="text-gold text-sm font-mono animate-fadeIn">
                   {accumulatedSegments[i]}
                 </code>
               ) : (
-                <span className="text-cream/20 text-sm select-none">&mdash;</span>
+                <span className="text-cream-muted text-sm font-mono select-none">__</span>
               )}
             </Fragment>
           ))}
@@ -174,7 +163,7 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
         </h2>
 
         {/* Answer options */}
-        {currentQuestion.answerType === 'multiple_choice' && currentQuestion.options ? (
+        {currentQuestion.options && currentQuestion.options.length > 0 && (
           <div className="grid gap-3">
             {currentQuestion.options.map((option) => {
               const isSelected = option === selectedAnswer
@@ -208,7 +197,7 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
                     </div>
                     {isSelected && isRevealing && currentQuestion.meanings?.[optionIndex] && (
                       <p
-                        className="text-xs text-cream/40 mt-2 animate-fadeIn"
+                        className="text-sm text-cream-muted mt-2 animate-fadeIn"
                         style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}
                       >
                         {currentQuestion.meanings[optionIndex]}
@@ -219,31 +208,11 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
               )
             })}
           </div>
-        ) : (
-          <form onSubmit={handleTextSubmit} className="space-y-4">
-            <input
-              type="text"
-              value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
-              placeholder="Type your answer..."
-              aria-label={currentQuestion.text}
-              className="input text-center"
-              autoFocus
-              autoComplete="off"
-            />
-            <button
-              type="submit"
-              disabled={!textInput.trim()}
-              className="w-full btn-primary disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Continue
-            </button>
-          </form>
         )}
       </div>
 
-      {/* Category indicator */}
-      <div className="mt-8 text-center">
+      {/* Category indicator + tap hint */}
+      <div className="mt-8 text-center space-y-2">
         <span className="inline-block px-3 py-1 text-xs text-cream-muted bg-cream/5 rounded-full">
           {currentQuestion.category === 'grounding'
             ? 'Grounding'
@@ -251,6 +220,14 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
               ? 'Opening'
               : 'Attuning'}
         </span>
+        {revealState === 'revealing' && (
+          <p
+            className="text-xs text-cream-muted animate-fadeIn"
+            style={{ animationDelay: '800ms', animationFillMode: 'backwards' }}
+          >
+            Tap to continue
+          </p>
+        )}
       </div>
     </div>
   )

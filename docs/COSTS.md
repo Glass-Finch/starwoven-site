@@ -6,17 +6,17 @@ Starwoven uses 8 API calls per successful reading. This document tracks per-read
 
 Based on typical token usage (~1,500 input / ~800 output per channeling call, ~3,000 input / ~200 output for moderation, ~6,000 input / ~4,000 output for review, ~8,000 input / ~3,000 output for synthesis):
 
-| Stage      | Model             | Input Tokens | Output Tokens | Est. Cost  |
-| ---------- | ----------------- | ------------ | ------------- | ---------- |
-| Moderation | Claude Haiku 4.5  | ~3,000       | ~200          | $0.004     |
-| Iris       | GPT-4.1           | ~1,500       | ~800          | $0.009     |
-| Luna       | Claude Sonnet 4.5 | ~1,500       | ~800          | $0.017     |
-| Echo       | Gemini 3 Pro      | ~1,500       | ~800          | $0.013     |
-| Shade      | DeepSeek Reasoner | ~1,500       | ~800          | $0.001     |
-| Nova       | Grok 4.1 Fast     | ~1,500       | ~800          | $0.001     |
-| Review     | Claude Sonnet 4.5 | ~6,000       | ~4,000        | $0.078     |
-| Synthesis  | Claude Opus 4.6   | ~8,000       | ~3,000        | $0.115     |
-| **Total**  |                   |              |               | **~$0.24** |
+| Stage      | Model                | Input Tokens | Output Tokens | Est. Cost  |
+| ---------- | -------------------- | ------------ | ------------- | ---------- |
+| Moderation | Claude Haiku 4.5     | ~3,000       | ~200          | $0.004     |
+| Iris       | GPT-4.1              | ~1,500       | ~800          | $0.009     |
+| Luna       | Claude Sonnet 4.5    | ~1,500       | ~800          | $0.017     |
+| Echo       | Gemini 3 Pro Preview | ~1,500       | ~800          | $0.013     |
+| Shade      | DeepSeek Reasoner    | ~1,500       | ~800          | $0.001     |
+| Nova       | Grok 4.1 Fast        | ~1,500       | ~800          | $0.001     |
+| Review     | Claude Sonnet 4.5    | ~6,000       | ~4,000        | $0.078     |
+| Synthesis  | Claude Opus 4.6      | ~8,000       | ~3,000        | $0.115     |
+| **Total**  |                      |              |               | **~$0.24** |
 
 **Estimated cost per reading: $0.20 - $0.30 USD**
 
