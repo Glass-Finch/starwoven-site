@@ -28,7 +28,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
       >
         <div className="flex items-center gap-3">
           <span className="text-sm text-cream">Your coordinates</span>
-          <code className="text-xs text-gold bg-gold/10 px-2 py-0.5 rounded">
+          <code className="text-xs text-silver bg-silver/10 px-2 py-0.5 rounded">
             {coordinates.raw}
           </code>
         </div>
@@ -64,7 +64,7 @@ export function CoordinateReveal({ coordinates }: CoordinateRevealProps): React.
                       <div className="flex items-center justify-between mb-1">
                         <p className="text-sm text-cream-soft">{question.text}</p>
                         {segment && (
-                          <code className="text-xs text-gold bg-gold/10 px-1.5 py-0.5 rounded shrink-0 ml-2">
+                          <code className="text-xs text-silver bg-silver/10 px-1.5 py-0.5 rounded shrink-0 ml-2">
                             {segment}
                           </code>
                         )}

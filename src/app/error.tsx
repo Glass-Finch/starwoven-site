@@ -16,14 +16,14 @@ export default function Error({ error, reset }: ErrorProps): React.ReactElement 
     <div className="min-h-screen flex items-center justify-center p-6 bg-cosmic-black">
       <div className="w-full max-w-xl mx-auto text-center">
         <div className="card p-8">
-          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-gold/10 flex items-center justify-center">
+          <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-silver/10 flex items-center justify-center">
             <svg
               aria-hidden="true"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
               strokeWidth="1.5"
-              className="w-8 h-8 text-gold"
+              className="w-8 h-8 text-silver"
             >
               <path
                 strokeLinecap="round"

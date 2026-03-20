@@ -14,15 +14,25 @@
   --cream-soft: #d4d0c8;
   --cream-muted: #9a9488;
 
-  /* Accent */
+  /* Primary accent (reserved for key actions) */
   --gold: #c8a84e;
   --gold-bright: #ddc06a;
   --gold-dim: #a88a3e;
 
+  /* Secondary accent */
+  --silver: #b8b4c8;
+  --silver-soft: #a09cac;
+
+  /* Tertiary accent */
+  --lavender: #8b7fa8;
+  --lavender-soft: #746898;
+
   /* Glow values */
   --glow-gold: rgba(200, 168, 78, 0.4);
   --glow-gold-soft: rgba(200, 168, 78, 0.15);
-  --underglow: rgba(200, 168, 78, 0.08);
+  --glow-silver: rgba(184, 180, 200, 0.4);
+  --glow-silver-soft: rgba(184, 180, 200, 0.15);
+  --underglow: rgba(184, 180, 200, 0.08);
 }
 
 /* Base styles */
@@ -80,11 +90,11 @@
 
   :focus-visible {
     outline: none;
-    box-shadow: 0 0 0 2px var(--gold);
+    box-shadow: 0 0 0 2px var(--silver);
   }
 
   ::selection {
-    background: rgba(200, 168, 78, 0.3);
+    background: rgba(184, 180, 200, 0.3);
     color: var(--cream);
   }
 }
@@ -133,7 +143,7 @@
   }
 
   .card:hover {
-    border-color: rgba(200, 168, 78, 0.2);
+    border-color: rgba(184, 180, 200, 0.2);
     transform: translateY(-2px);
   }
 
@@ -231,10 +241,10 @@
   }
 
   .input:focus {
-    border-color: rgba(200, 168, 78, 0.4);
+    border-color: rgba(184, 180, 200, 0.4);
     box-shadow:
-      0 0 0 1px rgba(200, 168, 78, 0.1),
-      0 0 30px var(--glow-gold-soft);
+      0 0 0 1px rgba(184, 180, 200, 0.1),
+      0 0 30px var(--glow-silver-soft);
   }
 
   /* Content panel - translucent backdrop behind text content */
@@ -274,10 +284,10 @@
 
   .textarea:focus {
     outline: none;
-    border-color: rgba(200, 168, 78, 0.4);
+    border-color: rgba(184, 180, 200, 0.4);
     box-shadow:
-      0 0 0 1px rgba(200, 168, 78, 0.1),
-      0 0 40px var(--glow-gold-soft);
+      0 0 0 1px rgba(184, 180, 200, 0.1),
+      0 0 40px var(--glow-silver-soft);
   }
 }
 
@@ -293,7 +303,7 @@
 
   /* Text gradient */
   .text-gradient {
-    background: linear-gradient(135deg, var(--cream) 0%, var(--gold) 100%);
+    background: linear-gradient(135deg, var(--cream) 0%, var(--silver) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -301,11 +311,11 @@
 
   /* Glow utilities */
   .glow {
-    box-shadow: 0 0 60px var(--glow-gold);
+    box-shadow: 0 0 60px var(--glow-silver);
   }
 
   .glow-sm {
-    box-shadow: 0 0 30px var(--glow-gold-soft);
+    box-shadow: 0 0 30px var(--glow-silver-soft);
   }
 
   .underglow {
@@ -381,10 +391,10 @@
 @keyframes pulse-glow {
   0%,
   100% {
-    box-shadow: 0 0 20px var(--glow-gold-soft);
+    box-shadow: 0 0 20px var(--glow-silver-soft);
   }
   50% {
-    box-shadow: 0 0 40px var(--glow-gold);
+    box-shadow: 0 0 40px var(--glow-silver);
   }
 }
 

@@ -116,10 +116,10 @@ export function MessageTypeSelector({ onSelect }: MessageTypeSelectorProps): Rea
           <button
             key={type.id}
             onClick={() => onSelect(type.id)}
-            className="card group text-left p-6 hover:border-gold/40 focus:border-gold/60 transition-all duration-300"
+            className="card group text-left p-6 hover:border-silver/40 focus:border-silver/60 transition-all duration-300"
           >
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gold/10 flex items-center justify-center text-gold group-hover:bg-gold/20 transition-colors">
+              <div className="flex-shrink-0 w-10 h-10 rounded-full bg-lavender/10 flex items-center justify-center text-lavender group-hover:bg-lavender/20 transition-colors">
                 {icons[type.icon]}
               </div>
               <div className="flex-1 min-w-0">

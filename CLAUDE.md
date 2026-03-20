@@ -110,7 +110,7 @@ Use the short archetypal names as IDs:
 
 ## Design System
 
-**Aesthetic**: Underglow-inspired cosmic minimalism. Deep void backgrounds, golden accents, premium feel.
+**Aesthetic**: Underglow-inspired cosmic minimalism. Deep void backgrounds, silver/lavender atmospheric accents, gold reserved for primary actions.
 
 ### Colors
 
@@ -121,9 +121,19 @@ Use the short archetypal names as IDs:
 --cream: #e8e4dc; /* Primary text */
 --cream-soft: #d4d0c8; /* Secondary text */
 --cream-muted: #9a9488; /* Tertiary text */
---gold: #c8a84e; /* Accent */
---gold-bright: #ddc06a; /* Hover states */
+--gold: #c8a84e; /* Primary accent (btn-primary, typing cursor only) */
+--gold-bright: #ddc06a; /* Primary hover states */
+--silver: #b8b4c8; /* Secondary accent (links, badges, focus rings, progress bars) */
+--silver-soft: #a09cac; /* Softer silver */
+--lavender: #8b7fa8; /* Tertiary accent (oracle UI, channeling loader, category icons) */
+--lavender-soft: #746898; /* Softer lavender */
 ```
+
+### Color Usage Rules
+
+- **Gold**: Reserved for primary action buttons (btn-primary) and the WovenMessage typing cursor. Nothing else.
+- **Silver**: Default accent for interactive elements: links, focus rings, progress bars, coordinate badges, selected states, glows.
+- **Lavender**: Oracle/atmospheric contexts: channeling loader orb, constellation progress bar, message type card icons.
 
 ### Typography
 
@@ -132,9 +142,9 @@ Use the short archetypal names as IDs:
 
 ### Visual Effects
 
-- **Underglow**: Radial golden glow beneath interactive elements
-- **Card hover**: Subtle lift with border glow
-- **Button glow**: Golden underglow on primary actions
+- **Underglow**: Radial silver glow beneath interactive elements
+- **Card hover**: Subtle lift with silver border glow
+- **Button glow**: Golden underglow on primary action buttons only
 
 ### Animations
 
@@ -157,7 +167,7 @@ Use the short archetypal names as IDs:
 - Base styles = mobile, use `sm:`, `md:`, `lg:` for larger screens
 - Use `clamp()` for fluid typography
 - Stack layouts vertically on mobile
-- Reduce Starfield stars on mobile (100 vs 200)
+- Reduce Starfield stars on mobile (100 vs 200) and constellations (3 vs 8)
 
 ## Error Handling
 

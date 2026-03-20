@@ -50,10 +50,10 @@ export function ChannelingLoader({
       <div className="relative flex items-center justify-center mb-16">
         <div className="relative w-24 h-24">
           {/* Outer glow */}
-          <div className="absolute inset-0 rounded-full bg-gold/20 animate-breathe blur-xl" />
+          <div className="absolute inset-0 rounded-full bg-lavender/20 animate-breathe blur-xl" />
 
           {/* Core orb */}
-          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-gold/40 to-gold/10 animate-pulse-glow" />
+          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-lavender/40 to-lavender/10 animate-pulse-glow" />
 
           {/* Inner shine */}
           <div className="absolute inset-4 rounded-full bg-gradient-to-br from-cream/20 to-transparent" />
@@ -116,7 +116,7 @@ export function ChannelingLoader({
                   y1={y1}
                   x2={x2}
                   y2={y2}
-                  stroke="rgba(200, 168, 78, 0.3)"
+                  stroke="rgba(184, 180, 200, 0.3)"
                   strokeWidth="1"
                   className="animate-twinkle"
                 />
@@ -139,7 +139,7 @@ export function ChannelingLoader({
             >
               {ORACLE_INFO[model].name}
               {hasResponded && (
-                <span className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-gold" />
+                <span className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-silver" />
               )}
             </div>
           )
@@ -156,7 +156,7 @@ export function ChannelingLoader({
           className="h-0.5 bg-cream/10 rounded-full overflow-hidden"
         >
           <div
-            className="h-full bg-gradient-to-r from-gold/60 to-gold transition-all duration-700 ease-out"
+            className="h-full bg-gradient-to-r from-lavender/60 to-lavender transition-all duration-700 ease-out"
             style={{ width: `${(respondedModels.size / AI_MODELS.length) * 100}%` }}
           />
         </div>

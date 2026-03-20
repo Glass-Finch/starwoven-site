@@ -105,7 +105,7 @@ export default function AboutPage(): React.ReactElement {
             </p>
             <Link
               href="/research"
-              className="inline-block text-sm text-gold hover:text-gold-bright transition-colors"
+              className="inline-block text-sm text-silver hover:text-cream transition-colors"
             >
               Read about the research behind Starwoven
             </Link>

@@ -24,6 +24,14 @@ const config: Config = {
           bright: '#ddc06a',
           dim: '#a88a3e',
         },
+        silver: {
+          DEFAULT: '#b8b4c8',
+          soft: '#a09cac',
+        },
+        lavender: {
+          DEFAULT: '#8b7fa8',
+          soft: '#746898',
+        },
       },
       fontFamily: {
         serif: ['var(--font-heading)', 'Cormorant Garamond', 'Georgia', 'serif'],
@@ -50,8 +58,8 @@ const config: Config = {
           '50%': { opacity: '1' },
         },
         'pulse-glow': {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(200, 168, 78, 0.15)' },
-          '50%': { boxShadow: '0 0 40px rgba(200, 168, 78, 0.4)' },
+          '0%, 100%': { boxShadow: '0 0 20px rgba(184, 180, 200, 0.15)' },
+          '50%': { boxShadow: '0 0 40px rgba(184, 180, 200, 0.4)' },
         },
         fadeIn: {
           from: { opacity: '0', transform: 'translateY(12px)' },
