@@ -1,6 +1,7 @@
 'use client'
 
 import { useMemo, useState, useEffect, useRef } from 'react'
+import Image from 'next/image'
 
 import type { ModelResponse } from '@/lib/types'
 import { ORACLE_INFO, AI_MODELS } from '@/lib/ai'
@@ -48,21 +49,26 @@ export function ChannelingLoader({
     <div className="w-full max-w-lg mx-auto px-4 py-12">
       {/* Central orb */}
       <div className="relative flex items-center justify-center mb-16">
-        <div className="relative w-24 h-24">
-          {/* Outer glow */}
-          <div className="absolute inset-0 rounded-full bg-lavender/20 animate-breathe blur-xl" />
+        <div className="relative w-28 h-28">
+          {/* Outer glow (Sunweaver) */}
+          <div className="absolute -inset-4 rounded-full bg-gold/15 animate-breathe blur-2xl" />
 
-          {/* Core orb */}
-          <div className="absolute inset-2 rounded-full bg-gradient-to-br from-lavender/40 to-lavender/10 animate-pulse-glow" />
-
-          {/* Inner shine */}
-          <div className="absolute inset-4 rounded-full bg-gradient-to-br from-cream/20 to-transparent" />
+          {/* Sunweaver image */}
+          <Image
+            src="/sunweaver-400.webp"
+            alt=""
+            width={112}
+            height={112}
+            className="relative rounded-full animate-breathe"
+            style={{ animationDuration: '8s' }}
+            priority
+          />
         </div>
 
         {/* Orbiting model indicators */}
         {AI_MODELS.map((model, index) => {
           const angle = (index * angleStep - 90) * (Math.PI / 180)
-          const radius = 80
+          const radius = 88
           const x = Math.cos(angle) * radius
           const y = Math.sin(angle) * radius
           const hasResponded = respondedModels.has(model)
@@ -92,22 +98,22 @@ export function ChannelingLoader({
         {/* Constellation lines between responded models */}
         <svg
           className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ width: 200, height: 200, left: -52, top: -52 }}
+          style={{ width: 220, height: 220, left: -54, top: -54 }}
         >
           {AI_MODELS.map((model, i) => {
             if (!respondedModels.has(model)) return null
 
             const angle1 = (i * angleStep - 90) * (Math.PI / 180)
-            const x1 = 100 + Math.cos(angle1) * 80
-            const y1 = 100 + Math.sin(angle1) * 80
+            const x1 = 110 + Math.cos(angle1) * 88
+            const y1 = 110 + Math.sin(angle1) * 88
 
             // Draw lines to other responded models
             return AI_MODELS.slice(i + 1).map((otherModel, j) => {
               if (!respondedModels.has(otherModel)) return null
 
               const angle2 = ((i + j + 1) * angleStep - 90) * (Math.PI / 180)
-              const x2 = 100 + Math.cos(angle2) * 80
-              const y2 = 100 + Math.sin(angle2) * 80
+              const x2 = 110 + Math.cos(angle2) * 88
+              const y2 = 110 + Math.sin(angle2) * 88
 
               return (
                 <line
@@ -126,22 +132,23 @@ export function ChannelingLoader({
         </svg>
       </div>
 
-      {/* Model status list */}
-      <div className="flex justify-center gap-4 mb-8 flex-wrap">
+      {/* Model status dots */}
+      <div className="flex justify-center gap-3 mb-8">
         {AI_MODELS.map((model) => {
           const hasResponded = respondedModels.has(model)
+          const { name, color } = ORACLE_INFO[model]
           return (
             <div
               key={model}
-              className={`text-xs px-3 py-1 rounded-full transition-all duration-300 ${
-                hasResponded ? 'text-cream bg-cream/10' : 'text-cream-muted bg-cream/5'
+              title={name}
+              className={`w-2.5 h-2.5 rounded-full transition-all duration-500 ${
+                hasResponded ? 'scale-125' : 'opacity-30'
               }`}
-            >
-              {ORACLE_INFO[model].name}
-              {hasResponded && (
-                <span className="ml-1.5 inline-block w-1.5 h-1.5 rounded-full bg-silver" />
-              )}
-            </div>
+              style={{
+                backgroundColor: color,
+                boxShadow: hasResponded ? `0 0 8px ${color}` : 'none',
+              }}
+            />
           )
         })}
       </div>

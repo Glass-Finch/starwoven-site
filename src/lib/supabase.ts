@@ -158,41 +158,40 @@ export interface CoordinateMapping {
 let mappingsCache: Map<string, CoordinateMapping> | null = null
 
 /**
- * Fetch all coordinate mappings from Supabase (client-side, cached in memory).
- * Returns a Map keyed by question_id. Returns empty map if Supabase is unavailable.
+ * Get coordinate mappings. Uses static bundled data as the primary source.
+ * Supabase is attempted as an overlay (for live updates), but static data
+ * is always the fallback. Returns a Map keyed by question_id.
  */
 export async function fetchCoordinateMappings(): Promise<Map<string, CoordinateMapping>> {
   if (mappingsCache) return mappingsCache
 
+  // Start with static data (always available, no network dependency)
+  const { getStaticCoordinateMappings } = await import('./coordinate-data')
+  const map = getStaticCoordinateMappings()
+
+  // Try Supabase overlay (merges on top of static data)
   const client = getSupabaseClient()
-  if (!client) {
-    return new Map()
+  if (client) {
+    try {
+      const { data, error } = await client
+        .from('coordinate_mappings')
+        .select('question_id, option_values, option_meanings, source')
+
+      if (!error && data) {
+        for (const row of data) {
+          map.set(row.question_id, {
+            questionId: row.question_id,
+            values: row.option_values as number[],
+            meanings: row.option_meanings as string[],
+            source: row.source as string,
+          })
+        }
+      }
+    } catch {
+      // Supabase unavailable; static data already loaded
+    }
   }
 
-  try {
-    const { data, error } = await client
-      .from('coordinate_mappings')
-      .select('question_id, option_values, option_meanings, source')
-
-    if (error) {
-      console.error('Error fetching coordinate mappings:', error)
-      return new Map()
-    }
-
-    const map = new Map<string, CoordinateMapping>()
-    for (const row of data) {
-      map.set(row.question_id, {
-        questionId: row.question_id,
-        values: row.option_values as number[],
-        meanings: row.option_meanings as string[],
-        source: row.source as string,
-      })
-    }
-
-    mappingsCache = map
-    return map
-  } catch (err) {
-    console.error('Error fetching coordinate mappings:', err)
-    return new Map()
-  }
+  mappingsCache = map
+  return map
 }

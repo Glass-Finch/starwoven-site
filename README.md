@@ -51,7 +51,7 @@ The conceptual basis draws on remote viewing protocols, where multiple independe
 **Synthesis:**
 | Oracle | Provider | Model | Archetype |
 |--------|----------|-------|-----------|
-| Starweaver | Anthropic | Claude Opus 4.6 | The Weaver |
+| Sunweaver | Anthropic | Claude Opus 4.6 | The Weaver |
 
 ---
 
@@ -161,7 +161,7 @@ src/
 │   ├── QuestionFlow.tsx           # Rapid-fire questions
 │   ├── CustomCoordinateInput.tsx  # Manual coordinate entry
 │   ├── IntentionInput.tsx         # User's question
-│   ├── ChannelingLoader.tsx       # Cosmic loading animation
+│   ├── ChannelingLoader.tsx       # Sunweaver image orb, orbiting oracle dots, constellation lines
 │   ├── WovenMessage.tsx           # Final result display
 │   ├── ThreadsAccordion.tsx       # Expandable raw responses
 │   └── CoordinateReveal.tsx       # What generated coordinates
@@ -177,13 +177,17 @@ src/
 │   ├── errors.ts                  # Error classification
 │   ├── markdown.ts                # Lightweight markdown-to-React parser
 │   ├── constants.ts               # Shared constants
-│   ├── supabase.ts                # Database client
-│   └── types.ts                   # TypeScript interfaces
+│   ├── coordinate-data.ts            # Static coordinate mappings (126 entries)
+│   ├── supabase.ts                   # Database client
+│   └── types.ts                      # TypeScript interfaces
 │
 └── store.ts                    # Zustand journey state
 
 public/
-└── gateway-process-report.pdf     # Hosted Gateway Process PDF
+├── sunweaver-200.webp                # Sunweaver orb (mobile)
+├── sunweaver-400.webp                # Sunweaver orb (standard)
+├── sunweaver-800.webp                # Sunweaver orb (high-dpi)
+└── gateway-process-report.pdf        # Hosted Gateway Process PDF
 
 supabase/
 └── migrations/

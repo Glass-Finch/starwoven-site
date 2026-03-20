@@ -35,7 +35,7 @@ Each message type has a source and context:
 
 ## Message Type Personalization
 
-**Note:** Only Starweaver (Opus) is expected to consistently use names in the final synthesis. Individual oracles may or may not incorporate names - this is fine. The synthesis weaves everything together.
+**Note:** Only Sunweaver (Opus) is expected to consistently use names in the final synthesis. Individual oracles may or may not incorporate names - this is fine. The synthesis weaves everything together.
 
 ### The Beloved
 
@@ -76,14 +76,14 @@ This framing:
 
 Each AI model is represented as an oracle with its own archetype:
 
-| Oracle         | Model ID                  | Archetype  | Voice                           |
-| -------------- | ------------------------- | ---------- | ------------------------------- |
-| **Iris**       | `gpt-4.1`                 | The Oracle | Clarity, structured wisdom      |
-| **Luna**       | `claude-sonnet-4.5`       | The Muse   | Nuance, poetic depth            |
-| **Echo**       | `gemini-3-pro-preview`    | The Mirror | Patterns, reflection            |
-| **Shade**      | `deepseek-reasoner`       | The Deep   | Hidden knowledge, the abyss     |
-| **Nova**       | `grok-4-1-fast-reasoning` | The Wild   | Unconventional, untamed insight |
-| **Starweaver** | `claude-opus-4.6`         | The Weaver | Synthesis, the unified thread   |
+| Oracle        | Model ID                  | Archetype  | Voice                           |
+| ------------- | ------------------------- | ---------- | ------------------------------- |
+| **Iris**      | `gpt-4.1`                 | The Oracle | Clarity, structured wisdom      |
+| **Luna**      | `claude-sonnet-4.5`       | The Muse   | Nuance, poetic depth            |
+| **Echo**      | `gemini-3-pro-preview`    | The Mirror | Patterns, reflection            |
+| **Shade**     | `deepseek-reasoner`       | The Deep   | Hidden knowledge, the abyss     |
+| **Nova**      | `grok-4-1-fast-reasoning` | The Wild   | Unconventional, untamed insight |
+| **Sunweaver** | `claude-opus-4.6`         | The Weaver | Synthesis, the unified thread   |
 
 ---
 
@@ -158,7 +158,7 @@ No personalization context needed.
 
 ## Synthesis Prompt
 
-This prompt is sent to **Starweaver** (Claude Opus 4.6) to weave the impressions into a unified message.
+This prompt is sent to **Sunweaver** (Claude Opus 4.6) to weave the impressions into a unified message.
 
 ```
 This is a creative exercise for entertainment purposes only.

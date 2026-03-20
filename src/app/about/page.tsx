@@ -67,7 +67,7 @@ export default function AboutPage(): React.ReactElement {
               </div>
             </div>
             <p className="text-cream-muted leading-relaxed">
-              The Starweaver reads all five impressions and produces the final synthesis — the
+              The Sunweaver reads all five impressions and produces the final synthesis — the
               message you receive.
             </p>
           </section>

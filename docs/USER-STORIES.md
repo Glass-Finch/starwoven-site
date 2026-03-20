@@ -286,6 +286,14 @@ Different question categories draw from different systems. An element question m
 
 The mapping design is tracked in GH#76. Per-number rationale with source system citations is documented in `docs/COORDINATE-MAPPINGS.md`.
 
+**Reveal Timing:**
+
+- When a user selects an answer, the numeric segment and meaning text appear together
+- The reveal holds for 5 seconds, allowing time to read the coordinate context
+- Users can tap to skip the reveal and advance immediately
+- Meaning text uses `cream-soft` color for adequate contrast against the void background
+- Coordinate mappings are bundled as static data (`coordinate-data.ts`) so they load without network dependency
+
 ---
 
 ### 2b. Custom Coordinates
@@ -359,13 +367,15 @@ The mapping design is tracked in GH#76. Per-number rationale with source system 
 
 **Acceptance Criteria:**
 
-- Oracle indicators light up as each model responds
+- The Sunweaver image (golden celestial body) sits at the center
+- Oracle color dots orbit around the Sunweaver, lighting up as each model responds
+- Oracle names shown as tooltips on hover/long-press (no visible text labels)
 - Constellation lines connect between completed responses
 - Contextual loading text communicates progress:
   - Before any responses: "Listening"
   - As responses arrive: "3 of 5 channels open"
   - When synthesizing: "Composing the reading"
-- Gold progress bar shows oracle response status
+- Lavender progress bar shows oracle response status
 - After 30s without completion, a subtle message: "Some channels are taking longer than expected."
 - The experience feels like watching something assemble, not waiting
 
@@ -382,7 +392,7 @@ Avoid: rotating mystical phrases, anything that sounds like a loading screen wro
 - The synthesis appears word-by-word (60ms per word)
 - A cursor blinks during reveal
 - After reveal, I can expand to see individual threads
-- Starweaver credited inside the synthesis card as a subtle byline (gold dot + name)
+- Sunweaver credited inside the synthesis card as a subtle byline (gold dot + name)
 - Oracle impressions listed as directly expandable rows below the synthesis card (no nested accordion)
 - Each oracle row shows a colored indicator dot + name + model shortname: "Luna (Claude Sonnet)"
 - One tap to expand any oracle's response (no outer "View threads" wrapper)
@@ -782,7 +792,7 @@ Avoid: "The cosmic threads have frayed" or similar overwrought language.
 
 **Individual oracles are NOT required to use seeker/subject names.** Some will naturally incorporate them, others won't. This is fine.
 
-**Starweaver (Opus) is responsible for weaving names** into the final synthesis where appropriate. The synthesis pulls together threads from all oracles and addresses the seeker directly.
+**Sunweaver (Opus) is responsible for weaving names** into the final synthesis where appropriate. The synthesis pulls together threads from all oracles and addresses the seeker directly.
 
 ### Grok-4-1 (Nova) Considerations
 

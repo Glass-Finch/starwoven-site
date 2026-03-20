@@ -33,31 +33,33 @@ npm run dev          # Start dev server
 npm run build        # Production build
 npm run lint         # ESLint
 npm test             # Unit + smoke tests (vitest)
+npx tsx scripts/validate-coordinate-sync.ts  # Verify static data matches SQL
 ```
 
 ## File Locations
 
-| What                | Where                          |
-| ------------------- | ------------------------------ |
-| Main page           | `src/app/page.tsx`             |
-| About page          | `src/app/about/page.tsx`       |
-| Research page       | `src/app/research/page.tsx`    |
-| API route           | `src/app/api/channel/route.ts` |
-| AI providers        | `src/lib/ai.ts`                |
-| Prompts             | `src/lib/prompts.ts`           |
-| QA layer            | `src/lib/qa.ts`                |
-| Moderation          | `src/lib/moderation.ts`        |
-| Questions           | `src/lib/questions.ts`         |
-| Message types       | `src/lib/message-types.ts`     |
-| Types               | `src/lib/types.ts`             |
-| Constants           | `src/lib/constants.ts`         |
-| Errors              | `src/lib/errors.ts`            |
-| Cost tracking       | `src/lib/cost.ts`              |
-| Markdown            | `src/lib/markdown.ts`          |
-| Supabase            | `src/lib/supabase.ts`          |
-| Store               | `src/store.ts`                 |
-| Components          | `src/components/`              |
-| Coordinate mappings | `docs/COORDINATE-MAPPINGS.md`  |
+| What            | Where                          |
+| --------------- | ------------------------------ |
+| Main page       | `src/app/page.tsx`             |
+| About page      | `src/app/about/page.tsx`       |
+| Research page   | `src/app/research/page.tsx`    |
+| API route       | `src/app/api/channel/route.ts` |
+| AI providers    | `src/lib/ai.ts`                |
+| Prompts         | `src/lib/prompts.ts`           |
+| QA layer        | `src/lib/qa.ts`                |
+| Moderation      | `src/lib/moderation.ts`        |
+| Questions       | `src/lib/questions.ts`         |
+| Message types   | `src/lib/message-types.ts`     |
+| Types           | `src/lib/types.ts`             |
+| Constants       | `src/lib/constants.ts`         |
+| Errors          | `src/lib/errors.ts`            |
+| Cost tracking   | `src/lib/cost.ts`              |
+| Markdown        | `src/lib/markdown.ts`          |
+| Supabase        | `src/lib/supabase.ts`          |
+| Store           | `src/store.ts`                 |
+| Components      | `src/components/`              |
+| Coordinate data | `src/lib/coordinate-data.ts`   |
+| Coordinate docs | `docs/COORDINATE-MAPPINGS.md`  |
 
 ## Code Standards
 
@@ -157,7 +159,7 @@ Use the short archetypal names as IDs:
 
 - **iOS-like clean design** - Minimal, elegant, native-feeling
 - **NO EMOJIS** - Never use emojis in UI, copy, or code comments
-- **Underglow effects** - Golden glow beneath cards and buttons
+- **Underglow effects** - Silver glow beneath cards, golden glow on primary buttons only
 - **Generous whitespace** - Let elements breathe
 - **Min tap target**: 48x48px
 - **Min font size**: 16px (prevents iOS zoom)
@@ -317,14 +319,14 @@ GitHub Actions (`.github/workflows/ci.yml`) runs on push to main/dev and PRs:
 
 **Single Source of Truth**: `src/lib/ai.ts` defines `ORACLE_INFO` with model names, archetypes, and colors. All model IDs are defined in `src/lib/types.ts` as the `AIModel` type. When updating model versions, update both files.
 
-| Oracle         | Provider  | Model                   | Archetype              |
-| -------------- | --------- | ----------------------- | ---------------------- |
-| **Iris**       | OpenAI    | gpt-4.1                 | The Oracle             |
-| **Luna**       | Anthropic | claude-sonnet-4.5       | The Muse               |
-| **Echo**       | Google    | gemini-3-pro-preview    | The Mirror             |
-| **Shade**      | DeepSeek  | deepseek-reasoner       | The Deep               |
-| **Nova**       | xAI       | grok-4-1-fast-reasoning | The Wild               |
-| **Starweaver** | Anthropic | claude-opus-4.6         | The Weaver (synthesis) |
+| Oracle        | Provider  | Model                   | Archetype              |
+| ------------- | --------- | ----------------------- | ---------------------- |
+| **Iris**      | OpenAI    | gpt-4.1                 | The Oracle             |
+| **Luna**      | Anthropic | claude-sonnet-4.5       | The Muse               |
+| **Echo**      | Google    | gemini-3-pro-preview    | The Mirror             |
+| **Shade**     | DeepSeek  | deepseek-reasoner       | The Deep               |
+| **Nova**      | xAI       | grok-4-1-fast-reasoning | The Wild               |
+| **Sunweaver** | Anthropic | claude-opus-4.6         | The Weaver (synthesis) |
 
 ### Latest Model Versions by Provider
 

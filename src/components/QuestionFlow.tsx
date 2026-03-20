@@ -68,8 +68,8 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
       setAnswers(updatedAnswers)
       answersRef.current = updatedAnswers
 
-      // Auto-advance after reveal hold (2.5s to allow reading meanings)
-      revealTimerRef.current = setTimeout(() => advanceToNext(updatedAnswers), 2500)
+      // Auto-advance after reveal hold (5s to allow reading meanings, tap to skip)
+      revealTimerRef.current = setTimeout(() => advanceToNext(updatedAnswers), 5000)
     },
     [currentQuestion, answers, revealState, advanceToNext]
   )
@@ -197,7 +197,7 @@ export function QuestionFlow({ questions, onComplete }: QuestionFlowProps): Reac
                     </div>
                     {isSelected && isRevealing && currentQuestion.meanings?.[optionIndex] && (
                       <p
-                        className="text-sm text-cream-muted mt-2 animate-fadeIn"
+                        className="text-sm text-cream-soft mt-2 leading-relaxed animate-fadeIn"
                         style={{ animationDelay: '150ms', animationFillMode: 'backwards' }}
                       >
                         {currentQuestion.meanings[optionIndex]}

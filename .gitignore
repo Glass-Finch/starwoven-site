@@ -148,3 +148,6 @@ scripts/scratch/
 
 # Working files (not for repo)
 6-full-report.pdf
+
+# Source images (processed versions in public/)
+public/sunweaver-source.png

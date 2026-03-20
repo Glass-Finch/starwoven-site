@@ -33,6 +33,9 @@ jobs:
       - name: Type check
         run: npx tsc --noEmit
 
+      - name: Validate coordinate sync
+        run: npx tsx scripts/validate-coordinate-sync.ts
+
       - name: Test
         run: npm test
 

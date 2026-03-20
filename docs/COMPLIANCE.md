@@ -31,7 +31,7 @@ Starwoven sends user intentions through 5 commercial AI APIs and presents respon
 - **Data training:** API data is NOT used for training by default
 - **Status:** Compliant
 
-### Anthropic (Claude Sonnet 4.5 — Luna / Claude Opus 4.6 — Starweaver / Claude Haiku — moderation)
+### Anthropic (Claude Sonnet 4.5 — Luna / Claude Opus 4.6 — Sunweaver / Claude Haiku — moderation)
 
 - **Terms reviewed:** Usage Policy (Sept 2025 update), API Terms, Privacy Policy
 - **Entertainment use:** Permitted, explicitly allowed for consumer-facing applications

@@ -122,8 +122,8 @@ export function WovenMessage({
 
           {!isRevealing && (
             <div className="flex items-center gap-2 mt-6 pt-4 border-t border-cream/5">
-              <div className="w-1.5 h-1.5 rounded-full bg-silver" />
-              <span className="text-xs text-cream-muted tracking-wide">Starweaver</span>
+              <div className="w-1.5 h-1.5 rounded-full bg-gold" />
+              <span className="text-xs text-cream-muted tracking-wide">Sunweaver</span>
             </div>
           )}
         </div>
